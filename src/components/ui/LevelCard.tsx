@@ -33,9 +33,9 @@ export function LevelCard({ data }: { data: CurriculumLevel }) {
         alt={image.alt}
         width={image.width}
         height={image.height}
-        quality={90}
+        quality={95}
         sizes="(min-width:1024px) 240px, (min-width:640px) 200px, 100vw"
-        className="h-56 w-full object-cover object-top sm:h-full"
+        className="h-56 w-full object-cover object-center sm:h-full"
       />
       <div className="flex flex-col p-6 sm:p-8">
         <div className="flex items-center justify-between gap-4">
