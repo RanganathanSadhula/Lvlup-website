@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-ink font-sans text-base text-white antialiased;
+    overflow-x: hidden;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand;
+    outline-style: solid;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  .bg-topo-dark { background-image: url("/images/topo-dark.svg"); background-size: cover; background-position: center; }
+  .bg-topo-light { background-image: url("/images/topo-light.svg"); background-size: cover; background-position: center; }
+  .bg-chevrons { background-image: url("/images/chevrons.svg"); background-size: 48px 48px; }
+  .text-balance { text-wrap: balance; }
+}
