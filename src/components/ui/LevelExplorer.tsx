@@ -23,57 +23,98 @@ export function LevelExplorer() {
     setActive(level);
     // Ignore scroll events while the smooth scroll is running so the highlight doesn't flicker.
     if (clickLock.current) clearTimeout(clickLock.current);
-    clickLock.current = setTimeout(() => (clickLock.current = null), 800);
+    clickLock.current = setTimeout(() => (clickLock.current = null), 600);
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    el.scrollTo({ top: card.offsetTop, behavior: reduce ? "auto" : "smooth" });
+    const cardRect = card.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    const offset = cardRect.top - elRect.top;
+    el.scrollBy({ top: offset, behavior: reduce ? "auto" : "smooth" });
   }
 
   /** Right column scroll -> highlight the matching left button. */
   function onScroll() {
     const el = scrollRef.current;
     if (!el || clickLock.current) return;
-    const last = curriculum[curriculum.length - 1];
-    if (last && el.scrollTop + el.clientHeight >= el.scrollHeight - 4) {
-      setActive(last.level);
+    
+    // If scrolled right to the bottom
+    const lastLevel = curriculum[curriculum.length - 1];
+    if (lastLevel && el.scrollTop + el.clientHeight >= el.scrollHeight - 16) {
+      setActive(lastLevel.level);
       return;
     }
+
+    const elBox = el.getBoundingClientRect();
     let current = 1;
-    el.querySelectorAll<HTMLElement>("article").forEach((card) => {
-      if (card.offsetTop - el.scrollTop <= el.clientHeight * 0.35) {
-        current = Number(card.id.replace("level-", ""));
+
+    for (const l of curriculum) {
+      const card = el.querySelector<HTMLElement>(`#level-${l.level}`);
+      if (card) {
+        const cardBox = card.getBoundingClientRect();
+        if (cardBox.top <= elBox.top + elBox.height * 0.45) {
+          current = l.level;
+        }
       }
-    });
+    }
     setActive(current);
   }
 
   return (
     <div className="grid items-stretch gap-6 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-7">
-      {/* Left: all 8 buttons, no scroll bar (desktop only) */}
-      <nav aria-label="Levels" className="hidden rounded-xl border border-black/[0.08] bg-white p-2 lg:block">
-        <ol>
-          {curriculum.map((l) => {
-            const Icon = ICON_MAP[l.icon] ?? Award;
+      {/* Left: all 8 levels timeline stepper matching Figma (desktop only) */}
+      <nav aria-label="Levels" className="hidden lg:block">
+        <ol className="relative space-y-1">
+          {curriculum.map((l, i) => {
             const on = active === l.level;
+            const past = l.level < active;
+            const isLast = i === curriculum.length - 1;
+
             return (
-              <li key={l.level}>
+              <li key={l.level} className="relative flex items-center gap-3">
+                {/* Continuous vertical timeline connector line */}
+                {!isLast && (
+                  <div
+                    aria-hidden
+                    className={cn(
+                      "pointer-events-none absolute left-[17px] top-[26px] h-full w-[2px] -translate-x-1/2 z-0",
+                      past ? "bg-black" : "bg-black/15",
+                    )}
+                  />
+                )}
+
+                {/* Circle badge: past = black, active = orange, upcoming = white with border */}
+                <button
+                  type="button"
+                  onClick={() => goTo(l.level)}
+                  aria-label={`Jump to level ${l.level}`}
+                  className={cn(
+                    "relative z-10 flex size-[34px] shrink-0 items-center justify-center rounded-full text-[13px] font-bold transition-all duration-200",
+                    on
+                      ? "bg-brand text-white shadow-sm ring-4 ring-brand/20"
+                      : past
+                      ? "bg-black text-white"
+                      : "border-2 border-black/20 bg-white text-muted hover:border-black/40",
+                  )}
+                >
+                  {l.level}
+                </button>
+
+                {/* Card item with title and makes info */}
                 <button
                   type="button"
                   onClick={() => goTo(l.level)}
                   aria-current={on ? "true" : undefined}
                   className={cn(
-                    "flex w-full items-start gap-3 rounded-lg px-3 py-3 text-left transition",
-                    on ? "bg-ink text-white" : "text-ink hover:bg-cream",
+                    "flex flex-1 flex-col rounded-2xl px-3.5 py-2.5 text-left transition-all duration-200",
+                    on
+                      ? "bg-[#ffe2d4] text-ink shadow-sm"
+                      : "text-ink hover:bg-black/[0.04]",
                   )}
                 >
-                  <span className={cn("mt-0.5 w-5 font-mono text-[11px]", on ? "text-brand" : "text-muted")}>
-                    {String(l.level).padStart(2, "0")}
+                  <span className={cn("block text-sm leading-snug", on ? "font-bold text-ink" : "font-semibold text-ink")}>
+                    {l.title}
                   </span>
-                  <Icon aria-hidden className="mt-0.5 size-4 shrink-0 text-brand-dark" />
-                  <span>
-                    <span className="block text-sm font-semibold leading-tight">{l.title}</span>
-                    <span className={cn("mt-1 block text-xs", on ? "text-muted-dark" : "text-muted")}>
-                      Makes: {l.navMakes}
-                    </span>
+                  <span className={cn("mt-0.5 block text-xs", on ? "text-ink/75" : "text-muted")}>
+                    Makes: {l.navMakes}
                   </span>
                 </button>
               </li>
@@ -84,6 +125,26 @@ export function LevelExplorer() {
 
       {/* Right: all 8 cards, scrolls on its own on desktop; normal stacked page on mobile */}
       <div className="relative">
+        {/* Mobile horizontal level buttons */}
+        <div className="mb-4 flex gap-2 overflow-x-auto pb-1 lg:hidden [scrollbar-width:none]">
+          {curriculum.map((l) => (
+            <button
+              key={l.level}
+              type="button"
+              onClick={() => goTo(l.level)}
+              aria-label={`Jump to level ${l.level}`}
+              className={cn(
+                "flex size-10 shrink-0 items-center justify-center rounded-xl font-mono text-sm font-bold transition-all active:scale-95",
+                active === l.level
+                  ? "bg-brand text-white shadow-sm ring-2 ring-brand/30"
+                  : "border border-black/10 bg-white text-ink/70 hover:border-black/30"
+              )}
+            >
+              {l.level}
+            </button>
+          ))}
+        </div>
+
         <div
           ref={scrollRef}
           onScroll={onScroll}

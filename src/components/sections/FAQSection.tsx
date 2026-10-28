@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import { Minus, Plus } from "lucide-react";
 import { Container } from "@/components/ui/Container";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { Section } from "@/components/ui/Section";
 import { parentFaq, schoolFaq } from "@/data/faq";
 import { siteConfig } from "@/data/site";
@@ -62,45 +63,49 @@ export function FAQSection() {
   return (
     <Section id="faq" tone="light" aria-labelledby="faq-title" className="pt-8 sm:pt-10 lg:pt-12">
       <Container className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.9fr)] lg:gap-16">
-        <div>
-          <h2 id="faq-title" className="font-display text-[34px] font-normal leading-[1.08] tracking-[-0.03em] sm:text-[42px] lg:text-[48px]">
-            Questions parents ask
-          </h2>
-          <div role="tablist" aria-label="FAQ audience" className="mt-6 inline-flex rounded-xl bg-cream-2 p-1">
-            {tabs.map((t) => (
-              <button
-                key={t.id}
-                role="tab"
-                id={`${uid}-tab-${t.id}`}
-                aria-selected={tab === t.id}
-                aria-controls={`${uid}-tabpanel`}
-                tabIndex={tab === t.id ? 0 : -1}
-                onClick={() => setTab(t.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "ArrowRight" || e.key === "ArrowLeft") setTab(tab === "parents" ? "schools" : "parents");
-                }}
-                className={cn(
-                  "min-h-10 rounded-lg px-4 text-sm font-semibold transition",
-                  tab === t.id ? "bg-white text-ink shadow-sm" : "text-muted hover:text-ink",
-                )}
-              >
-                {t.label}
-              </button>
-            ))}
+        <ScrollReveal delay={80}>
+          <div>
+            <h2 id="faq-title" className="font-display text-[34px] font-normal leading-[1.08] tracking-[-0.03em] sm:text-[42px] lg:text-[48px]">
+              Questions parents ask
+            </h2>
+            <div role="tablist" aria-label="FAQ audience" className="mt-6 inline-flex rounded-xl bg-cream-2 p-1">
+              {tabs.map((t) => (
+                <button
+                  key={t.id}
+                  role="tab"
+                  id={`${uid}-tab-${t.id}`}
+                  aria-selected={tab === t.id}
+                  aria-controls={`${uid}-tabpanel`}
+                  tabIndex={tab === t.id ? 0 : -1}
+                  onClick={() => setTab(t.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "ArrowRight" || e.key === "ArrowLeft") setTab(tab === "parents" ? "schools" : "parents");
+                  }}
+                  className={cn(
+                    "min-h-10 rounded-lg px-4 text-sm font-semibold transition",
+                    tab === t.id ? "bg-white text-ink shadow-sm" : "text-muted hover:text-ink",
+                  )}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+            <p className="mt-6 max-w-[340px] text-base leading-relaxed text-muted">
+              Something else? WhatsApp us at{" "}
+              <a href={siteConfig.whatsappUrl} className="underline underline-offset-2 hover:text-ink">{siteConfig.whatsappLabel}</a>
+              . A person replies within a few hours. We only message you about your child’s batch, and you can reply STOP at any time.
+            </p>
           </div>
-          <p className="mt-6 max-w-[340px] text-base leading-relaxed text-muted">
-            Something else? WhatsApp us at{" "}
-            <a href={siteConfig.whatsappUrl} className="underline underline-offset-2 hover:text-ink">{siteConfig.whatsappLabel}</a>
-            . A person replies within a few hours. We only message you about your child’s batch, and you can reply STOP at any time.
-          </p>
-        </div>
-        <div role="tabpanel" id={`${uid}-tabpanel`} aria-labelledby={`${uid}-tab-${tab}`}>
-          {tab === "parents" ? (
-            <Accordion key="parents" items={parentFaq} idPrefix={`${uid}-p`} />
-          ) : (
-            <Accordion key="schools" items={schoolFaq} idPrefix={`${uid}-s`} />
-          )}
-        </div>
+        </ScrollReveal>
+        <ScrollReveal delay={160}>
+          <div role="tabpanel" id={`${uid}-tabpanel`} aria-labelledby={`${uid}-tab-${tab}`}>
+            {tab === "parents" ? (
+              <Accordion key="parents" items={parentFaq} idPrefix={`${uid}-p`} />
+            ) : (
+              <Accordion key="schools" items={schoolFaq} idPrefix={`${uid}-s`} />
+            )}
+          </div>
+        </ScrollReveal>
       </Container>
     </Section>
   );

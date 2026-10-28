@@ -4,7 +4,7 @@ import { siteConfig } from "@/data/site";
 
 export function FinalCTASection() {
   return (
-    <section id="enrol" aria-labelledby="cta-title" className="relative overflow-hidden bg-brand-gradient py-16 text-ink sm:py-20">
+    <section id="final-cta" aria-labelledby="cta-title" className="relative overflow-hidden bg-brand-gradient py-16 text-ink sm:py-20">
       <div aria-hidden className="bg-chevrons pointer-events-none absolute inset-0 opacity-70" />
       <Container className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
         <div>

@@ -24,19 +24,28 @@ export function LevelCard({ data }: { data: CurriculumLevel }) {
       id={`level-${level}`}
       aria-labelledby={`level-${level}-title`}
       className={cn(
-        "grid overflow-hidden rounded-2xl border sm:grid-cols-[200px_1fr] lg:grid-cols-[240px_1fr]",
+        "group grid overflow-hidden rounded-2xl border transition-all duration-300 sm:grid-cols-[200px_1fr] lg:grid-cols-[240px_1fr]",
         featured ? "border-ink bg-ink text-white shadow-xl" : "border-black/[0.08] bg-white",
       )}
     >
-      <Image
-        src={image.src}
-        alt={image.alt}
-        width={image.width}
-        height={image.height}
-        quality={95}
-        sizes="(min-width:1024px) 240px, (min-width:640px) 200px, 100vw"
-        className="h-56 w-full object-cover object-center sm:h-full"
-      />
+      <div className="relative h-56 w-full overflow-hidden sm:h-full">
+        <Image
+          src={image.src}
+          alt={image.alt}
+          width={image.width}
+          height={image.height}
+          quality={95}
+          unoptimized
+          sizes="(min-width:1024px) 240px, (min-width:640px) 200px, 100vw"
+          className="h-full w-full object-cover object-center grayscale transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
+        />
+        {/* Floating badge top-left: Level X / Week X */}
+        <div className="absolute left-3 top-3 z-10 flex min-w-[50px] flex-col items-center justify-center rounded-xl bg-white px-2.5 py-1.5 text-center shadow-md border border-black/5">
+          <span className="text-[10px] font-medium uppercase tracking-wide text-muted">Level</span>
+          <span className="font-display text-[22px] font-bold leading-none text-ink my-0.5">{level}</span>
+          <span className="text-[10px] font-semibold text-[#ff6b2c] leading-none">Week {week}</span>
+        </div>
+      </div>
       <div className="flex flex-col p-6 sm:p-8">
         <div className="flex items-center justify-between gap-4">
           <p className="flex items-center gap-2 text-sm font-semibold text-brand-dark">

@@ -1,7 +1,7 @@
 import type { CurriculumLevel } from "@/types";
 
 const img = (n: number, w: number, h: number, alt: string) => ({
-  src: `/images/curriculum/level-${n}.jpg`,
+  src: `/images/curriculum/level-${n}-color.png`,
   width: w,
   height: h,
   alt,

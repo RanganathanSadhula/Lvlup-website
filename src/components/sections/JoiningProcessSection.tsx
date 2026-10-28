@@ -1,4 +1,5 @@
 import { Container } from "@/components/ui/Container";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { joiningSteps } from "@/data/content";
@@ -19,11 +20,15 @@ export function JoiningProcessSection() {
             const Icon = s.icon;
             const last = i === joiningSteps.length - 1;
             return (
-              <li key={s.title} className={cn("border-t-[3px] pt-5", last ? "border-brand" : "border-white/15")}>
-                <Icon aria-hidden className="size-6 text-white" strokeWidth={1.5} />
-                <p className="mt-4 font-mono text-xs text-brand">Step {i + 1}</p>
-                <h3 className="mt-3 text-base font-semibold leading-snug">{s.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-dark">{s.body}</p>
+              <li key={s.title}>
+                <ScrollReveal delay={i * 60}>
+                  <div className={cn("border-t-[3px] pt-5", last ? "border-brand" : "border-white/15")}>
+                    <Icon aria-hidden className="size-6 text-white" strokeWidth={1.5} />
+                    <p className="mt-4 font-mono text-xs text-brand">Step {i + 1}</p>
+                    <h3 className="mt-3 text-base font-semibold leading-snug">{s.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-dark">{s.body}</p>
+                  </div>
+                </ScrollReveal>
               </li>
             );
           })}

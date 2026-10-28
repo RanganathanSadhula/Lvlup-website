@@ -14,7 +14,7 @@ export const siteConfig = {
   batchStartDate: process.env.NEXT_PUBLIC_BATCH_START ?? "[date]",
   /** Falls back to the section that explains how to join when no enrolment URL is configured. */
   classVideoUrl: process.env.NEXT_PUBLIC_CLASS_VIDEO_URL || "",
-  enrolUrl: process.env.NEXT_PUBLIC_ENROL_URL || "/#joining",
+  enrolUrl: process.env.NEXT_PUBLIC_ENROL_URL || "/#enrol",
   bookingUrl: process.env.NEXT_PUBLIC_BOOKING_URL || "/#school-pack",
   whatsappUrl: whatsappDigits ? `https://wa.me/${whatsappDigits}` : "/#contact",
   whatsappLabel: whatsappDigits ? `+${whatsappDigits}` : "[number]",
@@ -38,7 +38,7 @@ export const legalLinks = {
   refunds: "/legal/refunds",
   terms: "/legal/terms",
   partnerTerms: "/legal/partner-terms",
-  curriculum: "/legal/curriculum",
+  curriculum: "/downloads/LvlUp-Eight-Week-Curriculum.pdf",
 } as const;
 
 export const legalPages: Record<string, { title: string; note: string }> = {

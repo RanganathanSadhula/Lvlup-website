@@ -1,4 +1,4 @@
-import { Bot, BookOpen, FolderOpen, Landmark, LaptopMinimal, Lock, Mic, ListChecks, MonitorPlay, ShieldCheck, Award, UsersRound, Footprints, MessageSquareText } from "lucide-react";
+import { Bot, BookOpen, FolderOpen, Landmark, LaptopMinimal, Lock, Mic, ListChecks, MonitorPlay, ShieldCheck, Award, UsersRound, Footprints, MessageSquareText, Check } from "lucide-react";
 
 export const facts = [
   { value: "8 levels", label: "One a week, each ends with something made" },
@@ -14,9 +14,9 @@ export const heroMeta = [
 ] as const;
 
 export const solutionCards = [
-  { title: "Understand it", body: "How AI learns from examples, where it helps, and why its answers need checking.", icon: BookOpen, image: "/images/solution-understand.jpg", alt: "A smiling boy holding a stack of books", w: 764, h: 440 },
-  { title: "Use it safely", body: "Private information stays private. Tools are approved, and the accounts are set up and managed by us.", icon: ShieldCheck, image: "/images/solution-safely.jpg", alt: "Two children smiling at a laptop together", w: 764, h: 440 },
-  { title: "Build with it", body: "Each child designs, builds and tests an AI helper for a real problem from their own school day.", icon: Bot, image: "/images/solution-build.jpg", alt: "A girl raising her hand next to classmates with laptops", w: 764, h: 440 },
+  { title: "Understand it", body: "How AI learns from examples, where it helps, and why its answers need checking.", icon: BookOpen, image: "/images/solution-understand-color.png", alt: "A smiling boy holding a stack of books", w: 1048, h: 784 },
+  { title: "Use it safely", body: "Private information stays private. Tools are approved, and the accounts are set up and managed by us.", icon: ShieldCheck, image: "/images/solution-safely-color.png", alt: "Two children smiling at a laptop together", w: 1048, h: 784 },
+  { title: "Build with it", body: "Each child designs, builds and tests an AI helper for a real problem from their own school day.", icon: Bot, image: "/images/solution-build-color.png", alt: "A girl raising her hand next to classmates with laptops", w: 1048, h: 784 },
 ] as const;
 
 export const gradeCards = [
@@ -41,11 +41,11 @@ export const notFit = [
 ] as const;
 
 export const safetyCommitments = [
-  { title: "A tutor in every class", body: "Children never use AI on their own in our sessions.", icon: UsersRound },
-  { title: "Minimal data, never sold", body: "We collect only what we need to run the course, and delete it when you ask.", icon: Lock },
-  { title: "Approved tools only", body: "Age-appropriate tools, through accounts we set up and manage. No personal chatbot accounts.", icon: LaptopMinimal },
-  { title: "Safety is taught, not just enforced", body: "Level 1 ends with a safety pledge: what to keep private, and how to check an answer.", icon: ShieldCheck },
-  { title: "Your written consent first", body: "We ask before your child uses any AI tool. You can withdraw at any time.", icon: Award },
+  { title: "A tutor in every class", body: "Children never use AI on their own with us.", icon: UsersRound },
+  { title: "Approved tools only", body: "Accounts we set up and manage.", icon: ShieldCheck },
+  { title: "Your written consent first", body: "You can withdraw at any time.", icon: Award },
+  { title: "Minimal data, never sold", body: "Deleted when you ask.", icon: Lock },
+  { title: "Safety is taught", body: "Level 1 ends with a safety pledge.", icon: Check },
 ] as const;
 
 export const joiningSteps = [
@@ -69,7 +69,7 @@ export const pricing = {
     "Progress updates after levels 2, 4 and 6",
     "Demo day and a digital portfolio",
   ],
-  promiseTitle: "If your child comes to at least 6 of the 8 classes and can’t show a working AI helper at demo day, we refund the second payment.",
+  promiseTitle: "If your child comes to at least 6 of the 8 classes and can’t show a working AI helper at demo day, we refund ₹2,499.",
   promisePoints: [
     "At demo day, the helper must complete the two tasks your child set for it.",
     "You watch it happen, so there is nothing to argue about.",

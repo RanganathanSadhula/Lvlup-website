@@ -8,7 +8,7 @@ import { TutorsSection } from "./TutorsSection";
 /** Composes the "See how we teach" block: class demo + tutors, testimonials + pilot metrics, partner schools. */
 export function TeachingSection() {
   return (
-    <Section id="teaching" tone="darker" topo aria-labelledby="teaching-title">
+    <Section id="teaching" tone="darker" topo grain grainOpacity={0.52} aria-labelledby="teaching-title">
       <Container>
         <SectionHeader
           id="teaching-title"

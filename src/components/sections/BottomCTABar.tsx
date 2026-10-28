@@ -1,11 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { siteConfig } from "@/data/site";
 
 export function BottomCTABar() {
+  const pathname = usePathname();
+  if (pathname === "/enrolled") return null;
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 h-16 border-t border-white/[0.06] bg-ink/85 backdrop-blur">
+    <div className="hidden lg:block fixed bottom-0 left-0 right-0 z-40 h-16 border-t border-white/[0.06] bg-ink/85 backdrop-blur">
       <div className="mx-auto flex h-full max-w-page items-center justify-between px-5 sm:px-8 min-[1344px]:px-0 gap-8">
         {/* Left: school + batch info */}
         <div className="flex items-center gap-2">
@@ -25,16 +29,31 @@ export function BottomCTABar() {
           </div>
           <Link
             href={siteConfig.whatsappUrl}
-            className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold border border-white/[0.06] rounded-[6px] text-white transition-colors hover:bg-white/5 min-h-10"
+            className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold border border-white/[0.06] rounded-[6px] text-white transition-all duration-200 transform-gpu hover:bg-white/10 active:scale-95 min-h-10 cursor-pointer"
           >
             WhatsApp us <span className="leading-none">→</span>
           </Link>
-          <Link
+          <a
             href={siteConfig.enrolUrl}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-brand-gradient text-[15px] font-semibold text-ink rounded-[6px] shadow-glow min-h-10 transition-opacity hover:opacity-90"
+            onClick={(e) => {
+              const targetId = siteConfig.enrolUrl.replace(/^\/?#/, "");
+              const element = document.getElementById(targetId);
+              if (element) {
+                e.preventDefault();
+                const headerOffset = 64;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                window.scrollTo({
+                  top: Math.max(0, offsetPosition),
+                  behavior: "smooth",
+                });
+                window.history.pushState(null, "", `#${targetId}`);
+              }
+            }}
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-brand-gradient text-[15px] font-semibold text-ink rounded-[6px] shadow-glow min-h-10 transition-all duration-200 transform-gpu hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(255,107,44,0.4)] active:scale-95 cursor-pointer"
           >
             Enrol now <span className="leading-none text-ink">→</span>
-          </Link>
+          </a>
         </div>
       </div>
     </div>

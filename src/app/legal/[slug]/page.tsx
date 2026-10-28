@@ -32,6 +32,17 @@ export default async function LegalPlaceholderPage({ params }: { params: Params 
           <p className="mt-4 text-lg leading-relaxed text-muted">
             {page.note} will be published here. Replace this page (or point the link to your hosted PDF) before launch.
           </p>
+          {slug === "curriculum" && (
+            <div className="mt-6">
+              <a
+                href="/downloads/LvlUp-Eight-Week-Curriculum.pdf"
+                download="LvlUp Eight-Week Curriculum.pdf"
+                className="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 font-semibold text-white shadow-sm transition hover:brightness-105"
+              >
+                Download LvlUp Eight-Week Curriculum (PDF)
+              </a>
+            </div>
+          )}
           <div className="mt-8"><ButtonLink href="/" variant="dark">Back to home</ButtonLink></div>
         </Container>
       </main>
