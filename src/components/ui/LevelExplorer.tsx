@@ -12,83 +12,139 @@ const ICON_MAP: Record<string, LucideIcon> = {
 
 export function LevelExplorer() {
   const [active, setActive] = useState(1);
+  const containerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const clickLock = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const userPauseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isHovered = useRef(false);
+  const isPausedByUser = useRef(false);
+  const isResetting = useRef(false);
   const animFrameId = useRef<number | null>(null);
+  const accumulatedPos = useRef(0);
 
-  /** Hover Auto-Scroll mechanism: increased speed, loops back to first card when reached bottom */
+  /** Continuous Smooth Auto-Scroll mechanism:
+   *  - Automatically scrolls down smoothly when in view.
+   *  - Pauses when hovered (so the user can read the card or click).
+   *  - Pauses when the user clicks a level button or manually scrolls.
+   *  - Loops smoothly back to Level 1 when reaching the bottom.
+   */
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const el = scrollRef.current;
+    if (!el) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    let isVisible = true;
     let lastTime: number | null = null;
-    let isResetting = false;
-    const speed = 65; // increased smooth scroll speed (~65px/sec)
+    const speed = 45; // smooth ~45px/sec
+
+    accumulatedPos.current = el.scrollTop;
 
     const step = (time: number) => {
-      if (!isHovered.current || !scrollRef.current) {
-        animFrameId.current = null;
+      if (
+        !isVisible ||
+        isHovered.current ||
+        isPausedByUser.current ||
+        clickLock.current ||
+        isResetting.current ||
+        !scrollRef.current
+      ) {
+        lastTime = null;
+        animFrameId.current = requestAnimationFrame(step);
         return;
       }
-      if (lastTime !== null && !isResetting) {
-        const delta = (time - lastTime) / 1000;
-        const el = scrollRef.current;
-        // Don't auto-scroll while smooth scroll to level is in progress
-        if (!clickLock.current) {
-          if (el.scrollTop + el.clientHeight >= el.scrollHeight - 4) {
-            // Reached bottom -> smoothly scroll back to the top/first card
-            isResetting = true;
-            el.scrollTo({ top: 0, behavior: "smooth" });
+
+      if (lastTime !== null) {
+        const delta = Math.min((time - lastTime) / 1000, 0.1);
+        const scrollEl = scrollRef.current;
+        const maxScroll = scrollEl.scrollHeight - scrollEl.clientHeight;
+
+        if (maxScroll > 10) {
+          if (scrollEl.scrollTop >= maxScroll - 6) {
+            // Reached bottom -> pause briefly at Level 8, then smoothly loop back to top
+            isResetting.current = true;
             setTimeout(() => {
-              isResetting = false;
-              lastTime = null;
-              if (isHovered.current && !animFrameId.current) {
-                animFrameId.current = requestAnimationFrame(step);
-              }
-            }, 800);
+              scrollEl.scrollTo({ top: 0, behavior: "smooth" });
+              setTimeout(() => {
+                accumulatedPos.current = 0;
+                isResetting.current = false;
+                lastTime = null;
+              }, 1000);
+            }, 1500);
           } else {
-            el.scrollTop += speed * delta;
+            accumulatedPos.current += speed * delta;
+            scrollEl.scrollTop = accumulatedPos.current;
           }
         }
       }
+
       lastTime = time;
-      if (!isResetting) {
-        animFrameId.current = requestAnimationFrame(step);
-      }
+      animFrameId.current = requestAnimationFrame(step);
     };
 
-    const handleMouseEnter = () => {
-      // Only auto-scroll on devices with hover capability (desktop)
-      if (window.matchMedia("(hover: hover)").matches) {
-        isHovered.current = true;
-        lastTime = null;
-        if (!animFrameId.current) {
-          animFrameId.current = requestAnimationFrame(step);
+    // IntersectionObserver to auto-scroll only when section is visible
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        isVisible = entry ? entry.isIntersecting : true;
+        if (isVisible && scrollRef.current) {
+          accumulatedPos.current = scrollRef.current.scrollTop;
+          lastTime = null;
         }
-      }
+      },
+      { threshold: 0.1 }
+    );
+
+    const rootTarget = containerRef.current || el;
+    observer.observe(rootTarget);
+
+    animFrameId.current = requestAnimationFrame(step);
+
+    // Hover listener: pause on hover, resume on mouse leave
+    const container = containerRef.current;
+    const handleMouseEnter = () => {
+      isHovered.current = true;
     };
 
     const handleMouseLeave = () => {
       isHovered.current = false;
-      if (animFrameId.current) {
-        cancelAnimationFrame(animFrameId.current);
-        animFrameId.current = null;
+      if (scrollRef.current) {
+        accumulatedPos.current = scrollRef.current.scrollTop;
       }
     };
 
-    const el = scrollRef.current;
-    if (el) {
-      el.addEventListener("mouseenter", handleMouseEnter);
-      el.addEventListener("mouseleave", handleMouseLeave);
+    // Manual scroll / wheel listener: pause auto-scroll for 3 seconds if user scrolls manually
+    const handleManualScroll = () => {
+      isPausedByUser.current = true;
+      if (userPauseTimer.current) clearTimeout(userPauseTimer.current);
+      userPauseTimer.current = setTimeout(() => {
+        isPausedByUser.current = false;
+        if (scrollRef.current) {
+          accumulatedPos.current = scrollRef.current.scrollTop;
+        }
+      }, 3000);
+    };
+
+    if (container) {
+      container.addEventListener("mouseenter", handleMouseEnter);
+      container.addEventListener("mouseleave", handleMouseLeave);
+      container.addEventListener("wheel", handleManualScroll, { passive: true });
+      container.addEventListener("touchstart", handleManualScroll, { passive: true });
     }
 
     return () => {
-      isHovered.current = false;
-      if (animFrameId.current) {
-        cancelAnimationFrame(animFrameId.current);
-        animFrameId.current = null;
-      }
-      if (el) {
-        el.removeEventListener("mouseenter", handleMouseEnter);
-        el.removeEventListener("mouseleave", handleMouseLeave);
+      observer.disconnect();
+      if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
+      if (userPauseTimer.current) clearTimeout(userPauseTimer.current);
+      if (container) {
+        container.removeEventListener("mouseenter", handleMouseEnter);
+        container.removeEventListener("mouseleave", handleMouseLeave);
+        container.removeEventListener("wheel", handleManualScroll);
+        container.removeEventListener("touchstart", handleManualScroll);
       }
     };
   }, []);
@@ -99,9 +155,22 @@ export function LevelExplorer() {
     const card = el?.querySelector<HTMLElement>(`#level-${level}`);
     if (!el || !card) return;
     setActive(level);
-    // Ignore scroll events while the smooth scroll is running so the highlight doesn't flicker.
+
+    // Pause auto-scroll during and after user click so they can see the card
+    isPausedByUser.current = true;
     if (clickLock.current) clearTimeout(clickLock.current);
-    clickLock.current = setTimeout(() => (clickLock.current = null), 600);
+    clickLock.current = setTimeout(() => {
+      clickLock.current = null;
+    }, 700);
+
+    if (userPauseTimer.current) clearTimeout(userPauseTimer.current);
+    userPauseTimer.current = setTimeout(() => {
+      isPausedByUser.current = false;
+      if (scrollRef.current) {
+        accumulatedPos.current = scrollRef.current.scrollTop;
+      }
+    }, 3500);
+
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const cardRect = card.getBoundingClientRect();
     const elRect = el.getBoundingClientRect();
@@ -114,6 +183,11 @@ export function LevelExplorer() {
     const el = scrollRef.current;
     if (!el || clickLock.current) return;
     
+    // Keep accumulated position in sync if user dragged scrollbar
+    if (isPausedByUser.current || isHovered.current) {
+      accumulatedPos.current = el.scrollTop;
+    }
+
     // If scrolled right to the bottom
     const lastLevel = curriculum[curriculum.length - 1];
     if (lastLevel && el.scrollTop + el.clientHeight >= el.scrollHeight - 16) {
@@ -137,7 +211,10 @@ export function LevelExplorer() {
   }
 
   return (
-    <div className="grid items-stretch gap-6 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-7">
+    <div
+      ref={containerRef}
+      className="grid items-stretch gap-6 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-7"
+    >
       {/* Left: all 8 levels timeline stepper matching Figma (desktop only) */}
       <nav aria-label="Levels" className="hidden lg:block">
         <ol className="relative space-y-1">
