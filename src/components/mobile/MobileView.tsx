@@ -158,6 +158,16 @@ export function MobileView() {
   };
 
   const [heroColored, setHeroColored] = useState(false);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowStickyBar(window.scrollY > 300);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   const [coloredSolutions, setColoredSolutions] = useState<Record<number, boolean>>({});
   const [selectedPricingPlan, setSelectedPricingPlan] = useState<"full" | "parts">("full");
 
@@ -225,7 +235,7 @@ export function MobileView() {
 
         {/* Top Student Photo with Touch/Cursor Dark-to-Colour Transition */}
         <div
-          className="group/hero relative h-[380px] sm:h-[430px] w-full overflow-hidden cursor-pointer select-none"
+          className="group/hero relative h-[360px] sm:h-[400px] w-full overflow-hidden cursor-pointer select-none"
           onMouseEnter={() => setHeroColored(true)}
           onMouseLeave={() => setHeroColored(false)}
           onTouchStart={() => setHeroColored(true)}
@@ -240,7 +250,7 @@ export function MobileView() {
             unoptimized
             quality={100}
             className={cn(
-              "object-cover object-[center_12%] transition-all duration-700 ease-out transform-gpu",
+              "object-cover object-[center_10%] transition-all duration-700 ease-out transform-gpu",
               "group-hover/hero:grayscale-0 group-hover/hero:scale-[1.03] group-hover/hero:contrast-100 group-hover/hero:brightness-100",
               "group-active/hero:grayscale-0 group-active/hero:scale-[1.03] group-active/hero:contrast-100 group-active/hero:brightness-100",
               heroColored
@@ -251,7 +261,7 @@ export function MobileView() {
 
           {/* Floating Tilted Revise Buddy card on the left - matches Figma screenshot */}
           <div
-            className="absolute left-4 top-20 sm:top-24 z-10 w-[195px] -rotate-3 transform rounded-2xl bg-white p-3.5 shadow-2xl border border-black/10 transition-transform duration-300 hover:rotate-0 active:scale-95 cursor-pointer text-ink"
+            className="absolute left-4 top-20 sm:top-24 z-10 w-[190px] -rotate-3 transform rounded-2xl bg-white p-3.5 shadow-2xl border border-black/10 transition-transform duration-300 hover:rotate-0 active:scale-95 cursor-pointer text-ink"
           >
             <div className="flex items-center gap-2">
               <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-[#FEF0EA]">
@@ -290,30 +300,30 @@ export function MobileView() {
           {/* Smooth bottom gradient overlay fading to solid dark background */}
           <div
             aria-hidden
-            className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#0b0c0f] via-[#0b0c0f]/80 to-transparent z-[3]"
+            className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0b0c0f] via-[#0b0c0f]/60 to-transparent pointer-events-none z-[2]"
           />
         </div>
 
         {/* Hero Content below photo */}
-        <ScrollReveal>
+        <ScrollReveal className="relative z-20">
           <div
-            className="relative z-10 px-5 pb-8 -mt-6 cursor-default"
+            className="px-5 pt-2 pb-8 cursor-default"
             onClick={(e) => e.stopPropagation()}
           >
-            <h1 className="font-display text-[44px] sm:text-[50px] font-normal leading-[1.0] tracking-[-0.04em] text-white">
+            <h1 className="font-display text-[44px] sm:text-[50px] font-normal leading-[1.05] tracking-[-0.035em] text-white">
               Don’t just use AI.
               <br />
               Build with it.
             </h1>
 
-            <p className="mt-4 text-[15px] sm:text-[16px] leading-[1.55] text-[#9ca3af] max-w-[360px]">
+            <p className="mt-4 text-[15.5px] sm:text-[16px] leading-[1.5] text-[#9ca3af] max-w-[360px]">
               An eight-week course with a trained tutor at your child’s school. At level 8, your child shows you an AI helper they built.
             </p>
 
             <div className="mt-6 flex flex-col gap-3">
               <a
                 href="#enrol"
-                className="flex h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#ff5520] to-[#ff6b2c] font-bold text-[15px] text-white shadow-[0_4px_25px_rgba(255,85,32,0.35)] transition-all duration-200 transform-gpu hover:brightness-110 active:scale-[0.97]"
+                className="flex h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#ff6b38] to-[#ff5420] font-bold text-[15px] text-[#0b0c0f] shadow-[0_4px_25px_rgba(255,85,32,0.35)] transition-all duration-200 transform-gpu hover:brightness-110 active:scale-[0.97]"
               >
                 <span>Enrol with your school code</span>
                 <ArrowRight className="size-4 stroke-[2.5]" />
@@ -321,7 +331,7 @@ export function MobileView() {
 
               <a
                 href={siteConfig.whatsappUrl}
-                className="flex h-[50px] w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#16171d] font-semibold text-[15px] text-white transition-all duration-200 transform-gpu hover:bg-[#1f2029] active:scale-[0.97]"
+                className="flex h-[50px] w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#131418] font-semibold text-[15px] text-white transition-all duration-200 transform-gpu hover:bg-[#1a1b22] active:scale-[0.97]"
               >
                 <span>WhatsApp us</span>
                 <ArrowRight className="size-4 stroke-[2.5]" />
@@ -329,13 +339,13 @@ export function MobileView() {
             </div>
 
             {/* Meta row: Next batch | Class */}
-            <div className="mt-7 grid grid-cols-2 divide-x divide-white/10 border-t border-white/10 pt-5">
+            <div className="mt-7 grid grid-cols-2 divide-x divide-white/15 pt-2">
               <div className="pr-4">
-                <span className="text-xs text-white/50 block">Next batch</span>
+                <span className="text-[13px] text-white/50 block">Next batch</span>
                 <span className="mt-1 block text-[17px] font-bold text-white tracking-tight">[Month] 2027</span>
               </div>
               <div className="pl-5">
-                <span className="text-xs text-white/50 block">Class</span>
+                <span className="text-[13px] text-white/50 block">Class</span>
                 <span className="mt-1 block text-[17px] font-bold text-white tracking-tight">90 min, once a week</span>
               </div>
             </div>
@@ -2064,7 +2074,14 @@ export function MobileView() {
       </footer>
 
       {/* ── 15. STICKY BOTTOM BAR ── */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/[0.10] bg-[#16171d]/95 backdrop-blur-md px-4 py-3">
+      <div
+        className={cn(
+          "fixed bottom-0 left-0 right-0 z-50 border-t border-white/[0.10] bg-[#16171d]/95 backdrop-blur-md px-4 py-3 transition-all duration-300 transform-gpu",
+          showStickyBar
+            ? "translate-y-0 opacity-100 pointer-events-auto"
+            : "translate-y-full opacity-0 pointer-events-none"
+        )}
+      >
         <div className="flex items-center gap-3">
           <div className="flex-1 min-w-0">
             <p className="text-[17px] font-bold text-white leading-none">&#8377;4,999</p>
