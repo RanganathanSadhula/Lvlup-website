@@ -22,6 +22,34 @@ export function LevelExplorer() {
   const animFrameId = useRef<number | null>(null);
   const accumulatedPos = useRef(0);
 
+  /** Updates active level accurately while scrolling */
+  const detectActiveLevel = () => {
+    const scrollEl = scrollRef.current;
+    if (!scrollEl || clickLock.current) return;
+
+    // If reached or near the bottom, activate last level
+    const lastLevel = curriculum[curriculum.length - 1];
+    if (lastLevel && scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 24) {
+      setActive(lastLevel.level);
+      return;
+    }
+
+    const elBox = scrollEl.getBoundingClientRect();
+    let current = 1;
+
+    for (const l of curriculum) {
+      const card = scrollEl.querySelector<HTMLElement>(`#level-${l.level}`);
+      if (card) {
+        const cardBox = card.getBoundingClientRect();
+        // Activate level when its card reaches the upper focal area (~38% of container)
+        if (cardBox.top <= elBox.top + elBox.height * 0.38) {
+          current = l.level;
+        }
+      }
+    }
+    setActive(current);
+  };
+
   /** Continuous Smooth Auto-Scroll mechanism:
    *  - Automatically scrolls down smoothly when in view.
    *  - Pauses when hovered (so the user can read the card or click).
@@ -73,11 +101,13 @@ export function LevelExplorer() {
                 accumulatedPos.current = 0;
                 isResetting.current = false;
                 lastTime = null;
+                detectActiveLevel();
               }, 1000);
             }, 1500);
           } else {
             accumulatedPos.current += speed * delta;
             scrollEl.scrollTop = accumulatedPos.current;
+            detectActiveLevel();
           }
         }
       }
@@ -94,6 +124,7 @@ export function LevelExplorer() {
         if (isVisible && scrollRef.current) {
           accumulatedPos.current = scrollRef.current.scrollTop;
           lastTime = null;
+          detectActiveLevel();
         }
       },
       { threshold: 0.1 }
@@ -114,6 +145,7 @@ export function LevelExplorer() {
       isHovered.current = false;
       if (scrollRef.current) {
         accumulatedPos.current = scrollRef.current.scrollTop;
+        detectActiveLevel();
       }
     };
 
@@ -125,6 +157,7 @@ export function LevelExplorer() {
         isPausedByUser.current = false;
         if (scrollRef.current) {
           accumulatedPos.current = scrollRef.current.scrollTop;
+          detectActiveLevel();
         }
       }, 3000);
     };
@@ -168,6 +201,7 @@ export function LevelExplorer() {
       isPausedByUser.current = false;
       if (scrollRef.current) {
         accumulatedPos.current = scrollRef.current.scrollTop;
+        detectActiveLevel();
       }
     }, 3500);
 
@@ -188,26 +222,7 @@ export function LevelExplorer() {
       accumulatedPos.current = el.scrollTop;
     }
 
-    // If scrolled right to the bottom
-    const lastLevel = curriculum[curriculum.length - 1];
-    if (lastLevel && el.scrollTop + el.clientHeight >= el.scrollHeight - 16) {
-      setActive(lastLevel.level);
-      return;
-    }
-
-    const elBox = el.getBoundingClientRect();
-    let current = 1;
-
-    for (const l of curriculum) {
-      const card = el.querySelector<HTMLElement>(`#level-${l.level}`);
-      if (card) {
-        const cardBox = card.getBoundingClientRect();
-        if (cardBox.top <= elBox.top + elBox.height * 0.45) {
-          current = l.level;
-        }
-      }
-    }
-    setActive(current);
+    detectActiveLevel();
   }
 
   return (
@@ -242,9 +257,9 @@ export function LevelExplorer() {
                   onClick={() => goTo(l.level)}
                   aria-label={`Jump to level ${l.level}`}
                   className={cn(
-                    "relative z-10 flex size-[34px] shrink-0 items-center justify-center rounded-full text-[13px] font-bold transition-all duration-200",
+                    "relative z-10 flex size-[34px] shrink-0 items-center justify-center rounded-full text-[13px] font-bold transition-all duration-300",
                     on
-                      ? "bg-brand text-white shadow-sm ring-4 ring-brand/20"
+                      ? "bg-brand text-white shadow-md ring-4 ring-brand/25 scale-105"
                       : past
                       ? "bg-black text-white"
                       : "border-2 border-black/20 bg-white text-muted hover:border-black/40",
@@ -253,22 +268,22 @@ export function LevelExplorer() {
                   {l.level}
                 </button>
 
-                {/* Card item with title and makes info */}
+                {/* Card item with title and makes info: highlights with peach background when active */}
                 <button
                   type="button"
                   onClick={() => goTo(l.level)}
                   aria-current={on ? "true" : undefined}
                   className={cn(
-                    "flex flex-1 flex-col rounded-2xl px-3.5 py-2.5 text-left transition-all duration-200",
+                    "flex flex-1 flex-col rounded-2xl px-3.5 py-2.5 text-left transition-all duration-300",
                     on
-                      ? "bg-[#ffe2d4] text-ink shadow-sm"
+                      ? "bg-[#ffe2d4] text-ink shadow-sm translate-x-1"
                       : "text-ink hover:bg-black/[0.04]",
                   )}
                 >
-                  <span className={cn("block text-sm leading-snug", on ? "font-bold text-ink" : "font-semibold text-ink")}>
+                  <span className={cn("block text-sm leading-snug transition-colors duration-200", on ? "font-bold text-ink" : "font-semibold text-ink/80")}>
                     {l.title}
                   </span>
-                  <span className={cn("mt-0.5 block text-xs", on ? "text-ink/75" : "text-muted")}>
+                  <span className={cn("mt-0.5 block text-xs transition-colors duration-200", on ? "text-ink/80 font-medium" : "text-muted")}>
                     Makes: {l.navMakes}
                   </span>
                 </button>
@@ -309,7 +324,7 @@ export function LevelExplorer() {
         >
           {curriculum.map((l) => (
             <div key={l.level}>
-              <LevelCard data={l} />
+              <LevelCard data={l} isActive={active === l.level} />
             </div>
           ))}
         </div>

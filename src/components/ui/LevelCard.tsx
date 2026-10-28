@@ -24,7 +24,13 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Workflow,
 };
 
-export function LevelCard({ data }: { data: CurriculumLevel }) {
+export function LevelCard({
+  data,
+  isActive = false,
+}: {
+  data: CurriculumLevel;
+  isActive?: boolean;
+}) {
   const { level, week, title, summary, topics, makes, parentsSee, image, icon } = data;
   const Icon = ICON_MAP[icon] ?? Award;
   const hasCustomIcon = level >= 1 && level <= 8;
@@ -33,10 +39,16 @@ export function LevelCard({ data }: { data: CurriculumLevel }) {
     <article
       id={`level-${level}`}
       aria-labelledby={`level-${level}-title`}
-      className="group grid overflow-hidden rounded-[24px] border border-black/[0.08] bg-white shadow-sm transition-all duration-300 sm:grid-cols-[250px_1fr] lg:grid-cols-[275px_1fr]"
+      className={cn(
+        "group grid overflow-hidden rounded-[24px] border bg-white shadow-sm transition-all duration-500 sm:grid-cols-[250px_1fr] lg:grid-cols-[275px_1fr]",
+        isActive
+          ? "border-black/30 shadow-md ring-1 ring-black/10"
+          : "border-black/[0.08]"
+      )}
     >
       {/* ── LEFT COLUMN: Photo with Level / Week Badge (Exact Figma match) ── */}
       <div className="relative h-64 w-full overflow-hidden bg-[#18191e] sm:h-full sm:min-h-[380px]">
+        {/* Turns into vibrant full color when this level is active while scrolling */}
         <Image
           src={image.src}
           alt={image.alt}
@@ -44,11 +56,21 @@ export function LevelCard({ data }: { data: CurriculumLevel }) {
           unoptimized
           quality={100}
           sizes="(min-width:1024px) 275px, (min-width:640px) 250px, 100vw"
-          className="h-full w-full object-cover object-top grayscale transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:scale-105"
+          className={cn(
+            "h-full w-full object-cover object-top transition-all duration-700 ease-out",
+            isActive
+              ? "grayscale-0 scale-[1.03]"
+              : "grayscale group-hover:grayscale-0 group-hover:scale-[1.03]"
+          )}
         />
 
         {/* Floating badge top-left: Level X / Week X (Exact Figma sample) */}
-        <div className="absolute left-3.5 top-3.5 z-10 flex min-w-[56px] flex-col items-center justify-center rounded-2xl bg-white px-3 py-2 text-center shadow-md border border-black/[0.06]">
+        <div
+          className={cn(
+            "absolute left-3.5 top-3.5 z-10 flex min-w-[56px] flex-col items-center justify-center rounded-2xl bg-white px-3 py-2 text-center shadow-md border transition-all duration-300",
+            isActive ? "border-[#ff6020]/50 ring-2 ring-[#ff6020]/20" : "border-black/[0.06]"
+          )}
+        >
           <span className="text-[11px] font-medium text-[#71717a]">Level</span>
           <span className="font-display text-[28px] font-bold leading-none text-black my-0.5">{level}</span>
           <span className="text-[11px] font-semibold text-[#ff6020] leading-none">Week {week}</span>
@@ -61,7 +83,12 @@ export function LevelCard({ data }: { data: CurriculumLevel }) {
           {/* Header Row: Custom Illustrated Peach Icon Tile + Title side by side */}
           <div className="flex items-center gap-3.5 sm:gap-4">
             {hasCustomIcon ? (
-              <div className="size-12 sm:size-14 shrink-0 overflow-hidden rounded-2xl">
+              <div
+                className={cn(
+                  "size-12 sm:size-14 shrink-0 overflow-hidden rounded-2xl transition-all duration-300",
+                  isActive ? "ring-2 ring-[#ff6020]/30 shadow-sm scale-105" : ""
+                )}
+              >
                 <Image
                   src={`/images/curriculum/icons/level-${level}.png`}
                   alt={`${title} icon`}
@@ -72,7 +99,12 @@ export function LevelCard({ data }: { data: CurriculumLevel }) {
                 />
               </div>
             ) : (
-              <div className="flex size-12 sm:size-14 shrink-0 items-center justify-center rounded-2xl bg-[#feece3]">
+              <div
+                className={cn(
+                  "flex size-12 sm:size-14 shrink-0 items-center justify-center rounded-2xl bg-[#feece3] transition-all duration-300",
+                  isActive ? "ring-2 ring-[#ff6020]/30 shadow-sm scale-105" : ""
+                )}
+              >
                 <Icon aria-hidden className="size-6 text-[#ff6020] stroke-[2]" />
               </div>
             )}
