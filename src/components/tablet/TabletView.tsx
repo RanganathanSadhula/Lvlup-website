@@ -77,18 +77,21 @@ const solutionPillars = [
     title: "Understand it",
     body: "How AI learns from examples, and why its answers need checking.",
     image: "/images/solution-understand-color.png",
+    icon: "/images/solution/icon-understand.png",
     alt: "A smiling boy holding a stack of books",
   },
   {
     title: "Use it safely",
     body: "Private information stays private. Tools are approved and managed by us.",
     image: "/images/solution-safely-color.png",
+    icon: "/images/solution/icon-safely.png",
     alt: "Two children smiling at a laptop together",
   },
   {
     title: "Build with it",
     body: "Each child designs, builds and tests an AI helper for a real problem.",
     image: "/images/solution-build-color.png",
+    icon: "/images/solution/icon-build.png",
     alt: "A girl raising her hand next to classmates with laptops",
   },
 ];
@@ -602,10 +605,15 @@ export function TabletView() {
                 </div>
 
                 <div className="flex flex-1 flex-col p-4">
-                  <div className="flex size-9 items-center justify-center rounded-lg bg-[#FF6B2C]/10 text-[#FF6B2C] mb-2.5">
-                    {idx === 0 && <BookOpen className="size-4" />}
-                    {idx === 1 && <ShieldCheck className="size-4" />}
-                    {idx === 2 && <Bot className="size-4" />}
+                  <div className="size-10 shrink-0 mb-3 overflow-hidden rounded-xl">
+                    <Image
+                      src={p.icon}
+                      alt={`${p.title} icon`}
+                      width={40}
+                      height={40}
+                      className="h-full w-full object-contain"
+                      unoptimized
+                    />
                   </div>
                   <h3 className="font-display text-[17px] font-semibold text-white">{p.title}</h3>
                   <p className="mt-1.5 text-[13px] leading-relaxed text-[#A7ACB8]">{p.body}</p>

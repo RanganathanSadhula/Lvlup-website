@@ -91,11 +91,11 @@ export function Header() {
             ))}
           </ul>
         </nav>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <a
             href={siteConfig.enrolUrl}
             onClick={(e) => handleNavClick(e, siteConfig.enrolUrl)}
-            className="hidden min-h-10 items-center justify-center rounded-[10px] bg-brand-gradient px-4 text-sm font-semibold text-ink shadow-glow transition-all duration-200 transform-gpu hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(255,107,44,0.4)] active:scale-95 active:translate-y-0 sm:inline-flex cursor-pointer"
+            className="flex h-10 w-[108px] items-center justify-center rounded-[6px] bg-gradient-to-b from-[#FF8B4E] via-[#FF6B2C] to-[#F2561A] text-[16px] font-semibold text-[#0B0C0F] shadow-[0px_10px_28px_-8px_rgba(255,107,44,0.35),inset_0px_1px_0px_rgba(255,255,255,0.28)] transition-all duration-200 hover:brightness-105 active:scale-95 cursor-pointer"
           >
             Enrol now
           </a>

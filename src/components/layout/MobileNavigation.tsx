@@ -50,7 +50,7 @@ export function MobileNavigation({ links, enrolUrl }: { links: NavLink[]; enrolU
         aria-controls="mobile-menu"
         aria-label={open ? "Close menu" : "Open menu"}
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex size-11 items-center justify-center rounded-lg border border-white/15 text-white"
+        className="inline-flex size-11 items-center justify-center rounded-[10px] border border-[#2B2E36] bg-transparent text-white"
       >
         {open ? <X className="size-5" /> : <Menu className="size-5" />}
       </button>

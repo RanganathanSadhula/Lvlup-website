@@ -82,18 +82,21 @@ const solutionItems = [
     title: "Understand it",
     body: "How AI learns from examples, and why its answers need checking.",
     image: "/images/solution-understand-color.png",
+    icon: "/images/solution/icon-understand.png",
     alt: "A smiling boy holding a stack of books",
   },
   {
     title: "Use it safely",
     body: "Private information stays private. Tools are approved and managed by us.",
     image: "/images/solution-safely-color.png",
+    icon: "/images/solution/icon-safely.png",
     alt: "Two children smiling at a laptop together",
   },
   {
     title: "Build with it",
     body: "Each child designs, builds and tests an AI helper for a real problem.",
     image: "/images/solution-build-color.png",
+    icon: "/images/solution/icon-build.png",
     alt: "A girl raising her hand next to classmates with laptops",
   },
 ];
@@ -259,41 +262,43 @@ export function MobileView() {
             )}
           />
 
-          {/* Floating Tilted Revise Buddy card on the left - matches Figma screenshot */}
+          {/* Floating Tilted Revise Buddy card on the left (Exact Figma 112.5px x 107.2px, rotate -5deg with tape) */}
           <div
-            className="absolute left-4 top-20 sm:top-24 z-10 w-[190px] -rotate-3 transform rounded-2xl bg-white p-3.5 shadow-2xl border border-black/10 transition-transform duration-300 hover:rotate-0 active:scale-95 cursor-pointer text-ink"
+            className="absolute left-[25px] top-[137px] z-10 w-[112.5px] h-[107.2px] -rotate-5 transform rounded-[2.88px] bg-[#FFFDF7] p-[8px] shadow-[0px_0.72px_1.44px_rgba(0,0,0,0.18),0px_6.49px_14.42px_-2.88px_rgba(0,0,0,0.35)] transition-transform duration-300 hover:rotate-0 active:scale-95 cursor-pointer text-[#0B0C0F]"
           >
-            <div className="flex items-center gap-2">
-              <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-[#FEF0EA]">
-                <Bot className="size-3.5 text-brand" />
+            {/* Top Tape */}
+            <div className="absolute left-[40.6px] -top-[4px] w-[30.3px] h-[8px] bg-[#FF6B2C]/85 opacity-90 -rotate-2 rounded-[1px] pointer-events-none" />
+
+            <div className="flex items-center gap-1">
+              <div className="flex size-4 shrink-0 items-center justify-center rounded-[4px] bg-[#FFE3D4]">
+                <Bot className="size-2.5 text-[#FF6B2C]" />
               </div>
               <div className="min-w-0">
-                <h4 className="font-display text-[11px] font-normal leading-tight text-ink">Revise Buddy</h4>
-                <p className="text-[9px] text-ink/50">by Asha, Grade 6</p>
+                <h4 className="font-display text-[8px] font-medium leading-none text-[#0B0C0F]">Revise Buddy</h4>
+                <p className="text-[4.7px] text-[#5A5F6B]">by Asha, Grade 6</p>
               </div>
             </div>
-            <p className="mt-2 text-[9.5px] leading-tight text-ink/70">
+            <p className="mt-1 text-[4.9px] leading-[7px] text-[#15171C]">
               Quizzes her on a science chapter and explains what she got wrong.
             </p>
-            <div className="mt-2 space-y-1.5 rounded-lg bg-[#f4f5f7] p-2 text-[8.5px]">
+            <div className="mt-1 space-y-0.5 rounded-[4.3px] bg-[#F4F3EE] p-1 text-[4.3px]">
               <div className="flex justify-end">
-                <span className="rounded bg-[#dce8fe] px-2 py-0.5 font-medium text-ink/90">
+                <span className="rounded bg-[#E9EEF6] px-1 py-0.5 font-medium text-[#1F1F1F]">
                   Quiz me on chapter 7
                 </span>
               </div>
-              <div className="flex items-start gap-1.5">
-                <span className="mt-0.5 size-2 shrink-0 rounded-full bg-gradient-to-br from-purple-500 to-blue-400" />
-                <span className="leading-tight text-ink/80">
-                  Question 1 of 5: which gas do plants take in to make food?
+              <div className="flex items-start gap-1">
+                <span className="mt-0.5 size-1.5 shrink-0 rounded-full bg-gradient-to-r from-[#4285F4] via-[#9B72CB] to-[#D96570]" />
+                <span className="leading-tight text-[#1F1F1F]">
+                  Question 1 of 5: which gas do plants take in?
                 </span>
               </div>
             </div>
-            <div className="mt-2 flex items-center justify-between text-[8.5px]">
-              <span className="flex items-center gap-1 rounded-full border border-green-500 px-1.5 py-0.5 font-bold text-green-600">
-                <Check className="size-2" strokeWidth={3} />
+            <div className="mt-1 flex items-center justify-between text-[4.3px]">
+              <span className="flex items-center gap-0.5 rounded-[2.2px] border border-[#1F9D55] bg-[#EAF8F0] px-1 py-0.5 font-semibold text-[#157A41]">
                 2/2 tests passed
               </span>
-              <span className="text-ink/40 font-medium">Level 6 project</span>
+              <span className="text-[#5A5F6B] font-medium">Level 6 project</span>
             </div>
           </div>
 
@@ -310,80 +315,92 @@ export function MobileView() {
             className="px-5 pt-2 pb-8 cursor-default"
             onClick={(e) => e.stopPropagation()}
           >
-            <h1 className="font-display text-[44px] sm:text-[50px] font-normal leading-[1.05] tracking-[-0.035em] text-white">
-              Don’t just use AI.
-              <br />
-              Build with it.
-            </h1>
+            <div className="mx-auto w-full max-w-[350px]">
+              <h1 className="font-display text-[40px] font-medium leading-[43px] tracking-[-0.03em] text-white">
+                Don’t just use AI.
+                <br />
+                Build with it.
+              </h1>
 
-            <p className="mt-4 text-[15.5px] sm:text-[16px] leading-[1.5] text-[#9ca3af] max-w-[360px]">
-              An eight-week course with a trained tutor at your child’s school. At level 8, your child shows you an AI helper they built.
-            </p>
+              <p className="mt-4 text-[17px] font-normal leading-[27px] text-white/60">
+                An eight-week course with a trained tutor at your child’s school. At level 8, your child shows you an AI helper they built.
+              </p>
 
-            <div className="mt-6 flex flex-col gap-3">
-              <a
-                href="#enrol"
-                className="flex h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#ff6b38] to-[#ff5420] font-bold text-[15px] text-[#0b0c0f] shadow-[0_4px_25px_rgba(255,85,32,0.35)] transition-all duration-200 transform-gpu hover:brightness-110 active:scale-[0.97]"
-              >
-                <span>Enrol with your school code</span>
-                <ArrowRight className="size-4 stroke-[2.5]" />
-              </a>
+              <div className="mt-6 flex flex-col gap-3">
+                <a
+                  href="#enrol"
+                  className="flex h-[48px] w-full items-center justify-center gap-2.5 rounded-[6px] bg-gradient-to-b from-[#FF8B4E] via-[#FF6B2C] to-[#F2561A] font-semibold text-[16px] leading-[20px] text-[#0B0C0F] shadow-[0px_10px_28px_-8px_rgba(255,107,44,0.35),inset_0px_1px_0px_rgba(255,255,255,0.28)] transition-all duration-200 hover:brightness-105 active:scale-[0.98]"
+                >
+                  <span>Enrol now</span>
+                  <ArrowRight className="size-4 stroke-[2.5]" />
+                </a>
 
-              <a
-                href={siteConfig.whatsappUrl}
-                className="flex h-[50px] w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#131418] font-semibold text-[15px] text-white transition-all duration-200 transform-gpu hover:bg-[#1a1b22] active:scale-[0.97]"
-              >
-                <span>WhatsApp us</span>
-                <ArrowRight className="size-4 stroke-[2.5]" />
-              </a>
-            </div>
-
-            {/* Meta row: Next batch | Class */}
-            <div className="mt-7 grid grid-cols-2 divide-x divide-white/15 pt-2">
-              <div className="pr-4">
-                <span className="text-[13px] text-white/50 block">Next batch</span>
-                <span className="mt-1 block text-[17px] font-bold text-white tracking-tight">[Month] 2027</span>
+                <a
+                  href={siteConfig.whatsappUrl}
+                  className="flex h-[50px] w-full items-center justify-center gap-2.5 rounded-[6px] border border-[#2B2E36] bg-transparent font-semibold text-[16px] leading-[20px] text-white transition-all duration-200 hover:bg-white/5 active:scale-[0.98]"
+                >
+                  <span>WhatsApp us</span>
+                  <ArrowRight className="size-4 stroke-[2.5]" />
+                </a>
               </div>
-              <div className="pl-5">
-                <span className="text-[13px] text-white/50 block">Class</span>
-                <span className="mt-1 block text-[17px] font-bold text-white tracking-tight">90 min, once a week</span>
+
+              {/* Meta row: Next batch | Class (Figma width 315px, gap 28px) */}
+              <div className="mt-7 flex items-center gap-7 pt-1">
+                <div>
+                  <span className="text-[13px] leading-[18px] text-[#A7ACB8] block">Next batch</span>
+                  <span className="mt-0.5 block text-[15.5px] font-semibold leading-[22px] text-white tracking-tight">[Month] 2027</span>
+                </div>
+                <div className="w-px h-9 bg-white/20 shrink-0" />
+                <div>
+                  <span className="text-[13px] leading-[18px] text-[#A7ACB8] block">Class</span>
+                  <span className="mt-0.5 block text-[15.5px] font-semibold leading-[22px] text-white tracking-tight">90 min, once a week</span>
+                </div>
               </div>
             </div>
           </div>
         </ScrollReveal>
       </section>
 
-      {/* ── 2. COURSE FACTS (Exact 2x2 rounded cards as in Figma media_1793118680096.png) ── */}
-      <section aria-label="Course Facts" className="bg-[#0b0c0f] px-5 py-6">
-        <div className="grid grid-cols-2 gap-3 sm:gap-4">
-          {facts.map((fact, idx) => (
-            <ScrollReveal key={fact.label} delay={idx * 75}>
-              <div className="rounded-[20px] bg-[#121318] border border-white/[0.08] p-5 sm:p-6 shadow-sm transition-transform duration-200 active:scale-[0.98]">
-                <div className="font-display text-[26px] sm:text-[30px] font-normal leading-tight text-white tracking-tight">
-                  {fact.value}
+      {/* ── 2. COURSE FACTS (Exact Figma 2x2 cards 150px x 76px/94px, #0B0C0F, border #2B2E36) ── */}
+      <section aria-label="Course Facts" className="bg-[#0b0c0f] px-5 pt-1 pb-9">
+        <div className="mx-auto grid w-full max-w-[350px] grid-cols-2 gap-2.5">
+          {facts.map((fact, idx) => {
+            const isLevel8 = idx === 3;
+            return (
+              <ScrollReveal key={fact.label} delay={idx * 75}>
+                <div
+                  className={cn(
+                    "rounded-[14px] border border-[#2B2E36] bg-[#0B0C0F] p-[14px_16px] transition-transform duration-200 active:scale-[0.98] flex flex-col justify-center",
+                    isLevel8 ? "min-h-[94px]" : "min-h-[76px]"
+                  )}
+                >
+                  <div className="font-display text-[21px] font-medium leading-[24px] text-white">
+                    {fact.value}
+                  </div>
+                  <div className="mt-1 font-sans text-[13px] font-normal leading-[18px] text-[#A7ACB8]">
+                    {fact.label}
+                  </div>
                 </div>
-                <div className="mt-2 font-sans text-[13px] sm:text-[14px] text-[#8e9099] leading-snug">
-                  {fact.label}
-                </div>
-              </div>
-            </ScrollReveal>
-          ))}
+              </ScrollReveal>
+            );
+          })}
         </div>
       </section>
 
-      {/* ── 3. PROBLEM SECTION (Exact Figma Carousel media_1793119288707.png) ── */}
-      <section aria-labelledby="mobile-problem-title" className="bg-[#f3f1ec] text-ink px-5 pt-12 pb-10">
-        <ScrollReveal>
-          <h2
-            id="mobile-problem-title"
-            className="font-display text-[32px] sm:text-[36px] font-normal leading-[1.12] tracking-[-0.03em] text-[#0e0f12]"
-          >
-            Kids already use AI. Few are shown how it works.
-          </h2>
-          <p className="mt-3 text-[16px] leading-[1.5] text-[#5f6068]">
-            School rarely has time for how AI decides, when it is wrong and what to keep private.
-          </p>
-        </ScrollReveal>
+      {/* ── 3. PROBLEM SECTION (Exact Figma 390px x 581.34px, #F4F3EE, cards 286x309px) ── */}
+      <section aria-labelledby="mobile-problem-title" className="bg-[#F4F3EE] text-[#0B0C0F] px-5 py-[52px]">
+        <div className="mx-auto w-full max-w-[350px]">
+          <ScrollReveal>
+            <h2
+              id="mobile-problem-title"
+              className="font-display text-[28px] font-medium leading-[32px] tracking-[-0.015em] text-[#0B0C0F]"
+            >
+              Kids already use AI. Few are shown how it works.
+            </h2>
+            <p className="mt-2.5 text-[15.5px] font-normal leading-[24px] text-[#5A5F6B]">
+              School rarely has time for how AI decides, when it is wrong and what to keep private.
+            </p>
+          </ScrollReveal>
 
         {/* Horizontal Swipeable Cards Carousel */}
         <ScrollReveal delay={120}>
@@ -418,7 +435,7 @@ export function MobileView() {
           </div>
         </ScrollReveal>
 
-        {/* Pagination Dots (Active is orange pill as in Figma) */}
+        {/* Pagination Dots (Exact Figma 18x6px active, 6x6px inactive) */}
         <div className="mt-5 flex items-center gap-1.5">
           {problemCards.map((_, idx) => (
             <button
@@ -427,20 +444,21 @@ export function MobileView() {
               aria-label={`Go to slide ${idx + 1}`}
               onClick={() => scrollToProblem(idx)}
               className={cn(
-                "h-2 rounded-full transition-all duration-300",
+                "h-[6px] rounded-[3px] transition-all duration-300",
                 activeProblemIndex === idx
-                  ? "w-6 bg-[#ff5520]"
-                  : "size-2 bg-[#d5d7de] hover:bg-[#b0b3bd]"
+                  ? "w-[18px] bg-[#FF6B2C]"
+                  : "w-[6px] bg-[#E3E1D9]"
               )}
             />
           ))}
         </div>
+        </div>
       </section>
 
-      {/* ── 3RD SCREEN: SOLUTION SECTION (Exact Figma media_1793119642468.png) ── */}
+      {/* ── 3RD SCREEN: SOLUTION SECTION (Exact Figma 390px x 554px, 350x114px pillars) ── */}
       <section
         aria-labelledby="mobile-solution-title"
-        className="relative bg-[#0b0c0f] text-white px-5 py-12 overflow-hidden border-t border-white/10"
+        className="relative bg-[#0B0C0F] text-white px-5 py-[52px] overflow-hidden border-t border-white/10"
       >
         <div
           aria-hidden
@@ -452,31 +470,31 @@ export function MobileView() {
           }}
         />
 
-        <div className="relative z-10">
+        <div className="relative z-10 mx-auto w-full max-w-[350px]">
           <ScrollReveal>
             <h2
               id="mobile-solution-title"
-              className="font-display text-[32px] sm:text-[38px] font-normal leading-[1.08] tracking-[-0.035em] text-white max-w-[360px]"
+              className="font-display text-[28px] font-medium leading-[32px] tracking-[-0.015em] text-white"
             >
               LvlUp turns AI users into thoughtful builders.
             </h2>
           </ScrollReveal>
 
-          <div className="mt-8 space-y-3.5">
+          <div className="mt-5 space-y-3">
             {solutionItems.map((item, idx) => {
               const isColored = !!coloredSolutions[idx];
               return (
                 <ScrollReveal key={item.title} delay={idx * 100}>
                   <div
-                    className="group/card flex items-center gap-4 sm:gap-5 rounded-[24px] border border-white/[0.08] bg-[#13141a] p-4 sm:p-5 shadow-sm transition-all duration-300 hover:border-white/20 active:scale-[0.98] cursor-pointer"
+                    className="group/card flex h-[114px] w-full items-center gap-[14px] rounded-[16px] border border-[#2B2E36] bg-[#141519] p-[10px] shadow-sm transition-all duration-300 hover:border-white/20 active:scale-[0.98] cursor-pointer"
                     onMouseEnter={() => setColoredSolutions((prev) => ({ ...prev, [idx]: true }))}
                     onMouseLeave={() => setColoredSolutions((prev) => ({ ...prev, [idx]: false }))}
                     onTouchStart={() => setColoredSolutions((prev) => ({ ...prev, [idx]: true }))}
                     onTouchEnd={() => setColoredSolutions((prev) => ({ ...prev, [idx]: false }))}
                     onClick={() => setColoredSolutions((prev) => ({ ...prev, [idx]: !prev[idx] }))}
                   >
-                    {/* Square thumbnail with smooth dark-to-colour transition */}
-                    <div className="relative size-[94px] sm:size-[104px] shrink-0 overflow-hidden rounded-[18px] bg-[#1a1b22]">
+                    {/* 92px x 92px photo with rounded-[10px] */}
+                    <div className="relative size-[92px] shrink-0 overflow-hidden rounded-[10px] bg-[#1a1b22]">
                       <Image
                         src={item.image}
                         alt={item.alt}
@@ -494,12 +512,24 @@ export function MobileView() {
                       />
                     </div>
 
-                    {/* Text on right */}
+                    {/* Text on right (width 222px) */}
                     <div className="min-w-0 flex-1">
-                      <h3 className="font-display text-[18px] sm:text-[20px] font-normal text-white tracking-tight leading-snug">
-                        {item.title}
-                      </h3>
-                      <p className="mt-1.5 text-[13px] sm:text-[14px] leading-relaxed text-[#9ca3af]">
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="size-6 shrink-0 overflow-hidden rounded-md">
+                          <Image
+                            src={item.icon}
+                            alt=""
+                            width={24}
+                            height={24}
+                            className="h-full w-full object-contain"
+                            unoptimized
+                          />
+                        </div>
+                        <h3 className="font-sans text-[17px] font-semibold text-white leading-[23px] tracking-tight">
+                          {item.title}
+                        </h3>
+                      </div>
+                      <p className="text-[13.5px] font-normal leading-[19px] text-[#A7ACB8] line-clamp-2">
                         {item.body}
                       </p>
                     </div>
@@ -511,16 +541,17 @@ export function MobileView() {
         </div>
       </section>
 
-      {/* ── 4TH SCREEN: CURRICULUM SECTION (Levels 1–8) (Exact Figma media_1793119945369.png) ── */}
-      <section id="levels" aria-labelledby="mobile-levels-title" className="bg-[#f3f1ec] text-ink px-5 py-12">
-        <ScrollReveal>
-          <h2 id="mobile-levels-title" className="font-display text-[32px] sm:text-[36px] font-normal leading-tight tracking-[-0.03em] text-[#0e0f12]">
-            Eight levels. One a week.
-          </h2>
-          <p className="mt-2 text-[15px] sm:text-[16px] text-[#5f6068] leading-relaxed">
-            Each 90-minute class ends with something your child made. Tap a level to see inside.
-          </p>
-        </ScrollReveal>
+      {/* ── 4TH SCREEN: CURRICULUM SECTION (Exact Figma 390px x 1182px, #F4F3EE) ── */}
+      <section id="levels" aria-labelledby="mobile-levels-title" className="bg-[#F4F3EE] text-[#0B0C0F] px-5 py-[52px]">
+        <div className="mx-auto w-full max-w-[350px]">
+          <ScrollReveal>
+            <h2 id="mobile-levels-title" className="font-display text-[28px] font-medium leading-[32px] tracking-[-0.015em] text-[#0B0C0F]">
+              Eight levels. One a week.
+            </h2>
+            <p className="mt-2.5 text-[15.5px] font-normal leading-[24px] text-[#5A5F6B]">
+              Each 90-minute class ends with something your child made. Tap a level to see inside.
+            </p>
+          </ScrollReveal>
 
         <ul className="mt-7 space-y-3">
           {curriculum.map((l, idx) => {
@@ -529,42 +560,45 @@ export function MobileView() {
               <ScrollReveal key={l.level} delay={idx * 30}>
                 <li
                   className={cn(
-                    "overflow-hidden rounded-[22px] bg-white transition-all duration-200 shadow-sm",
+                    "overflow-hidden rounded-[14px] bg-white transition-all duration-200 shadow-sm",
                     isOpen
-                      ? "border-2 border-[#ff5520] shadow-md"
-                      : "border border-black/[0.08]"
+                      ? "border-[1.5px] border-[#FF6B2C]"
+                      : "border border-[#E3E1D9] min-h-[64px]"
                   )}
                 >
                   <button
                     type="button"
                     onClick={() => setOpenLevel(isOpen ? null : l.level)}
                     aria-expanded={isOpen}
-                    className="flex w-full items-center justify-between p-4 sm:p-5 text-left"
+                    className={cn(
+                      "flex w-full items-center justify-between text-left",
+                      isOpen ? "p-[14px_16px_12px_14px]" : "p-[11px_16px_11px_14px] h-[64px]"
+                    )}
                   >
-                    <div className="flex items-center gap-3.5 min-w-0">
+                    <div className="flex items-center gap-3 min-w-0">
                       <span
                         className={cn(
-                          "flex size-9 sm:size-10 shrink-0 items-center justify-center rounded-full font-bold text-sm sm:text-base text-white transition-colors",
-                          isOpen ? "bg-[#ff5520]" : "bg-[#0e0f12]"
+                          "flex size-8 shrink-0 items-center justify-center rounded-full font-display text-[15px] font-medium transition-colors",
+                          isOpen ? "bg-[#FF6B2C] text-[#0B0C0F]" : "bg-[#0B0C0F] text-white"
                         )}
                       >
                         {l.level}
                       </span>
                       <div className="min-w-0">
-                        <span className="block font-normal text-[15px] sm:text-[16px] text-[#0e0f12] leading-tight truncate">
+                        <span className="block font-sans text-[15.5px] font-semibold text-[#0B0C0F] leading-[21px] truncate">
                           {l.title}
                         </span>
-                        <span className="mt-0.5 block text-[12px] text-[#5f6068]">
+                        <span className="block text-[12.5px] font-normal text-[#5A5F6B] leading-[17px]">
                           Week {l.week}
                         </span>
                       </div>
                     </div>
 
-                    <span className="ml-3 flex size-6 shrink-0 items-center justify-center text-[#5f6068]">
+                    <span className="ml-3 flex size-6 shrink-0 items-center justify-center text-[#5A5F6B]">
                       {isOpen ? (
-                        <ChevronUp className="size-5 stroke-[2.2]" />
+                        <ChevronUp className="size-4 stroke-[2.2]" />
                       ) : (
-                        <ChevronDown className="size-5 stroke-[2.2]" />
+                        <ChevronDown className="size-4 stroke-[2.2]" />
                       )}
                     </span>
                   </button>
@@ -627,21 +661,23 @@ export function MobileView() {
             download="LvlUp Eight-Week Curriculum.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 flex h-[52px] w-full items-center justify-center gap-2.5 rounded-[14px] border border-[#0e0f12] bg-white font-bold text-sm text-[#0e0f12] shadow-sm transition hover:bg-black/5 active:scale-[0.98]"
+            className="mt-5 flex h-[47px] w-full items-center justify-center gap-2.5 rounded-[10px] border-[1.5px] border-[#0B0C0F] bg-white font-semibold text-[14px] leading-[20px] text-[#0B0C0F] shadow-sm transition hover:bg-black/5 active:scale-[0.98]"
           >
             <Download className="size-4 stroke-[2.2]" />
             <span>Download full curriculum (PDF)</span>
           </a>
         </ScrollReveal>
+        </div>
       </section>
 
-      {/* ── 5. OUTCOMES SECTION (Exact Figma media_1793120176958.png) ── */}
-      <section className="bg-[#0b0c0f] text-white px-5 py-12 border-t border-white/10">
-        <ScrollReveal>
-          <h2 className="font-display text-[32px] sm:text-[38px] font-normal leading-[1.08] tracking-[-0.035em] text-white">
-            What your child walks away with
-          </h2>
-        </ScrollReveal>
+      {/* ── 5. OUTCOMES SECTION (Exact Figma 390px x 748px, #0B0C0F) ── */}
+      <section className="bg-[#0B0C0F] text-white px-5 py-[52px] border-t border-white/10">
+        <div className="mx-auto w-full max-w-[350px]">
+          <ScrollReveal>
+            <h2 className="font-display text-[28px] font-medium leading-[32px] tracking-[-0.015em] text-white">
+              What your child walks away with
+            </h2>
+          </ScrollReveal>
 
         {/* Featured Card: A working AI helper */}
         <ScrollReveal delay={100}>
@@ -697,108 +733,118 @@ export function MobileView() {
         <ScrollReveal delay={180}>
           <div className="mt-4 flex gap-3.5 overflow-x-auto snap-x snap-mandatory pb-2 pt-1 -mx-5 px-5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {/* Card 1: A digital portfolio */}
-            <div className="w-[72%] sm:w-[260px] shrink-0 snap-start rounded-[24px] border border-white/[0.08] bg-[#13141a] p-5 shadow-sm">
-              <span className="inline-flex size-10 items-center justify-center rounded-[14px] bg-[#1d1f27] text-[#ff6b2c]">
-                <Folder className="size-5" />
+            <div className="w-[200px] h-[154px] shrink-0 snap-start rounded-[16px] border border-[#2B2E36] bg-[#141519] p-[14px] shadow-sm flex flex-col justify-between">
+              <span className="inline-flex size-9 items-center justify-center rounded-[10px] bg-[#1C1E24] text-[#FF6B2C]">
+                <Folder className="size-4" />
               </span>
-              <h4 className="mt-3.5 font-display text-[17px] font-normal text-white leading-tight">
-                A digital portfolio
-              </h4>
-              <p className="mt-2 text-[13px] leading-relaxed text-[#8e9099]">
-                Eight pieces of work in one place.
-              </p>
+              <div>
+                <h4 className="font-sans text-[14.5px] font-semibold leading-[19px] text-white">
+                  A digital portfolio
+                </h4>
+                <p className="mt-1 text-[12.5px] leading-[17px] text-[#A7ACB8]">
+                  Eight pieces of work in one place.
+                </p>
+              </div>
             </div>
 
             {/* Card 2: A head start on CBSE topics */}
-            <div className="w-[72%] sm:w-[260px] shrink-0 snap-start rounded-[24px] border border-white/[0.08] bg-[#13141a] p-5 shadow-sm">
-              <span className="inline-flex size-10 items-center justify-center rounded-[14px] bg-[#1d1f27] text-[#ff6b2c]">
-                <BookOpen className="size-5" />
+            <div className="w-[200px] h-[154px] shrink-0 snap-start rounded-[16px] border border-[#2B2E36] bg-[#141519] p-[14px] shadow-sm flex flex-col justify-between">
+              <span className="inline-flex size-9 items-center justify-center rounded-[10px] bg-[#1C1E24] text-[#FF6B2C]">
+                <BookOpen className="size-4" />
               </span>
-              <h4 className="mt-3.5 font-display text-[17px] font-normal text-white leading-tight">
-                A head start on CBSE topics
-              </h4>
-              <p className="mt-2 text-[13px] leading-relaxed text-[#8e9099]">
-                Practise the new Classes 6 to 8 ideas by building.
-              </p>
+              <div>
+                <h4 className="font-sans text-[14.5px] font-semibold leading-[19px] text-white">
+                  A head start on CBSE topics
+                </h4>
+                <p className="mt-1 text-[12.5px] leading-[17px] text-[#A7ACB8]">
+                  Practise the new Classes 3 to 8 ideas by building.
+                </p>
+              </div>
             </div>
 
             {/* Card 3: Habits that last */}
-            <div className="w-[72%] sm:w-[260px] shrink-0 snap-start rounded-[24px] border border-white/[0.08] bg-[#13141a] p-5 shadow-sm">
-              <span className="inline-flex size-10 items-center justify-center rounded-[14px] bg-[#1d1f27] text-[#ff6b2c]">
-                <ShieldCheck className="size-5" />
+            <div className="w-[200px] h-[154px] shrink-0 snap-start rounded-[16px] border border-[#2B2E36] bg-[#141519] p-[14px] shadow-sm flex flex-col justify-between">
+              <span className="inline-flex size-9 items-center justify-center rounded-[10px] bg-[#1C1E24] text-[#FF6B2C]">
+                <ShieldCheck className="size-4" />
               </span>
-              <h4 className="mt-3.5 font-display text-[17px] font-normal text-white leading-tight">
-                Habits that last
-              </h4>
-              <p className="mt-2 text-[13px] leading-relaxed text-[#8e9099]">
-                Check answers before trusting, keep private details private.
-              </p>
+              <div>
+                <h4 className="font-sans text-[14.5px] font-semibold leading-[19px] text-white">
+                  Habits that last
+                </h4>
+                <p className="mt-1 text-[12.5px] leading-[17px] text-[#A7ACB8]">
+                  Check answers, keep private things private.
+                </p>
+              </div>
             </div>
 
             {/* Card 4: Confidence to explain */}
-            <div className="w-[72%] sm:w-[260px] shrink-0 snap-start rounded-[24px] border border-white/[0.08] bg-[#13141a] p-5 shadow-sm">
-              <span className="inline-flex size-10 items-center justify-center rounded-[14px] bg-[#1d1f27] text-[#ff6b2c]">
-                <Award className="size-5" />
+            <div className="w-[200px] h-[154px] shrink-0 snap-start rounded-[16px] border border-[#2B2E36] bg-[#141519] p-[14px] shadow-sm flex flex-col justify-between">
+              <span className="inline-flex size-9 items-center justify-center rounded-[10px] bg-[#1C1E24] text-[#FF6B2C]">
+                <Award className="size-4" />
               </span>
-              <h4 className="mt-3.5 font-display text-[17px] font-normal text-white leading-tight">
-                Confidence to explain it
-              </h4>
-              <p className="mt-2 text-[13px] leading-relaxed text-[#8e9099]">
-                A two-minute talk on what they built and why.
-              </p>
+              <div>
+                <h4 className="font-sans text-[14.5px] font-semibold leading-[19px] text-white">
+                  Confidence to explain it
+                </h4>
+                <p className="mt-1 text-[12.5px] leading-[17px] text-[#A7ACB8]">
+                  A two-minute talk at demo day.
+                </p>
+              </div>
             </div>
           </div>
         </ScrollReveal>
+        </div>
       </section>
 
-      {/* ── 6. AUDIENCE SECTION (Exact Figma media_1793120478656.png) ── */}
-      <section className="bg-[#f3f1ec] text-ink px-5 py-12">
-        <ScrollReveal>
-          <h2 className="font-display text-[32px] sm:text-[38px] font-normal leading-tight tracking-[-0.03em] text-[#0e0f12]">
-            Is LvlUp right for your child?
-          </h2>
-        </ScrollReveal>
+      {/* ── 6. AUDIENCE SECTION (Exact Figma 390px x 643px, #F4F3EE, 81x95px cards) ── */}
+      <section className="bg-[#F4F3EE] text-[#0B0C0F] px-5 py-[52px]">
+        <div className="mx-auto w-full max-w-[350px]">
+          <ScrollReveal>
+            <h2 className="font-display text-[28px] font-medium leading-[32px] tracking-[-0.015em] text-[#0B0C0F]">
+              Is LvlUp right for your child?
+            </h2>
+          </ScrollReveal>
 
-        {/* 4 Grade Cards in a single row (4 columns) */}
-        <ScrollReveal delay={100}>
-          <div className="mt-6 grid grid-cols-4 gap-2.5 sm:gap-3">
-            {/* Grade 5 */}
-            <div className="rounded-[18px] sm:rounded-[20px] border border-black/[0.08] bg-white p-3 sm:p-3.5 shadow-sm flex flex-col justify-between">
-              <div className="flex items-baseline">
-                <span className="font-display text-[26px] sm:text-[32px] font-normal leading-none text-[#3b5bfd]">5</span>
-                <span className="text-[10px] sm:text-[11px] font-normal text-[#3b5bfd] ml-1">Grade</span>
+          {/* 4 Grade Cards (Figma 81px x 95px) */}
+          <ScrollReveal delay={100}>
+            <div className="mt-5 grid grid-cols-4 gap-2">
+              {/* Grade 5 */}
+              <div className="h-[95px] rounded-[12px] bg-[#FEFEFE] p-[12px_10px_12px_12px] shadow-sm flex flex-col justify-between">
+                <div className="flex items-baseline gap-1">
+                  <span className="font-display text-[30px] font-medium leading-[35px] text-[#4057D6]">5</span>
+                  <span className="text-[11px] font-semibold text-[#4057D6]">Grade</span>
+                </div>
+                <p className="text-[12px] font-semibold text-[#0B0C0F] leading-[17px]">Guided</p>
               </div>
-              <p className="mt-2 text-[12px] sm:text-[13px] font-normal text-[#0e0f12] leading-tight">Guided</p>
-            </div>
 
-            {/* Grade 6 */}
-            <div className="rounded-[18px] sm:rounded-[20px] border border-black/[0.08] bg-white p-3 sm:p-3.5 shadow-sm flex flex-col justify-between">
-              <div className="flex items-baseline">
-                <span className="font-display text-[26px] sm:text-[32px] font-normal leading-none text-[#109e58]">6</span>
-                <span className="text-[10px] sm:text-[11px] font-normal text-[#109e58] ml-1">Grade</span>
+              {/* Grade 6 */}
+              <div className="h-[95px] rounded-[12px] bg-[#FEFEFE] p-[12px_10px_12px_12px] shadow-sm flex flex-col justify-between">
+                <div className="flex items-baseline gap-1">
+                  <span className="font-display text-[30px] font-medium leading-[35px] text-[#1F9D55]">6</span>
+                  <span className="text-[11px] font-semibold text-[#1F9D55]">Grade</span>
+                </div>
+                <p className="text-[12px] font-semibold text-[#0B0C0F] leading-[17px]">More choice</p>
               </div>
-              <p className="mt-2 text-[12px] sm:text-[13px] font-normal text-[#0e0f12] leading-tight">More choice</p>
-            </div>
 
-            {/* Grade 7 */}
-            <div className="rounded-[18px] sm:rounded-[20px] border border-black/[0.08] bg-white p-3 sm:p-3.5 shadow-sm flex flex-col justify-between">
-              <div className="flex items-baseline">
-                <span className="font-display text-[26px] sm:text-[32px] font-normal leading-none text-[#7048e8]">7</span>
-                <span className="text-[10px] sm:text-[11px] font-normal text-[#7048e8] ml-1">Grade</span>
+              {/* Grade 7 */}
+              <div className="h-[95px] rounded-[12px] bg-[#FEFEFE] p-[12px_10px_12px_12px] shadow-sm flex flex-col justify-between">
+                <div className="flex items-baseline gap-1">
+                  <span className="font-display text-[30px] font-medium leading-[35px] text-[#7350D3]">7</span>
+                  <span className="text-[11px] font-semibold text-[#7350D3]">Grade</span>
+                </div>
+                <p className="text-[12px] font-semibold text-[#0B0C0F] leading-[17px]">More logic</p>
               </div>
-              <p className="mt-2 text-[12px] sm:text-[13px] font-normal text-[#0e0f12] leading-tight">More logic</p>
-            </div>
 
-            {/* Grade 8 (Orange card) */}
-            <div className="rounded-[18px] sm:rounded-[20px] border border-transparent bg-[#ff5520] p-3 sm:p-3.5 shadow-sm flex flex-col justify-between text-black">
-              <div className="flex items-baseline">
-                <span className="font-display text-[26px] sm:text-[32px] font-normal leading-none text-black">8</span>
-                <span className="text-[10px] sm:text-[11px] font-normal text-black ml-1">Grade</span>
+              {/* Grade 8 (Orange card) */}
+              <div className="h-[95px] rounded-[12px] bg-[#FF6B2C] p-[12px_10px_12px_12px] shadow-sm flex flex-col justify-between text-[#0B0C0F]">
+                <div className="flex items-baseline gap-1">
+                  <span className="font-display text-[30px] font-medium leading-[35px] text-[#0B0C0F]">8</span>
+                  <span className="text-[11px] font-semibold text-[#0B0C0F]">Grade</span>
+                </div>
+                <p className="text-[12px] font-semibold text-[#0B0C0F] leading-[17px]">Independent</p>
               </div>
-              <p className="mt-2 text-[12px] sm:text-[13px] font-normal text-black leading-tight">Independent</p>
             </div>
-          </div>
-        </ScrollReveal>
+          </ScrollReveal>
 
         {/* Good fit box (Mint green) */}
         <ScrollReveal delay={150}>
@@ -853,57 +899,39 @@ export function MobileView() {
 
         {/* WhatsApp prompt */}
         <ScrollReveal delay={250}>
-          <p className="mt-6 text-center text-[14px] sm:text-[15px] text-[#0e0f12] font-normal leading-relaxed">
+          <p className="mt-5 text-center text-[14px] text-[#15171C] font-medium leading-[20px]">
             Not sure?{" "}
             <a
               href={siteConfig.whatsappUrl}
-              className="font-normal underline underline-offset-2 hover:text-[#ff5520]"
+              className="font-medium underline underline-offset-2 hover:text-[#FF6B2C]"
             >
               Ask us on WhatsApp. A person replies.
             </a>
           </p>
         </ScrollReveal>
+        </div>
       </section>
 
-      {/* ── 7. TEACHING & TUTORS (Exact Figma media_1793120511765.png) ── */}
-      <section id="safety" aria-labelledby="mobile-teaching-title" className="bg-[#0b0c0f] text-white px-5 py-12 border-t border-white/10">
-        <ScrollReveal>
-          <h2 id="mobile-teaching-title" className="font-display text-[32px] sm:text-[38px] font-normal leading-[1.08] tracking-[-0.035em] text-white">
-            See how we teach before you decide.
-          </h2>
-        </ScrollReveal>
+      {/* ── 7. TEACHING & TUTORS (Exact Figma 390px x 954px, #0B0C0F) ── */}
+      <section id="safety" aria-labelledby="mobile-teaching-title" className="bg-[#0B0C0F] text-white px-5 py-[52px] border-t border-white/10">
+        <div className="mx-auto w-full max-w-[350px]">
+          <ScrollReveal>
+            <h2 id="mobile-teaching-title" className="font-display text-[28px] font-medium leading-[32px] tracking-[-0.015em] text-white">
+              See how we teach before you decide.
+            </h2>
+          </ScrollReveal>
 
-        {/* Real Class Video Preview Card */}
+        {/* Real Class Video Preview Card (Using updated high-res single card image to eliminate double overlays) */}
         <ScrollReveal delay={100}>
           <div className="relative mt-6 overflow-hidden rounded-[24px] aspect-[16/10] w-full border border-white/10 shadow-lg group/video cursor-pointer">
             <Image
-              src="/images/proof-class.png"
-              alt="Students collaborating with a tutor in class"
+              src="/images/proof-class-card.png"
+              alt="Watch a real class: Building interactive flows with Ms Ananya, Grade 6"
               fill
-              quality={95}
-              className="object-cover transition-transform duration-500 group-hover/video:scale-105"
+              quality={100}
+              unoptimized
+              className="object-cover transition-transform duration-500 group-hover/video:scale-[1.02]"
             />
-
-            {/* Top-left badge */}
-            <div className="absolute left-3.5 top-3.5 z-10 flex items-center gap-1.5 rounded-full bg-black/80 px-2.5 py-1 text-[11px] text-white backdrop-blur-sm border border-white/10">
-              <span className="size-1.5 rounded-full bg-[#ff5520]" />
-              <span>3:12 · Level 4 class</span>
-            </div>
-
-            {/* Bottom play bar overlay */}
-            <div className="absolute inset-x-0 bottom-0 z-10 flex items-center gap-3.5 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-4 sm:p-5 pt-8">
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#ff5520] text-white shadow-lg transition-transform group-hover/video:scale-110 active:scale-95">
-                <Play className="size-5 fill-current ml-0.5" />
-              </span>
-              <div>
-                <p className="font-normal text-[15px] sm:text-[16px] text-white leading-tight">
-                  Watch a real class
-                </p>
-                <p className="mt-0.5 text-[11px] sm:text-[12px] text-white/70">
-                  Building interactive flows with Ms Ananya, Grade 6
-                </p>
-              </div>
-            </div>
           </div>
         </ScrollReveal>
 
@@ -1003,31 +1031,31 @@ export function MobileView() {
           </p>
         </ScrollReveal>
 
-        {/* 3 Stats Banner (Orange Card) */}
+        {/* 3 Stats Banner (Exact Figma 350px x 89px, linear gradient, p-[16px_6px]) */}
         <ScrollReveal delay={200}>
-          <div className="mt-6 rounded-[22px] bg-[#ff5520] p-5 text-black shadow-lg">
-            <div className="grid grid-cols-3 gap-2">
-              <div>
-                <p className="font-display text-[24px] sm:text-[28px] font-normal leading-none text-black">
+          <div className="mt-5 h-[89px] w-full rounded-[16px] bg-gradient-to-r from-[#FF8A4C] to-[#F35A1F] p-[16px_6px] text-[#0B0C0F] shadow-lg flex items-center">
+            <div className="grid grid-cols-3 gap-1 w-full text-left">
+              <div className="px-2">
+                <p className="font-display text-[22px] font-medium leading-[25px] text-[#0B0C0F]">
                   36 of 38
                 </p>
-                <p className="mt-1 text-[11px] sm:text-[12px] font-medium leading-tight text-black/85">
+                <p className="mt-0.5 text-[11.5px] font-normal leading-[15px] text-[#0B0C0F]">
                   showed a working helper
                 </p>
               </div>
-              <div>
-                <p className="font-display text-[24px] sm:text-[28px] font-normal leading-none text-black">
+              <div className="px-2">
+                <p className="font-display text-[22px] font-medium leading-[25px] text-[#0B0C0F]">
                   94%
                 </p>
-                <p className="mt-1 text-[11px] sm:text-[12px] font-medium leading-tight text-black/85">
+                <p className="mt-0.5 text-[11.5px] font-normal leading-[15px] text-[#0B0C0F]">
                   average attendance
                 </p>
               </div>
-              <div>
-                <p className="font-display text-[24px] sm:text-[28px] font-normal leading-none text-black">
+              <div className="px-2">
+                <p className="font-display text-[22px] font-medium leading-[25px] text-[#0B0C0F]">
                   2
                 </p>
-                <p className="mt-1 text-[11px] sm:text-[12px] font-medium leading-tight text-black/85">
+                <p className="mt-0.5 text-[11.5px] font-normal leading-[15px] text-[#0B0C0F]">
                   partner schools
                 </p>
               </div>
@@ -1072,7 +1100,7 @@ export function MobileView() {
             ))}
           </div>
 
-          {/* Testimonials Pagination Dots */}
+          {/* Testimonials Pagination Dots (Figma 18x6px active, 6x6px inactive) */}
           <div className="mt-4 flex items-center gap-1.5">
             {testimonials.map((_, idx) => (
               <button
@@ -1081,37 +1109,44 @@ export function MobileView() {
                 aria-label={`Go to slide ${idx + 1}`}
                 onClick={() => scrollToTestimonial(idx)}
                 className={cn(
-                  "h-2 rounded-full transition-all duration-300",
+                  "h-[6px] rounded-[3px] transition-all duration-300",
                   activeTestimonialIndex === idx
-                    ? "w-6 bg-[#ff5520]"
-                    : "size-2 bg-[#4b4e5a] hover:bg-[#6c707d]"
+                    ? "w-[18px] bg-[#FF6B2C]"
+                    : "w-[6px] bg-[#2B2E36]"
                 )}
               />
             ))}
           </div>
         </ScrollReveal>
+        </div>
       </section>
 
-      {/* ── 8. SAFETY COMMITMENTS (Exact Figma media_1793120805184.png) ── */}
-      <section className="bg-[#f3f1ec] text-ink px-5 py-12">
-        <ScrollReveal>
-          <h2 className="font-display text-[32px] sm:text-[38px] font-normal leading-[1.1] tracking-[-0.03em] text-[#0e0f12]">
-            Safe by design, and in
-            <br />
-            writing.
-          </h2>
-        </ScrollReveal>
+      {/* ── 8. SAFETY COMMITMENTS (Exact Figma 390px x 595px, #F4F3EE, 169x129px cards) ── */}
+      <section className="bg-[#F4F3EE] text-[#0B0C0F] px-5 py-[52px]">
+        <div className="mx-auto w-full max-w-[350px]">
+          <ScrollReveal>
+            <h2 className="font-display text-[28px] font-medium leading-[32px] tracking-[-0.015em] text-[#0B0C0F]">
+              Safe by design, and in writing.
+            </h2>
+          </ScrollReveal>
 
-        {/* 2x3 Grid of Cards */}
+        {/* 2x3 Grid of Cards matching exact Figma media_1793198428665_c00a5024.png */}
         <div className="mt-7 grid grid-cols-2 gap-3 sm:gap-3.5">
           {/* Card 1: A tutor in every class */}
           <ScrollReveal delay={60}>
-            <div className="h-full rounded-[22px] border border-black/[0.08] bg-white p-4 sm:p-5 shadow-sm flex flex-col justify-between">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-[14px] bg-[#ffece2] text-[#ff5520]">
-                <UsersRound className="size-5" />
-              </span>
+            <div className="h-full rounded-[14px] border border-[#E3E1D9] bg-white p-[12px_14px_12px_12px] shadow-sm flex flex-col justify-between h-[129px]">
+              <div className="size-11 sm:size-12 shrink-0 overflow-hidden rounded-[14px]">
+                <Image
+                  src="/images/safety/tutor.png"
+                  alt="A tutor in every class icon"
+                  width={48}
+                  height={48}
+                  className="h-full w-full object-contain"
+                  unoptimized
+                />
+              </div>
               <div className="mt-3">
-                <h3 className="font-normal text-[14px] sm:text-[15px] text-[#0e0f12] leading-snug">
+                <h3 className="font-semibold text-[14px] sm:text-[15px] text-[#0e0f12] leading-snug">
                   A tutor in every class
                 </h3>
                 <p className="mt-1 text-[12px] text-[#6b7280]">
@@ -1123,12 +1158,19 @@ export function MobileView() {
 
           {/* Card 2: Approved tools only */}
           <ScrollReveal delay={120}>
-            <div className="h-full rounded-[22px] border border-black/[0.08] bg-white p-4 sm:p-5 shadow-sm flex flex-col justify-between">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-[14px] bg-[#ffece2] text-[#ff5520]">
-                <ShieldCheck className="size-5" />
-              </span>
+            <div className="h-full rounded-[14px] border border-[#E3E1D9] bg-white p-[12px_14px_12px_12px] shadow-sm flex flex-col justify-between h-[129px]">
+              <div className="size-11 sm:size-12 shrink-0 overflow-hidden rounded-[14px]">
+                <Image
+                  src="/images/safety/tools.png"
+                  alt="Approved tools only icon"
+                  width={48}
+                  height={48}
+                  className="h-full w-full object-contain"
+                  unoptimized
+                />
+              </div>
               <div className="mt-3">
-                <h3 className="font-normal text-[14px] sm:text-[15px] text-[#0e0f12] leading-snug">
+                <h3 className="font-semibold text-[14px] sm:text-[15px] text-[#0e0f12] leading-snug">
                   Approved tools only
                 </h3>
                 <p className="mt-1 text-[12px] text-[#6b7280]">
@@ -1140,12 +1182,19 @@ export function MobileView() {
 
           {/* Card 3: Your consent first */}
           <ScrollReveal delay={180}>
-            <div className="h-full rounded-[22px] border border-black/[0.08] bg-white p-4 sm:p-5 shadow-sm flex flex-col justify-between">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-[14px] bg-[#ffece2] text-[#ff5520]">
-                <Award className="size-5" />
-              </span>
+            <div className="h-full rounded-[14px] border border-[#E3E1D9] bg-white p-[12px_14px_12px_12px] shadow-sm flex flex-col justify-between h-[129px]">
+              <div className="size-11 sm:size-12 shrink-0 overflow-hidden rounded-[14px]">
+                <Image
+                  src="/images/safety/consent.png"
+                  alt="Your consent first icon"
+                  width={48}
+                  height={48}
+                  className="h-full w-full object-contain"
+                  unoptimized
+                />
+              </div>
               <div className="mt-3">
-                <h3 className="font-normal text-[14px] sm:text-[15px] text-[#0e0f12] leading-snug">
+                <h3 className="font-semibold text-[14px] sm:text-[15px] text-[#0e0f12] leading-snug">
                   Your consent first
                 </h3>
                 <p className="mt-1 text-[12px] text-[#6b7280]">
@@ -1157,12 +1206,19 @@ export function MobileView() {
 
           {/* Card 4: Minimal data */}
           <ScrollReveal delay={240}>
-            <div className="h-full rounded-[22px] border border-black/[0.08] bg-white p-4 sm:p-5 shadow-sm flex flex-col justify-between">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-[14px] bg-[#ffece2] text-[#ff5520]">
-                <Lock className="size-5" />
-              </span>
+            <div className="h-full rounded-[14px] border border-[#E3E1D9] bg-white p-[12px_14px_12px_12px] shadow-sm flex flex-col justify-between h-[129px]">
+              <div className="size-11 sm:size-12 shrink-0 overflow-hidden rounded-[14px]">
+                <Image
+                  src="/images/safety/data.png"
+                  alt="Minimal data icon"
+                  width={48}
+                  height={48}
+                  className="h-full w-full object-contain"
+                  unoptimized
+                />
+              </div>
               <div className="mt-3">
-                <h3 className="font-normal text-[14px] sm:text-[15px] text-[#0e0f12] leading-snug">
+                <h3 className="font-semibold text-[14px] sm:text-[15px] text-[#0e0f12] leading-snug">
                   Minimal data
                 </h3>
                 <p className="mt-1 text-[12px] text-[#6b7280]">
@@ -1174,12 +1230,19 @@ export function MobileView() {
 
           {/* Card 5: Safety is taught */}
           <ScrollReveal delay={300}>
-            <div className="h-full rounded-[22px] border border-black/[0.08] bg-white p-4 sm:p-5 shadow-sm flex flex-col justify-between">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-[14px] bg-[#ffece2] text-[#ff5520]">
-                <Check className="size-5 stroke-[2.5]" />
-              </span>
+            <div className="h-full rounded-[14px] border border-[#E3E1D9] bg-white p-[12px_14px_12px_12px] shadow-sm flex flex-col justify-between h-[129px]">
+              <div className="size-11 sm:size-12 shrink-0 overflow-hidden rounded-[14px]">
+                <Image
+                  src="/images/safety/taught.png"
+                  alt="Safety is taught icon"
+                  width={48}
+                  height={48}
+                  className="h-full w-full object-contain"
+                  unoptimized
+                />
+              </div>
               <div className="mt-3">
-                <h3 className="font-normal text-[14px] sm:text-[15px] text-[#0e0f12] leading-snug">
+                <h3 className="font-semibold text-[14px] sm:text-[15px] text-[#0e0f12] leading-snug">
                   Safety is taught
                 </h3>
                 <p className="mt-1 text-[12px] text-[#6b7280]">
@@ -1189,33 +1252,35 @@ export function MobileView() {
             </div>
           </ScrollReveal>
 
-          {/* Card 6: Read child safety policy (Dark card with arrow) */}
+          {/* Card 6: Read child safety policy (Exact Figma 169px x 129px, #0B0C0F) */}
           <ScrollReveal delay={360}>
             <Link
               href={legalLinks.childSafety}
-              className="h-full rounded-[22px] bg-[#0e0f12] text-white p-4 sm:p-5 shadow-sm flex flex-col justify-between transition hover:bg-[#191a21] active:scale-[0.98]"
+              className="h-[129px] rounded-[14px] bg-[#0B0C0F] text-white p-[12px_14px] shadow-sm flex flex-col justify-between transition hover:bg-[#191a21] active:scale-[0.98]"
             >
-              <h3 className="font-normal text-[14px] sm:text-[15px] text-white leading-snug">
+              <h3 className="font-sans text-[14.5px] font-semibold text-white leading-[20px]">
                 Read the full child safety policy
               </h3>
-              <div className="mt-4 flex items-center justify-between">
-                <p className="text-[11px] text-[#9ca3af] leading-tight">
-                  PDF · tools, data, who sees it
+              <div className="mt-2 flex items-center justify-between">
+                <p className="text-[12.5px] text-[#A7ACB8] leading-[17px]">
+                  PDF · tools, data
                 </p>
-                <ArrowRight className="size-5 stroke-[2] text-white shrink-0 ml-2" />
+                <ArrowRight className="size-4 stroke-[2] text-white shrink-0 ml-2" />
               </div>
             </Link>
           </ScrollReveal>
         </div>
+        </div>
       </section>
 
-      {/* ── 9. HOW JOINING WORKS (Exact Figma media_1793120814163.png) ── */}
-      <section id="joining" className="bg-[#0b0c0f] text-white px-5 py-12 border-t border-white/10">
-        <ScrollReveal>
-          <h2 className="font-display text-[32px] sm:text-[38px] font-normal leading-tight tracking-[-0.03em] text-white">
-            How joining works
-          </h2>
-        </ScrollReveal>
+      {/* ── 9. HOW JOINING WORKS (Exact Figma 390px x 502px, #0B0C0F) ── */}
+      <section id="joining" className="bg-[#0B0C0F] text-white px-5 py-[52px] border-t border-white/10">
+        <div className="mx-auto w-full max-w-[350px]">
+          <ScrollReveal>
+            <h2 className="font-display text-[28px] font-medium leading-[32px] tracking-[-0.015em] text-white">
+              How joining works
+            </h2>
+          </ScrollReveal>
 
         {/* Vertical Timeline with connecting line */}
         <ScrollReveal delay={120}>
@@ -1254,17 +1319,17 @@ export function MobileView() {
             </ol>
           </div>
         </ScrollReveal>
+        </div>
       </section>
 
-      {/* ── 10. PRICING & PROMISE (Exact Figma media_1793120827639.png) ── */}
-      <section id="fees" aria-labelledby="mobile-fees-title" className="bg-[#f3f1ec] text-ink px-5 py-12">
-        <ScrollReveal>
-          <h2 id="mobile-fees-title" className="font-display text-[32px] sm:text-[38px] font-normal leading-[1.1] tracking-[-0.03em] text-[#0e0f12]">
-            One course. Everything
-            <br />
-            included.
-          </h2>
-        </ScrollReveal>
+      {/* ── 10. PRICING & PROMISE (Exact Figma 390px x 830px, #F4F3EE) ── */}
+      <section id="fees" aria-labelledby="mobile-fees-title" className="bg-[#F4F3EE] text-[#0B0C0F] px-5 py-[52px]">
+        <div className="mx-auto w-full max-w-[350px]">
+          <ScrollReveal>
+            <h2 id="mobile-fees-title" className="font-display text-[28px] font-medium leading-[32px] tracking-[-0.015em] text-[#0B0C0F]">
+              One course. Everything included.
+            </h2>
+          </ScrollReveal>
 
         {/* Main Dark Pricing Card */}
         <ScrollReveal delay={100}>
@@ -1403,32 +1468,34 @@ export function MobileView() {
           </div>
         </ScrollReveal>
 
-        {/* Our Promise Card */}
+        {/* Our Promise Card (Figma 350x169px, rounded 16px, #FFE3D4) */}
         <ScrollReveal delay={180}>
-          <div className="mt-4 rounded-[24px] bg-[#ffece2] p-5 sm:p-6 text-[#0e0f12]">
-            <p className="font-mono text-[13px] text-[#0e0f12]">
+          <div className="mt-4 rounded-[16px] bg-[#FFE3D4] p-4 text-[#0B0C0F]">
+            <p className="font-mono text-[12px] font-medium leading-[17px] text-[#15171C]">
               Our promise
             </p>
-            <p className="mt-2 font-display text-[18px] sm:text-[20px] font-normal leading-[1.3] text-[#0e0f12]">
+            <p className="mt-1.5 font-display text-[18px] font-medium leading-[24px] text-[#0B0C0F]">
               Comes to 6 of 8 classes but can’t show a working AI helper at demo day? We refund ₹2,499.
             </p>
-            <p className="mt-2 text-[13px] leading-relaxed text-[#5f6068]">
+            <p className="mt-2 text-[13px] font-normal leading-[18px] text-[#5A5F6B]">
               No laptop, kits, subscriptions or certificate fee to pay.
             </p>
           </div>
         </ScrollReveal>
+        </div>
       </section>
 
-      {/* ── 11. ENROL YOUR CHILD (Exact Figma media_1793121632938.png) ── */}
-      <section id="enrol" aria-labelledby="mobile-enrol-title" className="bg-[#f3f1ec] text-ink px-5 py-12 scroll-mt-6 border-t border-black/5">
-        <ScrollReveal>
-          <h2 id="mobile-enrol-title" className="font-display text-[32px] sm:text-[38px] font-normal leading-[1.08] tracking-[-0.03em] text-[#0e0f12]">
-            Enrol your child
-          </h2>
-          <p className="mt-2 text-[15px] leading-relaxed text-[#5f6068]">
-            About three minutes. Keep your school code handy.
-          </p>
-        </ScrollReveal>
+      {/* ── 11. ENROL YOUR CHILD (Exact Figma 390px x 506px, warm gradient) ── */}
+      <section id="enrol" aria-labelledby="mobile-enrol-title" className="bg-[radial-gradient(55.56%_38.46%_at_16.67%_65.38%,#FFF1E7_0%,#F4F3EE_100%)] text-[#0B0C0F] px-5 py-[52px] scroll-mt-6 border-t border-black/5">
+        <div className="mx-auto w-full max-w-[350px]">
+          <ScrollReveal>
+            <h2 id="mobile-enrol-title" className="font-display text-[28px] font-medium leading-[32px] tracking-[-0.015em] text-[#0B0C0F]">
+              Enrol your child
+            </h2>
+            <p className="mt-2.5 text-[15.5px] font-normal leading-[24px] text-[#5A5F6B]">
+              About three minutes. Keep your school code handy.
+            </p>
+          </ScrollReveal>
 
         {/* 3 Steps List */}
         <ScrollReveal delay={100}>
@@ -1484,13 +1551,13 @@ export function MobileView() {
               <button
                 type="button"
                 onClick={() => setIsEnrolFormOpen(true)}
-                className="flex h-[54px] w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#ff5520] to-[#ff6b2c] font-semibold text-[16px] text-black shadow-[0_4px_25px_rgba(255,85,32,0.4)] transition active:scale-[0.98]"
+                className="flex h-[48px] w-full items-center justify-center gap-2.5 rounded-[6px] bg-gradient-to-b from-[#FF8B4E] via-[#FF6B2C] to-[#F2561A] font-semibold text-[16px] leading-[20px] text-[#0B0C0F] shadow-[0px_10px_28px_-8px_rgba(255,107,44,0.35),inset_0px_1px_0px_rgba(255,255,255,0.28)] transition active:scale-[0.98]"
               >
-                <span>Start enrolment</span>
+                <span>Enrol now</span>
                 <ArrowRight className="size-4 stroke-[2.5]" />
               </button>
 
-              <p className="mt-4 text-[13px] text-[#5f6068] leading-relaxed">
+              <p className="mt-3.5 text-[13.5px] leading-[19px] text-[#15171C]">
                 No school code? Ask your class teacher or WhatsApp us.
               </p>
             </div>
@@ -1747,23 +1814,25 @@ export function MobileView() {
             )}
           </div>
         )}
+        </div>
       </section>
 
-      {/* ── 12. FAQ (Exact Figma media_1793121675929.png) ── */}
-      <section id="faq" aria-labelledby="mobile-faq-title" className="bg-[#f3f1ec] text-ink px-5 pb-14 pt-4 border-t border-black/5">
-        <ScrollReveal>
-          <h2 id="mobile-faq-title" className="font-display text-[32px] sm:text-[38px] font-normal leading-tight tracking-[-0.03em] text-[#0e0f12]">
-            Questions parents ask
-          </h2>
+      {/* ── 12. FAQ (Exact Figma 390px x 1030px, #F4F3EE) ── */}
+      <section id="faq" aria-labelledby="mobile-faq-title" className="bg-[#F4F3EE] text-[#0B0C0F] px-5 py-[52px] border-t border-black/5">
+        <div className="mx-auto w-full max-w-[350px]">
+          <ScrollReveal>
+            <h2 id="mobile-faq-title" className="font-display text-[30px] font-medium leading-[35px] tracking-[-0.02em] text-[#15171C]">
+              Questions parents ask
+            </h2>
 
-          {/* Tab Toggle: For parents / For schools */}
-          <div className="mt-4 mb-6 inline-flex rounded-xl bg-[#e6e4df] p-1 text-xs">
+          {/* Tab Toggle: For parents / For schools (Figma 254px x 52px, radius 10px, #E3E1D9) */}
+          <div className="mt-5 mb-6 inline-flex h-[52px] w-[254px] rounded-[10px] bg-[#E3E1D9] p-1 text-sm">
             <button
               type="button"
               onClick={() => setFaqTab("parents")}
               className={cn(
-                "px-4 py-2 rounded-lg transition",
-                faqTab === "parents" ? "bg-white text-[#0e0f12] font-semibold shadow-sm" : "text-[#5f6068] font-normal"
+                "h-full w-[120px] rounded-[8px] transition font-sans text-[16px] leading-[24px]",
+                faqTab === "parents" ? "bg-white text-[#15171C] font-semibold shadow-sm" : "text-[#5A5F6B] font-semibold"
               )}
             >
               For parents
@@ -1772,8 +1841,8 @@ export function MobileView() {
               type="button"
               onClick={() => setFaqTab("schools")}
               className={cn(
-                "px-4 py-2 rounded-lg transition",
-                faqTab === "schools" ? "bg-white text-[#0e0f12] font-semibold shadow-sm" : "text-[#5f6068] font-normal"
+                "h-full w-[122px] rounded-[8px] transition font-sans text-[16px] leading-[24px]",
+                faqTab === "schools" ? "bg-white text-[#15171C] font-semibold shadow-sm" : "text-[#5A5F6B] font-semibold"
               )}
             >
               For schools
@@ -1819,22 +1888,24 @@ export function MobileView() {
 
         {/* FAQ note below */}
         <ScrollReveal delay={150}>
-          <p className="mt-6 text-[13px] text-[#5f6068] leading-relaxed">
+          <p className="mt-6 font-sans text-[16px] leading-[26px] text-[#5A5F6B]">
             Something else? WhatsApp us at <a href={siteConfig.whatsappUrl} className="underline text-black font-normal">[number]</a>. A person replies within a few hours. We only message you about your child’s batch, and you can reply STOP at any time.
           </p>
         </ScrollReveal>
+        </div>
       </section>
 
-      {/* ── 13. FOR SCHOOLS (Exact Figma media_1793121689317.png) ── */}
-      <section id="schools" aria-labelledby="mobile-school-banner" className="bg-[#0b0c0f] text-white px-5 py-14 border-t border-white/10">
-        <ScrollReveal>
-          <h2 id="mobile-school-banner" className="font-display text-[32px] sm:text-[38px] font-normal leading-[1.08] tracking-[-0.03em] text-white">
-            Bring LvlUp to your school.
-          </h2>
-          <p className="mt-3 text-[14px] leading-relaxed text-[#9ca3af]">
-            We bring the tutors, lessons and parent updates. You host one class a week in your lab.
-          </p>
-        </ScrollReveal>
+      {/* ── 13. FOR SCHOOLS (Exact Figma 390px x 810px, #0B0C0F) ── */}
+      <section id="schools" aria-labelledby="mobile-school-banner" className="bg-[#0B0C0F] text-white px-5 py-[52px] border-t border-white/10">
+        <div className="mx-auto w-full max-w-[350px]">
+          <ScrollReveal>
+            <h2 id="mobile-school-banner" className="font-display text-[28px] font-medium leading-[32px] tracking-[-0.015em] text-white">
+              Bring LvlUp to your school.
+            </h2>
+            <p className="mt-2.5 text-[15.5px] font-normal leading-[24px] text-[#A7ACB8]">
+              We bring the tutors, lessons and parent updates. You host one class a week in your lab.
+            </p>
+          </ScrollReveal>
 
         {/* Feature Badges */}
         <ScrollReveal delay={100}>
@@ -2010,16 +2081,18 @@ export function MobileView() {
           <a
             href="/downloads/LvlUp-Eight-Week-Curriculum.pdf"
             download="LvlUp Eight-Week Curriculum.pdf"
-            className="mt-6 inline-flex items-center gap-2 text-[13px] font-semibold text-white underline underline-offset-4 hover:text-[#ff5520] transition"
+            className="mt-6 inline-flex items-center gap-2 text-[13px] font-semibold text-white underline underline-offset-4 hover:text-[#FF6B2C] transition"
           >
             <Download className="size-4 stroke-[2.5]" />
             <span>Download the school pack (PDF)</span>
           </a>
         </ScrollReveal>
+        </div>
       </section>
 
-      {/* ── 14. FOOTER (Exact Figma media_1793121700752.png) ── */}
+      {/* ── 14. FOOTER (Exact Figma 390px, #08090B) ── */}
       <footer className="bg-[#08090b] border-t border-white/10 px-5 pt-12 pb-24 text-white">
+        <div className="mx-auto w-full max-w-[350px]">
         <ScrollReveal>
           {/* Brand Logo */}
           <div className="flex items-center gap-2.5">
@@ -2071,6 +2144,7 @@ export function MobileView() {
             <Link className="hover:text-white transition" href={legalLinks.terms}>Terms</Link>
           </p>
         </ScrollReveal>
+        </div>
       </footer>
 
       {/* ── 15. STICKY BOTTOM BAR ── */}

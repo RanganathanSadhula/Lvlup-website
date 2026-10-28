@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Award, Bot, BookOpen, MessageSquareText, MonitorPlay, Sparkles, Target, Workflow, type LucideIcon } from "lucide-react";
 import { curriculum } from "@/data/curriculum";
 import { cn } from "@/lib/utils";
@@ -14,6 +14,84 @@ export function LevelExplorer() {
   const [active, setActive] = useState(1);
   const scrollRef = useRef<HTMLDivElement>(null);
   const clickLock = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isHovered = useRef(false);
+  const animFrameId = useRef<number | null>(null);
+
+  /** Hover Auto-Scroll mechanism: increased speed, loops back to first card when reached bottom */
+  useEffect(() => {
+    let lastTime: number | null = null;
+    let isResetting = false;
+    const speed = 65; // increased smooth scroll speed (~65px/sec)
+
+    const step = (time: number) => {
+      if (!isHovered.current || !scrollRef.current) {
+        animFrameId.current = null;
+        return;
+      }
+      if (lastTime !== null && !isResetting) {
+        const delta = (time - lastTime) / 1000;
+        const el = scrollRef.current;
+        // Don't auto-scroll while smooth scroll to level is in progress
+        if (!clickLock.current) {
+          if (el.scrollTop + el.clientHeight >= el.scrollHeight - 4) {
+            // Reached bottom -> smoothly scroll back to the top/first card
+            isResetting = true;
+            el.scrollTo({ top: 0, behavior: "smooth" });
+            setTimeout(() => {
+              isResetting = false;
+              lastTime = null;
+              if (isHovered.current && !animFrameId.current) {
+                animFrameId.current = requestAnimationFrame(step);
+              }
+            }, 800);
+          } else {
+            el.scrollTop += speed * delta;
+          }
+        }
+      }
+      lastTime = time;
+      if (!isResetting) {
+        animFrameId.current = requestAnimationFrame(step);
+      }
+    };
+
+    const handleMouseEnter = () => {
+      // Only auto-scroll on devices with hover capability (desktop)
+      if (window.matchMedia("(hover: hover)").matches) {
+        isHovered.current = true;
+        lastTime = null;
+        if (!animFrameId.current) {
+          animFrameId.current = requestAnimationFrame(step);
+        }
+      }
+    };
+
+    const handleMouseLeave = () => {
+      isHovered.current = false;
+      if (animFrameId.current) {
+        cancelAnimationFrame(animFrameId.current);
+        animFrameId.current = null;
+      }
+    };
+
+    const el = scrollRef.current;
+    if (el) {
+      el.addEventListener("mouseenter", handleMouseEnter);
+      el.addEventListener("mouseleave", handleMouseLeave);
+    }
+
+    return () => {
+      isHovered.current = false;
+      if (animFrameId.current) {
+        cancelAnimationFrame(animFrameId.current);
+        animFrameId.current = null;
+      }
+      if (el) {
+        el.removeEventListener("mouseenter", handleMouseEnter);
+        el.removeEventListener("mouseleave", handleMouseLeave);
+      }
+    };
+  }, []);
 
   /** Left button -> scroll the right column to that card. */
   function goTo(level: number) {
@@ -150,10 +228,10 @@ export function LevelExplorer() {
           onScroll={onScroll}
           tabIndex={0}
           aria-label="Level details"
-          className="relative space-y-5 lg:absolute lg:inset-0 lg:snap-y lg:snap-proximity lg:overflow-y-scroll lg:pr-3 lg:[scrollbar-color:#ff6b2c_transparent] lg:[scrollbar-width:thin]"
+          className="relative space-y-5 lg:absolute lg:inset-0 lg:overflow-y-scroll lg:pr-3 lg:[scrollbar-color:#ff6b2c_transparent] lg:[scrollbar-width:thin]"
         >
           {curriculum.map((l) => (
-            <div key={l.level} className="lg:snap-start">
+            <div key={l.level}>
               <LevelCard data={l} />
             </div>
           ))}

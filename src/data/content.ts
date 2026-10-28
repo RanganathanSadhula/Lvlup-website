@@ -14,9 +14,9 @@ export const heroMeta = [
 ] as const;
 
 export const solutionCards = [
-  { title: "Understand it", body: "How AI learns from examples, where it helps, and why its answers need checking.", icon: BookOpen, image: "/images/solution-understand-color.png", alt: "A smiling boy holding a stack of books", w: 1048, h: 784 },
-  { title: "Use it safely", body: "Private information stays private. Tools are approved, and the accounts are set up and managed by us.", icon: ShieldCheck, image: "/images/solution-safely-color.png", alt: "Two children smiling at a laptop together", w: 1048, h: 784 },
-  { title: "Build with it", body: "Each child designs, builds and tests an AI helper for a real problem from their own school day.", icon: Bot, image: "/images/solution-build-color.png", alt: "A girl raising her hand next to classmates with laptops", w: 1048, h: 784 },
+  { title: "Understand it", body: "How AI learns from examples, where it helps, and why its answers need checking.", icon: BookOpen, iconImage: "/images/solution/icon-understand.png", image: "/images/solution-understand-color.png", alt: "A smiling boy holding a stack of books", w: 1048, h: 784 },
+  { title: "Use it safely", body: "Private information stays private. Tools are approved, and the accounts are set up and managed by us.", icon: ShieldCheck, iconImage: "/images/solution/icon-safely.png", image: "/images/solution-safely-color.png", alt: "Two children smiling at a laptop together", w: 1048, h: 784 },
+  { title: "Build with it", body: "Each child designs, builds and tests an AI helper for a real problem from their own school day.", icon: Bot, iconImage: "/images/solution/icon-build.png", image: "/images/solution-build-color.png", alt: "A girl raising her hand next to classmates with laptops", w: 1048, h: 784 },
 ] as const;
 
 export const gradeCards = [

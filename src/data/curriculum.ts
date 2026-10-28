@@ -46,7 +46,7 @@ export const curriculum: CurriculumLevel[] = [
     topics: ["What is an AI agent", "Choose a useful task", "Define inputs and outputs", "Map a safe workflow", "Create the blueprint"],
     makes: "A one-page guided agent blueprint", navMakes: "A one-page agent blueprint",
     parentsSee: "What the planned agent will and will not do",
-    image: img(5, 193, 352, "A group of children collaborating around a laptop"), icon: "BookOpen",
+    image: img(5, 524, 392, "A tutor and children collaborating around a laptop"), icon: "BookOpen",
   },
   {
     level: 6, week: 6, title: "Build your first guided AI agent",

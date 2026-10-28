@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
-import { IconTile } from "@/components/ui/IconTile";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -41,7 +40,16 @@ export function SolutionSection() {
                     />
                   </div>
                   <div className="p-7">
-                    <IconTile icon={c.icon} />
+                    <div className="size-11 sm:size-12 shrink-0 overflow-hidden rounded-xl">
+                      <Image
+                        src={c.iconImage}
+                        alt={`${c.title} icon`}
+                        width={48}
+                        height={48}
+                        className="h-full w-full object-contain"
+                        unoptimized
+                      />
+                    </div>
                     <h3 className="mt-5 font-display text-2xl font-normal tracking-[-0.02em]">{c.title}</h3>
                     <p className="mt-3 text-base leading-relaxed text-muted-dark">{c.body}</p>
                   </div>
