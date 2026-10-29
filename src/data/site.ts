@@ -1,6 +1,15 @@
 import type { NavLink } from "@/types";
 
-const whatsappDigits = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "").replace(/\D/g, "");
+const defaultWhatsapp = "919606626152";
+const whatsappDigits = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || defaultWhatsapp).replace(/\D/g, "");
+
+const formatWhatsappLabel = (digits: string) => {
+  if (digits.length === 12 && digits.startsWith("91")) {
+    return `+91 ${digits.slice(2, 7)} ${digits.slice(7)}`;
+  }
+  return digits ? `+${digits}` : "[number]";
+};
+
 const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "";
 const city = process.env.NEXT_PUBLIC_CONTACT_CITY ?? "";
 
@@ -17,7 +26,7 @@ export const siteConfig = {
   enrolUrl: process.env.NEXT_PUBLIC_ENROL_URL || "/#enrol",
   bookingUrl: process.env.NEXT_PUBLIC_BOOKING_URL || "/#school-pack",
   whatsappUrl: whatsappDigits ? `https://wa.me/${whatsappDigits}` : "/#contact",
-  whatsappLabel: whatsappDigits ? `+${whatsappDigits}` : "[number]",
+  whatsappLabel: formatWhatsappLabel(whatsappDigits),
   emailUrl: email ? `mailto:${email}` : "/#contact",
   emailLabel: email || "[email]",
   cityLabel: city || "[City]",

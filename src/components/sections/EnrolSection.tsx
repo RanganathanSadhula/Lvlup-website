@@ -8,6 +8,7 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { Section } from "@/components/ui/Section";
 import { cn } from "@/lib/utils";
 import { EnrolSuccessView } from "./EnrolSuccessView";
+import { siteConfig } from "@/data/site";
 
 export function EnrolSection() {
   const [payPlan, setPayPlan] = useState<"full" | "parts">("full");
@@ -102,7 +103,7 @@ export function EnrolSection() {
                 <div className="mt-7 flex items-center gap-3 rounded-2xl border border-black/[0.08] bg-white p-4 shadow-sm">
                   <UsersRound aria-hidden className="size-5 shrink-0 text-ink/75" />
                   <p className="text-xs font-medium leading-snug text-ink/80">
-                    No school code? Ask your class teacher or WhatsApp us.
+                    No school code? Ask your class teacher or <a href={siteConfig.whatsappUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-[#ff5520]">WhatsApp us</a>.
                   </p>
                 </div>
 

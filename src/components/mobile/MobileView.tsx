@@ -337,7 +337,9 @@ export function MobileView() {
 
                 <a
                   href={siteConfig.whatsappUrl}
-                  className="flex h-[50px] w-full items-center justify-center gap-2.5 rounded-[6px] border border-[#2B2E36] bg-transparent font-semibold text-[16px] leading-[20px] text-white transition-all duration-200 hover:bg-white/5 active:scale-[0.98]"
+            target="_blank"
+                  rel="noopener noreferrer"
+className="flex h-[50px] w-full items-center justify-center gap-2.5 rounded-[6px] border border-[#2B2E36] bg-transparent font-semibold text-[16px] leading-[20px] text-white transition-all duration-200 hover:bg-white/5 active:scale-[0.98]"
                 >
                   <span>WhatsApp us</span>
                   <ArrowRight className="size-4 stroke-[2.5]" />
@@ -660,8 +662,8 @@ export function MobileView() {
             href="/downloads/LvlUp-Eight-Week-Curriculum.pdf"
             download="LvlUp Eight-Week Curriculum.pdf"
             target="_blank"
-            rel="noopener noreferrer"
-            className="mt-5 flex h-[47px] w-full items-center justify-center gap-2.5 rounded-[10px] border-[1.5px] border-[#0B0C0F] bg-white font-semibold text-[14px] leading-[20px] text-[#0B0C0F] shadow-sm transition hover:bg-black/5 active:scale-[0.98]"
+                  rel="noopener noreferrer"
+className="mt-5 flex h-[47px] w-full items-center justify-center gap-2.5 rounded-[10px] border-[1.5px] border-[#0B0C0F] bg-white font-semibold text-[14px] leading-[20px] text-[#0B0C0F] shadow-sm transition hover:bg-black/5 active:scale-[0.98]"
           >
             <Download className="size-4 stroke-[2.2]" />
             <span>Download full curriculum (PDF)</span>
@@ -903,7 +905,9 @@ export function MobileView() {
             Not sure?{" "}
             <a
               href={siteConfig.whatsappUrl}
-              className="font-medium underline underline-offset-2 hover:text-[#FF6B2C]"
+            target="_blank"
+                  rel="noopener noreferrer"
+className="font-medium underline underline-offset-2 hover:text-[#FF6B2C]"
             >
               Ask us on WhatsApp. A person replies.
             </a>
@@ -1558,7 +1562,9 @@ export function MobileView() {
               </button>
 
               <p className="mt-3.5 text-[13.5px] leading-[19px] text-[#15171C]">
-                No school code? Ask your class teacher or WhatsApp us.
+                No school code? Ask your class teacher or <a href={siteConfig.whatsappUrl} target="_blank"
+                  rel="noopener noreferrer"
+className="underline underline-offset-2 hover:text-[#FF6B2C]">WhatsApp us</a>.
               </p>
             </div>
           </ScrollReveal>
@@ -1889,7 +1895,9 @@ export function MobileView() {
         {/* FAQ note below */}
         <ScrollReveal delay={150}>
           <p className="mt-6 font-sans text-[16px] leading-[26px] text-[#5A5F6B]">
-            Something else? WhatsApp us at <a href={siteConfig.whatsappUrl} className="underline text-black font-normal">[number]</a>. A person replies within a few hours. We only message you about your child’s batch, and you can reply STOP at any time.
+            Something else? WhatsApp us at <a href={siteConfig.whatsappUrl} target="_blank"
+                  rel="noopener noreferrer"
+className="underline text-black font-normal hover:text-[#FF6B2C]">{siteConfig.whatsappLabel}</a>. A person replies within a few hours. We only message you about your child’s batch, and you can reply STOP at any time.
           </p>
         </ScrollReveal>
         </div>
@@ -2120,8 +2128,10 @@ export function MobileView() {
 
           {/* Contact links */}
           <div className="mt-3.5 flex flex-wrap gap-x-5 gap-y-2 text-[14px] font-medium text-white">
-            <a href={siteConfig.whatsappUrl} className="hover:text-[#ff5520] transition">
-              WhatsApp [number]
+            <a href={siteConfig.whatsappUrl} target="_blank"
+                  rel="noopener noreferrer"
+className="hover:text-[#ff5520] transition">
+              WhatsApp {siteConfig.whatsappLabel}
             </a>
             <a href={siteConfig.emailUrl} className="hover:text-[#ff5520] transition">
               [email]
@@ -2163,7 +2173,9 @@ export function MobileView() {
           </div>
           <a
             href={siteConfig.whatsappUrl}
-            className="flex h-[46px] items-center justify-center rounded-xl border border-white/20 bg-[#1e1f27] px-5 text-[14px] font-bold text-white transition hover:bg-[#25262f] shrink-0 active:scale-95"
+            target="_blank"
+                  rel="noopener noreferrer"
+className="flex h-[46px] items-center justify-center rounded-xl border border-white/20 bg-[#1e1f27] px-5 text-[14px] font-bold text-white transition hover:bg-[#25262f] shrink-0 active:scale-95"
           >
             WhatsApp
           </a>

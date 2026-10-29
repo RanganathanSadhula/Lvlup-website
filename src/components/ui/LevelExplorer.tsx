@@ -51,7 +51,9 @@ export function LevelExplorer() {
   };
 
   /** Continuous Smooth Auto-Scroll mechanism:
-   *  - Automatically scrolls down smoothly when in view.
+   *  - Starts ONLY when user scrolls and arrives at this section/screen.
+   *  - Stays paused at Level 1 initially so refreshing above doesn't scroll prematurely.
+   *  - Automatically scrolls down smoothly when in view (~55px/sec).
    *  - Pauses when hovered (so the user can read the card or click).
    *  - Pauses when the user clicks a level button or manually scrolls.
    *  - Loops smoothly back to Level 1 when reaching the bottom.
@@ -66,11 +68,14 @@ export function LevelExplorer() {
       return;
     }
 
-    let isVisible = true;
-    let lastTime: number | null = null;
-    const speed = 45; // smooth ~45px/sec
+    // Ensure clean initial state at Level 1 on mount
+    el.scrollTop = 0;
+    accumulatedPos.current = 0;
+    setActive(1);
 
-    accumulatedPos.current = el.scrollTop;
+    let isVisible = false;
+    let lastTime: number | null = null;
+    const speed = 55; // smooth ~55px/sec
 
     const step = (time: number) => {
       if (
@@ -120,14 +125,22 @@ export function LevelExplorer() {
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        isVisible = entry ? entry.isIntersecting : true;
-        if (isVisible && scrollRef.current) {
-          accumulatedPos.current = scrollRef.current.scrollTop;
+        const inView = Boolean(entry && entry.isIntersecting);
+        if (inView) {
+          if (!isVisible) {
+            isVisible = true;
+            lastTime = null;
+            if (scrollRef.current) {
+              accumulatedPos.current = scrollRef.current.scrollTop;
+              detectActiveLevel();
+            }
+          }
+        } else {
+          isVisible = false;
           lastTime = null;
-          detectActiveLevel();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.15 }
     );
 
     const rootTarget = containerRef.current || el;

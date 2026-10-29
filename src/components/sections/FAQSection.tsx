@@ -92,7 +92,14 @@ export function FAQSection() {
             </div>
             <p className="mt-6 max-w-[340px] text-base leading-relaxed text-muted">
               Something else? WhatsApp us at{" "}
-              <a href={siteConfig.whatsappUrl} className="underline underline-offset-2 hover:text-ink">{siteConfig.whatsappLabel}</a>
+              <a
+                href={siteConfig.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-ink"
+              >
+                {siteConfig.whatsappLabel}
+              </a>
               . A person replies within a few hours. We only message you about your child’s batch, and you can reply STOP at any time.
             </p>
           </div>

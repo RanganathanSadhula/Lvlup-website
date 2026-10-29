@@ -106,7 +106,7 @@ export function SchoolPackForm() {
           <span>
             {status.message}{" "}
             {siteConfig.whatsappUrl !== "/#contact" && (
-              <a href={siteConfig.whatsappUrl} className="font-semibold underline">Open WhatsApp</a>
+              <a href={siteConfig.whatsappUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline">Open WhatsApp</a>
             )}
           </span>
         </div>

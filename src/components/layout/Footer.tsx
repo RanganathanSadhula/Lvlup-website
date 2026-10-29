@@ -39,7 +39,16 @@ export function Footer() {
           </FooterColumn>
           <div id="contact" className="scroll-mt-24">
             <FooterColumn title="Contact">
-              <li><a className={linkCls} href={siteConfig.whatsappUrl}>WhatsApp {siteConfig.whatsappLabel}</a></li>
+              <li>
+                <a
+                  className={linkCls}
+                  href={siteConfig.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  WhatsApp {siteConfig.whatsappLabel}
+                </a>
+              </li>
               <li><a className={linkCls} href={siteConfig.emailUrl}>{siteConfig.emailLabel}</a></li>
               <li><span className={linkCls}>{siteConfig.cityLabel}, India</span></li>
             </FooterColumn>

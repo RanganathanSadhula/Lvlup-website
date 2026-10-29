@@ -1705,7 +1705,7 @@ export function TabletView() {
                   <ArrowRight className="size-4 stroke-[2.5]" />
                 </button>
                 <p className="text-[14px] text-[#5A5F6B]">
-                  No school code? Ask your class teacher or WhatsApp us.
+                  No school code? Ask your class teacher or <a href={siteConfig.whatsappUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-[#FF6B2C]">WhatsApp us</a>.
                 </p>
               </div>
             </ScrollReveal>
@@ -1962,7 +1962,7 @@ export function TabletView() {
           {/* Footer note matching UI */}
           <ScrollReveal delay={100}>
             <p className="mt-8 text-[14px] leading-relaxed text-[#5A5F6B]">
-              Something else? WhatsApp us at {siteConfig.whatsappLabel}. A person replies within a few hours. We only
+              Something else? WhatsApp us at <a href={siteConfig.whatsappUrl} target="_blank" rel="noopener noreferrer" className="underline text-black font-normal hover:text-[#FF6B2C]">{siteConfig.whatsappLabel}</a>. A person replies within a few hours. We only
               message you about your child’s batch, and you can reply STOP at any time.
             </p>
           </ScrollReveal>

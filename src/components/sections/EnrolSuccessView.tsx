@@ -100,6 +100,8 @@ export function EnrolSuccessView({
 
           <a
             href={siteConfig.whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex h-12 w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-[#eeece7] px-6 text-[14px] font-semibold text-ink transition hover:bg-[#e4e2dc] active:scale-95"
           >
             <span>WhatsApp us</span>
