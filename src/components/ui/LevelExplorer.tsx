@@ -333,7 +333,7 @@ export function LevelExplorer() {
           onScroll={onScroll}
           tabIndex={0}
           aria-label="Level details"
-          className="relative space-y-5 lg:absolute lg:inset-0 lg:overflow-y-scroll lg:pr-3 lg:[scrollbar-color:#ff6b2c_transparent] lg:[scrollbar-width:thin]"
+          className="relative space-y-5 lg:absolute lg:inset-0 lg:overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         >
           {curriculum.map((l) => (
             <div key={l.level}>
