@@ -18,6 +18,12 @@ export function Header() {
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("lvlup-nav-jump", { detail: { targetId } })
+        );
+      }
+
       window.scrollTo({
         top: Math.max(0, offsetPosition),
         behavior: "smooth",
@@ -69,8 +75,6 @@ export function Header() {
       document.removeEventListener("click", handleClick, { capture: true });
     };
   }, []);
-
-
 
   return (
     <header className="sticky top-0 z-40 h-16 border-b border-white/[0.06] bg-ink/90 backdrop-blur-md">

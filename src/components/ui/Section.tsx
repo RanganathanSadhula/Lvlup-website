@@ -16,6 +16,7 @@ interface SectionProps extends React.HTMLAttributes<HTMLElement> {
   grainOpacity?: number;
   /** Draws the faint vertical guide lines at the 1200px content edges (desktop only). */
   guides?: boolean;
+  overflow?: "hidden" | "visible";
 }
 
 export function Section({
@@ -24,6 +25,7 @@ export function Section({
   grain = false,
   grainOpacity = 0.52,
   guides = true,
+  overflow = "hidden",
   className,
   children,
   ...props
@@ -31,7 +33,12 @@ export function Section({
   const isDark = tone === "dark" || tone === "darker";
   return (
     <section
-      className={cn("relative overflow-hidden scroll-mt-16 py-16 sm:py-20 lg:py-24", tones[tone], className)}
+      className={cn(
+        "relative scroll-mt-16 py-16 sm:py-20 lg:py-24",
+        overflow === "visible" ? "overflow-visible" : "overflow-hidden",
+        tones[tone],
+        className
+      )}
       {...props}
     >
       {topo && (

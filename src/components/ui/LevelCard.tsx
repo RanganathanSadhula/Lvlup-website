@@ -47,7 +47,7 @@ export function LevelCard({
       )}
     >
       {/* ── LEFT COLUMN: Photo with Level / Week Badge (Exact Figma match) ── */}
-      <div className="relative h-64 w-full overflow-hidden bg-[#18191e] sm:h-full sm:min-h-[380px]">
+      <div className="relative h-64 w-full overflow-hidden bg-[#18191e] sm:h-full sm:min-h-[380px] lg:min-h-[460px]">
         {/* Turns into vibrant full color when this level is active while scrolling */}
         <Image
           src={image.src}
@@ -78,7 +78,7 @@ export function LevelCard({
       </div>
 
       {/* ── RIGHT COLUMN: Content (Exact Figma sample media_1793197567948_60a7d2c6.png) ── */}
-      <div className="flex flex-col justify-between p-6 sm:p-7 lg:p-8">
+      <div className="flex flex-col justify-between p-6 sm:p-7 lg:py-6 lg:px-7">
         <div>
           {/* Header Row: Custom Illustrated Peach Icon Tile + Title side by side */}
           <div className="flex items-center gap-3.5 sm:gap-4">
@@ -117,12 +117,12 @@ export function LevelCard({
           </div>
 
           {/* Subtitle / Summary */}
-          <p className="mt-3.5 text-[15px] sm:text-[15.5px] leading-relaxed text-[#6b7280]">
+          <p className="mt-3 text-[14.5px] sm:text-[15px] leading-relaxed text-[#6b7280]">
             {summary}
           </p>
 
           {/* Topics Pills: Light gray pill with orange number (Exact Figma sample) */}
-          <div className="mt-5 flex flex-wrap gap-2.5">
+          <div className="mt-4 sm:mt-4.5 flex flex-wrap gap-2 sm:gap-2.5">
             {topics.map((t, i) => (
               <span
                 key={t}
@@ -136,16 +136,16 @@ export function LevelCard({
         </div>
 
         {/* Bottom Peach Box: Your child makes | Parents see (Exact Figma sample) */}
-        <div className="mt-6 rounded-2xl bg-[#ffece3] p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-6">
+        <div className="mt-5 rounded-2xl bg-[#ffece3] p-4 sm:p-4.5 grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-6">
           <div>
-            <span className="block text-[12.5px] text-[#6b7280]">Your child makes</span>
-            <p className="mt-1 text-[14.5px] sm:text-[15px] font-bold leading-snug text-[#111216]">
+            <span className="block text-[12px] text-[#6b7280]">Your child makes</span>
+            <p className="mt-1 text-[14px] sm:text-[14.5px] font-bold leading-snug text-[#111216]">
               {makes}
             </p>
           </div>
           <div>
-            <span className="block text-[12.5px] text-[#6b7280]">Parents see</span>
-            <p className="mt-1 text-[14.5px] sm:text-[15px] font-bold leading-snug text-[#111216]">
+            <span className="block text-[12px] text-[#6b7280]">Parents see</span>
+            <p className="mt-1 text-[14px] sm:text-[14.5px] font-bold leading-snug text-[#111216]">
               {parentsSee}
             </p>
           </div>
