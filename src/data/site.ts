@@ -10,7 +10,8 @@ const formatWhatsappLabel = (digits: string) => {
   return digits ? `+${digits}` : "[number]";
 };
 
-const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "";
+const defaultEmail = "info@thinkova.ai";
+const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL || defaultEmail;
 const city = process.env.NEXT_PUBLIC_CONTACT_CITY ?? "";
 
 export const siteConfig = {

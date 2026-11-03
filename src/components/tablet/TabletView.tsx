@@ -44,6 +44,7 @@ import {
 } from "@/data/content";
 import { cn } from "@/lib/utils";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { Logo } from "@/components/ui/Logo";
 
 const problemCardsData = [
   {
@@ -222,15 +223,7 @@ export function TabletView() {
       <header className="sticky top-0 z-50 w-full border-b border-[#23262F]/60 bg-[#0B0C0F]/95 backdrop-blur-md">
         <div className="mx-auto flex h-[72px] max-w-[768px] items-center justify-between px-10">
           {/* LvlUp Logo */}
-          <div
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="flex cursor-pointer items-center gap-[10px]"
-          >
-            <Image src="/icons/logo.svg" alt="LvlUp" width={34} height={34} priority />
-            <span className="font-display text-[23.8px] font-semibold tracking-[-0.03em] text-white">
-              Lvl<span className="text-[#FF6B2C]">Up</span>
-            </span>
-          </div>
+          <Logo />
 
           {/* Right CTA + Menu Button */}
           <div className="flex items-center gap-3">
@@ -2185,12 +2178,7 @@ export function TabletView() {
         <div className="mx-auto max-w-[768px] px-10">
           <ScrollReveal>
             {/* Logo using website logo */}
-            <div className="flex items-center gap-2.5">
-              <Image src="/icons/logo.svg" alt="LvlUp" width={32} height={32} priority />
-              <span className="font-display text-[22px] font-semibold tracking-[-0.03em] text-white">
-                Lvl<span className="text-[#FF6B2C]">Up</span>
-              </span>
-            </div>
+            <Logo />
 
             {/* Description */}
             <p className="mt-4 text-[15px] leading-relaxed text-[#A7ACB8]">

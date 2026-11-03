@@ -2103,14 +2103,7 @@ className="underline text-black font-normal hover:text-[#FF6B2C]">{siteConfig.wh
         <div className="mx-auto w-full max-w-[350px]">
         <ScrollReveal>
           {/* Brand Logo */}
-          <div className="flex items-center gap-2.5">
-            <span className="flex size-9 items-center justify-center rounded-[12px] bg-[#ff5520] text-black shadow-md">
-              <ChevronUp className="size-5 stroke-[3]" />
-            </span>
-            <span className="font-display text-[22px] font-bold tracking-tight text-white">
-              Lvl<span className="text-[#ff5520]">Up</span>
-            </span>
-          </div>
+          <Logo />
 
           {/* Short description */}
           <p className="mt-4 text-[14px] leading-relaxed text-[#8e9099] max-w-[340px]">
@@ -2134,7 +2127,7 @@ className="hover:text-[#ff5520] transition">
               WhatsApp {siteConfig.whatsappLabel}
             </a>
             <a href={siteConfig.emailUrl} className="hover:text-[#ff5520] transition">
-              [email]
+              {siteConfig.emailLabel}
             </a>
           </div>
 
