@@ -3,6 +3,7 @@ import type {
   CohortBatchEntity,
   EnrollmentEntity,
   OrderEntity,
+  PaymentEntity,
   RefundEntity,
   SchoolEntity,
   StudentEntity,
@@ -52,7 +53,7 @@ export interface ICommerceRepository {
   getNewlyPaidOrders(): Promise<OrderWithRelations[]>;
   getFailedOrders(): Promise<Array<{ order: OrderEntity; user: UserEntity; student: StudentEntity }>>;
   getPendingRefunds(): Promise<RefundWithRelations[]>;
-  getUnsentAssessments(batchId: string, levelNumber: number): Promise<AssessmentWithRelations[]>;
+  getUnsentAssessments(batchId?: string, levelNumber?: number): Promise<AssessmentWithRelations[]>;
   markAlertSent(
     type: "ABANDONED_CART" | "ENROLMENT" | "PAYMENT_FAILURE" | "INSTALLMENT" | "REFUND" | "ASSESSMENT",
     id: string
@@ -63,6 +64,13 @@ export interface ICommerceRepository {
   upsertOrder(order: OrderEntity): Promise<void>;
   upsertRefund(refund: RefundEntity): Promise<void>;
   upsertAssessment(assessment: AssessmentEntity): Promise<void>;
+  getOrderById(orderId: string): Promise<OrderEntity | null>;
+  getEnrollmentById(enrollmentId: string): Promise<EnrollmentEntity | null>;
+  getUserById(userId: string): Promise<UserEntity | null>;
+  getStudentById(studentId: string): Promise<StudentEntity | null>;
+  upsertPayment(payment: PaymentEntity): Promise<void>;
+  updateOrderStatus(orderId: string, status: OrderEntity["status"], failureReason?: string): Promise<void>;
+  updateEnrollmentStatus(enrollmentId: string, status: EnrollmentEntity["status"]): Promise<void>;
 }
 
 /**
@@ -78,6 +86,7 @@ class DynamicInMemoryStore {
   public students: Map<string, StudentEntity> = new Map();
   public enrollments: Map<string, EnrollmentEntity> = new Map();
   public orders: Map<string, OrderEntity> = new Map();
+  public payments: Map<string, PaymentEntity> = new Map();
   public refunds: Map<string, RefundEntity> = new Map();
   public assessments: Map<string, AssessmentEntity> = new Map();
 
@@ -89,6 +98,7 @@ class DynamicInMemoryStore {
     this.students.clear();
     this.enrollments.clear();
     this.orders.clear();
+    this.payments.clear();
     this.refunds.clear();
     this.assessments.clear();
   }
@@ -259,13 +269,13 @@ class DynamicCommerceRepository implements ICommerceRepository {
     return results;
   }
 
-  async getUnsentAssessments(batchId: string, levelNumber: number): Promise<AssessmentWithRelations[]> {
+  async getUnsentAssessments(batchId?: string, levelNumber?: number): Promise<AssessmentWithRelations[]> {
     const results: AssessmentWithRelations[] = [];
 
     for (const ass of memoryStore.assessments.values()) {
       if (
-        ass.cohortBatchId === batchId &&
-        ass.levelNumber === levelNumber &&
+        (!batchId || ass.cohortBatchId === batchId) &&
+        (!levelNumber || ass.levelNumber === levelNumber) &&
         !ass.reportSentAt
       ) {
         const student = memoryStore.students.get(ass.studentId);
@@ -339,6 +349,41 @@ class DynamicCommerceRepository implements ICommerceRepository {
 
   async upsertAssessment(assessment: AssessmentEntity): Promise<void> {
     memoryStore.assessments.set(assessment.id, assessment);
+  }
+
+  async getOrderById(orderId: string): Promise<OrderEntity | null> {
+    return memoryStore.orders.get(orderId) || null;
+  }
+
+  async getEnrollmentById(enrollmentId: string): Promise<EnrollmentEntity | null> {
+    return memoryStore.enrollments.get(enrollmentId) || null;
+  }
+
+  async getUserById(userId: string): Promise<UserEntity | null> {
+    return memoryStore.users.get(userId) || null;
+  }
+
+  async getStudentById(studentId: string): Promise<StudentEntity | null> {
+    return memoryStore.students.get(studentId) || null;
+  }
+
+  async upsertPayment(payment: PaymentEntity): Promise<void> {
+    memoryStore.payments.set(payment.id, payment);
+  }
+
+  async updateOrderStatus(orderId: string, status: OrderEntity["status"], failureReason?: string): Promise<void> {
+    const order = memoryStore.orders.get(orderId);
+    if (order) {
+      order.status = status;
+      if (failureReason) order.failureReason = failureReason;
+    }
+  }
+
+  async updateEnrollmentStatus(enrollmentId: string, status: EnrollmentEntity["status"]): Promise<void> {
+    const enr = memoryStore.enrollments.get(enrollmentId);
+    if (enr) {
+      enr.status = status;
+    }
   }
 }
 

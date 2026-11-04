@@ -109,5 +109,21 @@ export async function seedDynamicTestData() {
     expiresAt: new Date(Date.now() + 2 * 3600 * 1000),
     createdAt: new Date(Date.now() - 5 * 60 * 1000),
   });
+
+  // 9. Dynamic Unsent Weekly Assessment / Evaluation
+  await dbManager.commerce.upsertAssessment({
+    id: "ass_01",
+    studentId: "stu_01",
+    cohortBatchId: "batch_dps_01",
+    levelNumber: 3,
+    levelTitle: "Voice-AI Interactive Assistant",
+    attendance: "PRESENT",
+    projectTitle: "School Homework Voice Agent",
+    projectArtifactUrl: "https://thinkova.ai/showcase/arjun/level-3",
+    tutorScore: 5,
+    tutorFeedback: "Arjun demonstrated remarkable mastery of prompt chaining and connected his agent to weather and math APIs.",
+    safetyPledgeVerified: true,
+    createdAt: new Date(),
+  });
 }
 

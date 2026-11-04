@@ -5,6 +5,7 @@ import { installmentDueJob } from "./installment-due-job";
 import { enrollmentSuccessJob } from "./enrollment-success-job";
 import { paymentFailureJob } from "./payment-failure-job";
 import { refundStatusJob } from "./refund-status-job";
+import { weeklyEvaluationJob } from "./weekly-evaluation-job";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const allJobs: JobDefinition<any>[] = [
@@ -13,6 +14,7 @@ export const allJobs: JobDefinition<any>[] = [
   enrollmentSuccessJob,
   paymentFailureJob,
   refundStatusJob,
+  weeklyEvaluationJob,
 ];
 
 export function registerAllJobs(engine: CronEngine): void {
@@ -27,4 +29,5 @@ export {
   enrollmentSuccessJob,
   paymentFailureJob,
   refundStatusJob,
+  weeklyEvaluationJob,
 };

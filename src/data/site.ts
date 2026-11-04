@@ -7,7 +7,7 @@ const formatWhatsappLabel = (digits: string) => {
   if (digits.length === 12 && digits.startsWith("91")) {
     return `+91 ${digits.slice(2, 7)} ${digits.slice(7)}`;
   }
-  return digits ? `+${digits}` : "[number]";
+  return digits ? `+${digits}` : "";
 };
 
 const defaultEmail = "info@thinkova.ai";
@@ -20,8 +20,8 @@ export const siteConfig = {
   description:
     "Don't just use AI. Build with it. LvlUp is an eight-week after-school AI course for Grades 5–8, taught by a trained tutor at your child's school. ₹4,999 all-in.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  schoolName: process.env.NEXT_PUBLIC_SCHOOL_NAME ?? "[School name]",
-  batchStartDate: process.env.NEXT_PUBLIC_BATCH_START ?? "[date]",
+  schoolName: process.env.NEXT_PUBLIC_SCHOOL_NAME ?? "",
+  batchStartDate: process.env.NEXT_PUBLIC_BATCH_START ?? "",
   /** Falls back to the section that explains how to join when no enrolment URL is configured. */
   classVideoUrl: process.env.NEXT_PUBLIC_CLASS_VIDEO_URL || "",
   enrolUrl: process.env.NEXT_PUBLIC_ENROL_URL || "/#enrol",
@@ -29,8 +29,8 @@ export const siteConfig = {
   whatsappUrl: whatsappDigits ? `https://wa.me/${whatsappDigits}` : "/#contact",
   whatsappLabel: formatWhatsappLabel(whatsappDigits),
   emailUrl: email ? `mailto:${email}` : "/#contact",
-  emailLabel: email || "[email]",
-  cityLabel: city || "[City]",
+  emailLabel: email || "info@thinkova.ai",
+  cityLabel: city || "",
 };
 
 export const navLinks: NavLink[] = [

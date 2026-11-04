@@ -37,12 +37,36 @@ describe("Cron Engine & Pre-Aggregators", () => {
     await seedDynamicTestData();
   });
 
-  it("registers all 5 core jobs into engine", () => {
+  it("registers all 6 core jobs into engine", () => {
     const engine = new CronEngine(new MetricsCollector(), new CronLogger("Test"));
     registerAllJobs(engine);
     expect(engine.getAllJobs().length).toBe(allJobs.length);
     expect(engine.getJob("job.abandoned_cart_recovery")).toBeDefined();
     expect(engine.getJob("job.installment_due_reminder")).toBeDefined();
+    expect(engine.getJob("job.weekly_evaluation_dispatch")).toBeDefined();
+  });
+
+  it("executes weekly evaluation job and dispatches milestone report", async () => {
+    const engine = new CronEngine(new MetricsCollector(), new CronLogger("Test"));
+    registerAllJobs(engine);
+
+    const log = await engine.runJobNow("job.weekly_evaluation_dispatch");
+    expect(log.status).toBe("SUCCESS");
+    expect(log.recordsProcessed).toBe(1);
+
+    // Second run should process 0 due to idempotency
+    const secondLog = await engine.runJobNow("job.weekly_evaluation_dispatch");
+    expect(secondLog.status).toBe("SUCCESS");
+    expect(secondLog.recordsProcessed).toBe(0);
+  });
+
+  it("executes all jobs cleanly via runAllJobs", async () => {
+    const engine = new CronEngine(new MetricsCollector(), new CronLogger("Test"));
+    registerAllJobs(engine);
+
+    const results = await engine.runAllJobs();
+    expect(results.length).toBe(6);
+    expect(results.every((r) => r.status === "SUCCESS")).toBe(true);
   });
 
   it("executes pre-aggregator and job handler during manual run", async () => {
@@ -110,5 +134,24 @@ describe("Email Templates", () => {
     expect(t.subject).toContain("Riya");
     expect(t.html).toContain("https://thinkova.ai/checkout?ref=test");
     expect(t.html).toContain("3 seats");
+  });
+
+  it("renders weekly evaluation milestone email with project details", () => {
+    const t = emailTemplates.weeklyEvaluationReport({
+      parentName: "Sandeep Verma",
+      studentName: "Arjun Verma",
+      schoolName: "Delhi Public School, Pune",
+      levelNumber: 3,
+      levelTitle: "Voice-AI Interactive Assistant",
+      projectCreated: "School Homework Voice Agent",
+      tutorName: "Rohan Kulkarni",
+      tutorFeedback: "Demonstrated remarkable mastery of prompt chaining.",
+      reportUrl: "https://thinkova.ai/showcase/arjun/level-3",
+    });
+    expect(t.subject).toContain("Level 3 Completed");
+    expect(t.subject).toContain("Arjun Verma");
+    expect(t.html).toContain("School Homework Voice Agent");
+    expect(t.html).toContain("Rohan Kulkarni");
+    expect(t.html).toContain("https://thinkova.ai/showcase/arjun/level-3");
   });
 });

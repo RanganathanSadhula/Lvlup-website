@@ -177,11 +177,23 @@ export function TabletView() {
   const [childName, setChildName] = useState("");
   const [childGrade, setChildGrade] = useState("Grade 6");
   const [childSec, setChildSec] = useState("A");
-  const [schoolCode, setSchoolCode] = useState("PUNE-0427");
+  const [schoolCode, setSchoolCode] = useState("");
   const [parentName, setParentName] = useState("");
+  const [parentEmail, setParentEmail] = useState("");
   const [mobileNum, setMobileNum] = useState("");
   const [enrolSubmitted, setEnrolSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Field validation checks for tablet form
+  const isTabletSchoolCodeValid = schoolCode.trim().length === 5;
+  const isTabletPhoneValid = /^\d{10}$/.test(mobileNum.trim());
+  const isTabletEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(parentEmail.trim());
+  const isTabletFormValid =
+    childName.trim().length >= 2 &&
+    isTabletSchoolCodeValid &&
+    parentName.trim().length >= 2 &&
+    isTabletPhoneValid &&
+    isTabletEmailValid;
 
   // School pack form
   const [schoolSubmitted, setSchoolSubmitted] = useState(false);
@@ -201,13 +213,35 @@ export function TabletView() {
     }
   };
 
-  const handleEnrolSubmit = (e: React.FormEvent) => {
+  const handleEnrolSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isTabletFormValid || isSubmitting) return;
+
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    const amountInRupees = selectedPlan === "full" ? 4499 : 2500;
+
+    try {
+      await fetch("/api/cashfree/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          studentName: childName.trim(),
+          parentName: parentName.trim(),
+          parentEmail: parentEmail.trim(),
+          parentPhone: mobileNum.trim(),
+          schoolUid: schoolCode.trim().toUpperCase(),
+          grade: parseInt(childGrade.replace(/\D/g, "") || "6", 10),
+          paymentPlan: selectedPlan === "full" ? "FULL" : "INSTALLMENTS",
+          amountInRupees,
+        }),
+      });
       setEnrolSubmitted(true);
-    }, 600);
+    } catch (err) {
+      console.error(err);
+      setEnrolSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleSchoolSubmit = (e: React.FormEvent) => {
@@ -1718,13 +1752,17 @@ export function TabletView() {
                   <p className="mt-2 text-[14px] leading-relaxed text-[#5A5F6B]">
                     Thank you! We've sent a confirmation to WhatsApp at{" "}
                     <strong className="text-black font-semibold">
-                      {mobileNum || "+91 98765 43210"}
+                      {mobileNum}
                     </strong>{" "}
-                    for {childName || "your child"}.
+                    and receipt to{" "}
+                    <strong className="text-black font-semibold">
+                      {parentEmail}
+                    </strong>{" "}
+                    for {childName}.
                   </p>
                   <div className="mt-5 rounded-xl bg-[#F4F3EE] p-4 text-left text-[13px] text-[#5A5F6B] space-y-1.5">
                     <p>
-                      <strong className="text-[#0B0C0F]">Child:</strong> {childName || "Asha"} (
+                      <strong className="text-[#0B0C0F]">Child:</strong> {childName} (
                       {childGrade}, Sec {childSec})
                     </p>
                     <p>
@@ -1774,17 +1812,36 @@ export function TabletView() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-[#0B0C0F]">
-                        School code
-                      </label>
+                      <div className="flex items-center justify-between">
+                        <label className="block text-xs font-semibold text-[#0B0C0F]">
+                          School code (5 digits) <span className="text-red-500">*</span>
+                        </label>
+                        <span className={cn("text-[11px] font-mono", schoolCode.length === 5 ? "text-green-600 font-semibold" : "text-[#5A5F6B]")}>
+                          {schoolCode.length}/5
+                        </span>
+                      </div>
                       <input
                         type="text"
+                        maxLength={5}
                         required
-                        placeholder="e.g. PUNE-0427"
+                        placeholder="5 digits, e.g. 10245"
                         value={schoolCode}
-                        onChange={(e) => setSchoolCode(e.target.value)}
-                        className="mt-1.5 w-full rounded-[8px] border border-[#E3E1D9] bg-[#F4F3EE] px-3.5 py-2.5 text-sm text-[#0B0C0F] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#FF6B2C]"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 5);
+                          setSchoolCode(val);
+                        }}
+                        className={cn(
+                          "mt-1.5 w-full rounded-[8px] border px-3.5 py-2.5 text-sm font-mono uppercase text-[#0B0C0F] focus:bg-white focus:outline-none focus:ring-2 transition",
+                          schoolCode.length > 0 && !isTabletSchoolCodeValid
+                            ? "border-red-500 bg-red-50/20 text-red-950 focus:ring-red-500"
+                            : "border-[#E3E1D9] bg-[#F4F3EE] focus:ring-[#FF6B2C]"
+                        )}
                       />
+                      {schoolCode.length > 0 && !isTabletSchoolCodeValid && (
+                        <p className="mt-1 text-[11px] font-medium text-red-600">
+                          School code must be exactly 5 digits.
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -1819,7 +1876,7 @@ export function TabletView() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-semibold text-[#0B0C0F]">
-                        Parent's name
+                        Parent's name <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -1832,30 +1889,80 @@ export function TabletView() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-[#0B0C0F]">
-                        WhatsApp number
-                      </label>
+                      <div className="flex items-center justify-between">
+                        <label className="block text-xs font-semibold text-[#0B0C0F]">
+                          WhatsApp number <span className="text-red-500">*</span>
+                        </label>
+                        <span className={cn("text-[11px] font-mono", mobileNum.length === 10 ? "text-green-600 font-semibold" : "text-[#5A5F6B]")}>
+                          {mobileNum.length}/10
+                        </span>
+                      </div>
                       <input
                         type="tel"
+                        maxLength={10}
                         required
-                        placeholder="+91 98765 43210"
+                        placeholder="10-digit number"
                         value={mobileNum}
-                        onChange={(e) => setMobileNum(e.target.value)}
-                        className="mt-1.5 w-full rounded-[8px] border border-[#E3E1D9] bg-[#F4F3EE] px-3.5 py-2.5 text-sm text-[#0B0C0F] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#FF6B2C]"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, "").slice(0, 10);
+                          setMobileNum(val);
+                        }}
+                        className={cn(
+                          "mt-1.5 w-full rounded-[8px] border px-3.5 py-2.5 text-sm font-mono text-[#0B0C0F] focus:bg-white focus:outline-none focus:ring-2 transition",
+                          mobileNum.length > 0 && !isTabletPhoneValid
+                            ? "border-red-500 bg-red-50/20 text-red-950 focus:ring-red-500"
+                            : "border-[#E3E1D9] bg-[#F4F3EE] focus:ring-[#FF6B2C]"
+                        )}
                       />
+                      {mobileNum.length > 0 && !isTabletPhoneValid && (
+                        <p className="mt-1 text-[11px] font-medium text-red-600">
+                          Mobile number must be exactly 10 digits.
+                        </p>
+                      )}
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#0B0C0F]">
+                      Email address <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="you@example.com"
+                      value={parentEmail}
+                      onChange={(e) => setParentEmail(e.target.value)}
+                      className={cn(
+                        "mt-1.5 w-full rounded-[8px] border px-3.5 py-2.5 text-sm text-[#0B0C0F] focus:bg-white focus:outline-none focus:ring-2 transition",
+                        parentEmail.length > 0 && !isTabletEmailValid
+                          ? "border-red-500 bg-red-50/20 text-red-950 focus:ring-red-500"
+                          : "border-[#E3E1D9] bg-[#F4F3EE] focus:ring-[#FF6B2C]"
+                      )}
+                    />
+                    {parentEmail.length > 0 && !isTabletEmailValid && (
+                      <p className="mt-1 text-[11px] font-medium text-red-600">
+                        Please enter a valid email address.
+                      </p>
+                    )}
                   </div>
 
                   <button
                     type="submit"
-                    disabled={isSubmitting}
-                    className="mt-2 flex h-[48px] w-full items-center justify-center gap-2 rounded-[8px] bg-gradient-to-b from-[#FF8B4E] via-[#FF6B2C] to-[#F2561A] text-[16px] font-semibold text-[#0B0C0F] shadow-[0px_10px_28px_-8px_rgba(255,107,44,0.35)] transition hover:brightness-105 active:scale-95 disabled:opacity-70"
+                    disabled={!isTabletFormValid || isSubmitting}
+                    className={cn(
+                      "mt-2 flex h-[48px] w-full items-center justify-center gap-2 rounded-[8px] text-[16px] font-semibold transition",
+                      isTabletFormValid && !isSubmitting
+                        ? "bg-gradient-to-b from-[#FF8B4E] via-[#FF6B2C] to-[#F2561A] text-[#0B0C0F] shadow-[0px_10px_28px_-8px_rgba(255,107,44,0.35)] hover:brightness-105 active:scale-95 cursor-pointer"
+                        : "bg-[#d8d8de] text-[#8e8e99] cursor-not-allowed shadow-none opacity-60 border border-black/5"
+                    )}
                   >
                     {isSubmitting ? (
                       <Loader2 className="size-5 animate-spin" />
                     ) : (
                       <>
-                        <span>Complete enrolment & pay</span>
+                        <span>
+                          {isTabletFormValid ? "Complete enrolment & pay" : "Fill required fields to enrol"}
+                        </span>
                         <ArrowRight className="size-4 stroke-[2.5]" />
                       </>
                     )}

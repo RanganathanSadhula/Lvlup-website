@@ -1,3 +1,5 @@
+import { smtpMailer } from "./smtp";
+
 /**
  * Unified Dispatcher & Outbox Ledger for Emails and WhatsApp Messages
  */
@@ -50,25 +52,65 @@ export class NotificationDispatcher {
       metadata: payload.metadata,
     };
 
-    // If external mail provider (e.g. Resend, SES) is configured, invoke it here:
-    if (process.env.RESEND_API_KEY) {
+    // 1. Prioritize SMTP automation if configured:
+    if (smtpMailer.isConfigured()) {
       try {
-        await fetch("https://api.resend.com/emails", {
+        const info = await smtpMailer.sendMail({
+          to: payload.to,
+          subject: payload.subject,
+          html: payload.html,
+          text: payload.text,
+        });
+
+        record.metadata = {
+          ...record.metadata,
+          transport: "SMTP",
+          messageId: info.messageId,
+          response: info.response,
+          deliveredLive: true,
+        };
+        console.info(`[Dispatcher] Live email dispatched via SMTP to ${payload.to} (MessageID: ${info.messageId})`);
+      } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        console.error(`[Dispatcher] SMTP dispatch error to ${payload.to}:`, errorMsg);
+        record.status = "FAILED";
+        record.metadata = { ...record.metadata, transport: "SMTP", error: errorMsg };
+      }
+    } else if (process.env.RESEND_API_KEY) {
+      // 2. Fallback to Resend HTTP API if configured:
+      try {
+        const fromAddress = process.env.RESEND_FROM_EMAIL || "Thinkova <info@thinkova.ai>";
+        const res = await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            from: "Thinkova <info@thinkova.ai>",
+            from: fromAddress,
             to: payload.to,
             subject: payload.subject,
             html: payload.html,
+            text: payload.text,
           }),
         });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          console.error(`[Dispatcher] Resend API error (${res.status}): ${errText}`);
+          record.status = "FAILED";
+          record.metadata = { ...record.metadata, transport: "RESEND", providerError: errText, statusCode: res.status };
+        } else {
+          const resData = (await res.json()) as { id?: string };
+          record.metadata = { ...record.metadata, transport: "RESEND", resendId: resData?.id, deliveredLive: true };
+          console.info(`[Dispatcher] Live email dispatched via Resend to ${payload.to} (ID: ${resData?.id})`);
+        }
       } catch (err) {
-        console.error(`[Dispatcher] Failed to send live email via Resend:`, err);
+        console.error(`[Dispatcher] Network error sending live email via Resend:`, err);
+        record.status = "FAILED";
       }
+    } else {
+      record.metadata = { ...record.metadata, deliveredLive: false, mode: "SIMULATED_OUTBOX" };
     }
 
     this.emailOutbox.unshift(record);

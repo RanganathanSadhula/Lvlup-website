@@ -190,20 +190,26 @@ export const preAggregators: PreAggregatorCollection = {
   },
 
   /**
-   * Pre-aggregates weekly student assessments for automated WhatsApp progress dispatch
+   * Pre-aggregates weekly student assessments for automated Email & WhatsApp progress dispatch
    */
   weeklyAssessments: async (
-    batchId: string,
-    levelNumber: number
+    batchId?: string,
+    levelNumber?: number
   ): Promise<PreAggregatorResult<WeeklyAssessmentRecord>> => {
     const rawAssessments = await dbManager.commerce.getUnsentAssessments(batchId, levelNumber);
     const records: WeeklyAssessmentRecord[] = [];
 
     for (const item of rawAssessments) {
+      const batch = await dbManager.schools.getBatch(item.assessment.cohortBatchId);
+      const school = await dbManager.schools.findByUid(item.student.schoolUid);
+      const tutor = batch ? await dbManager.schools.getTutor(batch.tutorId) : undefined;
+
       records.push({
+        assessmentId: item.assessment.id,
         studentId: item.student.id,
         batchId: item.assessment.cohortBatchId,
         schoolUid: item.student.schoolUid,
+        schoolName: school?.officialName || "Thinkova Partner School",
         parentName: item.user.username || item.user.email,
         parentPhone: item.user.phone,
         parentEmail: item.user.email,
@@ -211,8 +217,9 @@ export const preAggregators: PreAggregatorCollection = {
         levelNumber: item.assessment.levelNumber,
         levelTitle: item.assessment.levelTitle,
         projectCreated: item.assessment.projectTitle,
+        tutorName: tutor?.fullName,
         tutorFeedback: item.assessment.tutorFeedback,
-        reportUrl: item.assessment.projectArtifactUrl || `${siteUrl}/parent/progress/${item.student.id}?level=${levelNumber}`,
+        reportUrl: item.assessment.projectArtifactUrl || `${siteUrl}/parent/progress/${item.student.id}?level=${item.assessment.levelNumber}`,
       });
     }
 

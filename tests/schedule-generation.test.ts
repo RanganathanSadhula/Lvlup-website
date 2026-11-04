@@ -83,4 +83,31 @@ describe("Cron Job Scheduler & Notification Verification", () => {
     expect(next?.getUTCHours()).toBe(3);
     expect(next?.getUTCMinutes()).toBe(30);
   });
+
+  it("5. Generates Weekly Student Evaluation email AND WhatsApp report when lab assessment completed", async () => {
+    const log = await engine.runJobNow("job.weekly_evaluation_dispatch");
+    expect(log.status).toBe("SUCCESS");
+    expect(log.recordsProcessed).toBe(1);
+
+    // Verify Evaluation Email
+    const emails = defaultDispatcher.getEmailOutbox("sandeep.v@example.com");
+    expect(emails.length).toBe(1);
+    expect(emails[0]?.subject).toContain("Level 3 Completed");
+    expect(emails[0]?.subject).toContain("Arjun Verma");
+    expect(emails[0]?.html).toContain("School Homework Voice Agent");
+    expect(emails[0]?.html).toContain("Rohan Kulkarni");
+    expect(emails[0]?.html).toContain("https://thinkova.ai/showcase/arjun/level-3");
+
+    // Verify WhatsApp Card
+    const whatsApps = defaultDispatcher.getWhatsAppOutbox("+919876543210");
+    expect(whatsApps.length).toBe(1);
+    expect(whatsApps[0]?.templateName).toBe("lvlup_weekly_assessment_card_v1");
+    expect(whatsApps[0]?.fallbackText).toContain("Level 3");
+    expect(whatsApps[0]?.fallbackText).toContain("School Homework Voice Agent");
+
+    // Subsequent tick should process 0
+    const log2 = await engine.runJobNow("job.weekly_evaluation_dispatch");
+    expect(log2.recordsProcessed).toBe(0);
+    expect(defaultDispatcher.getEmailOutbox().length).toBe(1);
+  });
 });

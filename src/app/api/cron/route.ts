@@ -6,10 +6,31 @@ export const runtime = "nodejs";
 
 /**
  * GET /api/cron
- * Returns health report, registered jobs, metrics, and outbox notification logs.
+ * - When called with ?run=true or by Vercel Cron: runs all jobs and returns execution logs.
+ * - When called without parameters: returns engine health, registered jobs, and recent outbox.
  */
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const shouldRun = searchParams.get("run") === "true" || searchParams.get("action") === "run";
+
   const scheduler = getScheduler();
+
+  if (shouldRun) {
+    const authHeader = request.headers.get("authorization");
+    const cronSecret = process.env.CRON_SECRET;
+    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const results = await scheduler.runAllJobs();
+    return NextResponse.json({
+      status: "success",
+      executedAt: new Date().toISOString(),
+      executedJobsCount: results.length,
+      results,
+    });
+  }
+
   const health = scheduler.getHealth();
   const jobs = scheduler.getAllJobs().map((j) => ({
     id: j.id,
@@ -69,17 +90,7 @@ export async function POST(request: Request) {
   const scheduler = getScheduler();
 
   if (body.runAll) {
-    const jobs = scheduler.getAllJobs();
-    const results = [];
-    for (const job of jobs) {
-      try {
-        const log = await scheduler.runJobNow(job.id);
-        results.push({ jobId: job.id, status: "SUCCESS", log });
-      } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : String(err);
-        results.push({ jobId: job.id, status: "FAILED", error: message });
-      }
-    }
+    const results = await scheduler.runAllJobs();
     return NextResponse.json({ status: "success", executedJobsCount: results.length, results });
   }
 

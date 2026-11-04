@@ -50,6 +50,18 @@ export interface RefundNotificationData {
   estimatedCreditDays: string;
 }
 
+export interface WeeklyEvaluationEmailData {
+  parentName: string;
+  studentName: string;
+  schoolName: string;
+  levelNumber: number;
+  levelTitle: string;
+  projectCreated: string;
+  tutorName?: string;
+  tutorFeedback: string;
+  reportUrl: string;
+}
+
 const baseStyles = `
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: #0E0F12;
@@ -202,6 +214,39 @@ export const emailTemplates = {
           </div>
 
           <p style="font-size: 13px; color: #5F6068;">If the refund is not reflected in your bank account after ${d.estimatedCreditDays}, please contact us at info@thinkova.ai quoting your reference ID.</p>
+        </div>
+      </div>
+    `,
+  }),
+
+  /**
+   * 6. Weekly Evaluation / Assessment Milestone Report
+   */
+  weeklyEvaluationReport: (d: WeeklyEvaluationEmailData) => ({
+    subject: `🚀 Level ${d.levelNumber} Completed: ${d.studentName}'s Milestone & Project Report`,
+    text: `Hi ${d.parentName},\n\nCongratulations! ${d.studentName} has completed Level ${d.levelNumber}: "${d.levelTitle}" at ${d.schoolName}.\n\nProject Built: ${d.projectCreated}\nTutor Feedback: "${d.tutorFeedback}"\n\nView interactive report & code: ${d.reportUrl}`,
+    html: `
+      <div style="${baseStyles}">
+        <div style="${cardStyles}">
+          <div style="display: inline-block; background-color: #FEF3C7; color: #D97706; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; margin-bottom: 12px; text-transform: uppercase;">
+            Milestone Achieved 🚀
+          </div>
+          <h2 style="color: #0E0F12; margin-top: 0;">Level ${d.levelNumber}: ${d.levelTitle}</h2>
+          <p>Hi <strong>${d.parentName}</strong>,</p>
+          <p>We are excited to share that <strong>${d.studentName}</strong> successfully finished this week's in-school AI lab session at <strong>${d.schoolName}</strong>!</p>
+          
+          <div style="background: #F4F3EE; border-radius: 10px; padding: 18px; margin: 20px 0;">
+            <p style="margin: 4px 0;"><strong>Project Built:</strong> 💻 ${d.projectCreated}</p>
+            ${d.tutorName ? `<p style="margin: 4px 0;"><strong>Lab Tutor:</strong> ${d.tutorName}</p>` : ""}
+            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #D0D0D5;">
+              <p style="margin: 4px 0; font-style: italic; color: #374151;">"${d.tutorFeedback}"</p>
+            </div>
+          </div>
+
+          <p>You can view their working interactive project, code repository, and weekly badge on their personal learner portal:</p>
+          <a href="${d.reportUrl}" style="${buttonStyles}">View Student Milestone Showcase &rarr;</a>
+
+          <p style="font-size: 13px; color: #5F6068; margin-top: 24px;">Need assistance or have questions for the lab tutor? Contact us at info@thinkova.ai.</p>
         </div>
       </div>
     `,

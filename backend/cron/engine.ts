@@ -140,6 +140,27 @@ export class CronEngine {
   }
 
   /**
+   * Triggers an immediate execution of all enabled jobs sequentially.
+   * Useful for webhook/serverless cron invocations (/api/cron).
+   */
+  public async runAllJobs(): Promise<Array<{ jobId: string; status: "SUCCESS" | "FAILED"; log?: JobExecutionLog; error?: string }>> {
+    const results: Array<{ jobId: string; status: "SUCCESS" | "FAILED"; log?: JobExecutionLog; error?: string }> = [];
+
+    for (const job of this.jobs.values()) {
+      if (!job.enabled) continue;
+      try {
+        const log = await this.executeJob(job, 1);
+        results.push({ jobId: job.id, status: "SUCCESS", log });
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        results.push({ jobId: job.id, status: "FAILED", error: message });
+      }
+    }
+
+    return results;
+  }
+
+  /**
    * Schedules the next execution of a job based on its trigger
    */
   private scheduleNext(jobId: string): void {

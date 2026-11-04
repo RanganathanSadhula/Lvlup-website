@@ -41,10 +41,13 @@ export interface RefundRecord extends RefundNotificationData {
 }
 
 export interface WeeklyAssessmentRecord extends WhatsAppWeeklyAssessmentPayload {
+  assessmentId: string;
   studentId: string;
   batchId: string;
   schoolUid: string;
+  schoolName: string;
   parentEmail: string;
+  tutorName?: string;
 }
 
 export interface PreAggregatorCollection {
@@ -53,6 +56,6 @@ export interface PreAggregatorCollection {
   enrolmentSuccess: () => Promise<PreAggregatorResult<EnrolmentSuccessRecord>>;
   paymentFailures: () => Promise<PreAggregatorResult<PaymentFailureRecord>>;
   pendingRefunds: () => Promise<PreAggregatorResult<RefundRecord>>;
-  weeklyAssessments: (batchId: string, levelNumber: number) => Promise<PreAggregatorResult<WeeklyAssessmentRecord>>;
+  weeklyAssessments: (batchId?: string, levelNumber?: number) => Promise<PreAggregatorResult<WeeklyAssessmentRecord>>;
 }
 

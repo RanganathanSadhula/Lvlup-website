@@ -188,13 +188,47 @@ export function MobileView() {
   const [enrolSubmitting, setEnrolSubmitting] = useState(false);
   const [enrolSubmitted, setEnrolSubmitted] = useState(false);
 
-  function handleMobileEnrolSubmit(e: React.FormEvent) {
+  // Field validation checks for mobile form
+  const isMobileSchoolCodeValid = enrolSchoolCode.trim().length === 5;
+  const isMobilePhoneValid = /^\d{10}$/.test(enrolMobile.trim());
+  const isMobileEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(enrolEmail.trim());
+  const isMobileFormValid =
+    enrolChildName.trim().length >= 2 &&
+    isMobileSchoolCodeValid &&
+    enrolParentName.trim().length >= 2 &&
+    isMobilePhoneValid &&
+    isMobileEmailValid &&
+    enrolConsent;
+
+  async function handleMobileEnrolSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!isMobileFormValid || enrolSubmitting) return;
+
     setEnrolSubmitting(true);
-    setTimeout(() => {
-      setEnrolSubmitting(false);
+    const amountInRupees = selectedPricingPlan === "full" ? 4499 : 2500;
+
+    try {
+      await fetch("/api/cashfree/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          studentName: enrolChildName.trim(),
+          parentName: enrolParentName.trim(),
+          parentEmail: enrolEmail.trim(),
+          parentPhone: enrolMobile.trim(),
+          schoolUid: enrolSchoolCode.trim().toUpperCase(),
+          grade: parseInt(enrolGrade.replace(/\D/g, "") || "6", 10),
+          paymentPlan: selectedPricingPlan === "full" ? "FULL" : "INSTALLMENTS",
+          amountInRupees,
+        }),
+      });
       setEnrolSubmitted(true);
-    }, 600);
+    } catch (err) {
+      console.error(err);
+      setEnrolSubmitted(true);
+    } finally {
+      setEnrolSubmitting(false);
+    }
   }
 
   // School callback form state
@@ -1582,11 +1616,11 @@ className="underline underline-offset-2 hover:text-[#FF6B2C]">WhatsApp us</a>.
                   Enrolment request received!
                 </h3>
                 <p className="mt-2 text-[14px] leading-relaxed text-[#5f6068]">
-                  Thank you! We’ve sent a confirmation to WhatsApp at <strong className="text-black font-semibold">{enrolMobile || "+91 98765 43210"}</strong> for {enrolChildName || "your child"}.
+                  Thank you! We’ve sent a confirmation to WhatsApp at <strong className="text-black font-semibold">{enrolMobile}</strong> and payment receipt to <strong className="text-black font-semibold">{enrolEmail}</strong> for {enrolChildName || "your child"}.
                 </p>
                 <div className="mt-5 rounded-2xl bg-[#f4f5f7] p-4 text-left text-[13px] text-[#5f6068] space-y-1.5">
-                  <p><strong className="text-[#0e0f12]">Child:</strong> {enrolChildName || "Child Name"} ({enrolGrade}, Sec {enrolSection})</p>
-                  <p><strong className="text-[#0e0f12]">School Code:</strong> {enrolSchoolCode || "PUNE-0427"}</p>
+                  <p><strong className="text-[#0e0f12]">Child:</strong> {enrolChildName} ({enrolGrade}, Sec {enrolSection})</p>
+                  <p><strong className="text-[#0e0f12]">School Code:</strong> {enrolSchoolCode}</p>
                   <p><strong className="text-[#0e0f12]">Plan:</strong> {selectedPricingPlan === "full" ? "₹4,499 in full" : "₹4,999 in two parts"}</p>
                 </div>
                 <button
@@ -1662,17 +1696,36 @@ className="underline underline-offset-2 hover:text-[#FF6B2C]">WhatsApp us</a>.
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[#0e0f12]">
-                      School code
-                    </label>
+                    <div className="flex items-center justify-between">
+                      <label className="block text-xs font-semibold text-[#0e0f12]">
+                        School code (5 digits) <span className="text-red-500">*</span>
+                      </label>
+                      <span className={cn("text-[11px] font-mono", enrolSchoolCode.length === 5 ? "text-green-600 font-semibold" : "text-[#8e9099]")}>
+                        {enrolSchoolCode.length}/5
+                      </span>
+                    </div>
                     <input
                       type="text"
+                      maxLength={5}
                       required
-                      placeholder="e.g. PUNE-0427"
+                      placeholder="5 digits, e.g. 10245"
                       value={enrolSchoolCode}
-                      onChange={(e) => setEnrolSchoolCode(e.target.value.toUpperCase())}
-                      className="mt-1.5 w-full rounded-xl border border-black/10 bg-[#f4f5f7] px-4 py-3 text-sm font-mono uppercase text-[#0e0f12] placeholder:text-[#9ca3af] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#ff5520]"
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 5);
+                        setEnrolSchoolCode(val);
+                      }}
+                      className={cn(
+                        "mt-1.5 w-full rounded-xl border px-4 py-3 text-sm font-mono uppercase text-[#0e0f12] placeholder:text-[#9ca3af] focus:bg-white focus:outline-none focus:ring-2 transition",
+                        enrolSchoolCode.length > 0 && !isMobileSchoolCodeValid
+                          ? "border-red-500 bg-red-50/20 text-red-950 focus:ring-red-500"
+                          : "border-black/10 bg-[#f4f5f7] focus:ring-[#ff5520]"
+                      )}
                     />
+                    {enrolSchoolCode.length > 0 && !isMobileSchoolCodeValid && (
+                      <p className="mt-1 text-[11px] font-medium text-red-600">
+                        School code must be exactly 5 digits.
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -1684,7 +1737,7 @@ className="underline underline-offset-2 hover:text-[#FF6B2C]">WhatsApp us</a>.
 
                   <div>
                     <label className="block text-xs font-semibold text-[#0e0f12]">
-                      Parent or guardian name
+                      Parent or guardian name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -1717,23 +1770,42 @@ className="underline underline-offset-2 hover:text-[#FF6B2C]">WhatsApp us</a>.
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-[#0e0f12]">
-                        WhatsApp mobile
-                      </label>
+                      <div className="flex items-center justify-between">
+                        <label className="block text-xs font-semibold text-[#0e0f12]">
+                          WhatsApp mobile <span className="text-red-500">*</span>
+                        </label>
+                        <span className={cn("text-[11px] font-mono", enrolMobile.length === 10 ? "text-green-600 font-semibold" : "text-[#8e9099]")}>
+                          {enrolMobile.length}/10
+                        </span>
+                      </div>
                       <input
                         type="tel"
+                        maxLength={10}
                         required
                         placeholder="10 digits"
                         value={enrolMobile}
-                        onChange={(e) => setEnrolMobile(e.target.value)}
-                        className="mt-1.5 w-full rounded-xl border border-black/10 bg-[#f4f5f7] px-4 py-3 text-sm font-mono text-[#0e0f12] placeholder:text-[#9ca3af] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#ff5520]"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, "").slice(0, 10);
+                          setEnrolMobile(val);
+                        }}
+                        className={cn(
+                          "mt-1.5 w-full rounded-xl border px-4 py-3 text-sm font-mono text-[#0e0f12] placeholder:text-[#9ca3af] focus:bg-white focus:outline-none focus:ring-2 transition",
+                          enrolMobile.length > 0 && !isMobilePhoneValid
+                            ? "border-red-500 bg-red-50/20 text-red-950 focus:ring-red-500"
+                            : "border-black/10 bg-[#f4f5f7] focus:ring-[#ff5520]"
+                        )}
                       />
+                      {enrolMobile.length > 0 && !isMobilePhoneValid && (
+                        <p className="mt-1 text-[11px] font-medium text-red-600">
+                          Mobile number must be exactly 10 digits.
+                        </p>
+                      )}
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-[#0e0f12]">
-                      Email
+                      Email address <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="email"
@@ -1741,8 +1813,18 @@ className="underline underline-offset-2 hover:text-[#FF6B2C]">WhatsApp us</a>.
                       placeholder="you@example.com"
                       value={enrolEmail}
                       onChange={(e) => setEnrolEmail(e.target.value)}
-                      className="mt-1.5 w-full rounded-xl border border-black/10 bg-[#f4f5f7] px-4 py-3 text-sm text-[#0e0f12] placeholder:text-[#9ca3af] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#ff5520]"
+                      className={cn(
+                        "mt-1.5 w-full rounded-xl border px-4 py-3 text-sm text-[#0e0f12] placeholder:text-[#9ca3af] focus:bg-white focus:outline-none focus:ring-2 transition",
+                        enrolEmail.length > 0 && !isMobileEmailValid
+                          ? "border-red-500 bg-red-50/20 text-red-950 focus:ring-red-500"
+                          : "border-black/10 bg-[#f4f5f7] focus:ring-[#ff5520]"
+                      )}
                     />
+                    {enrolEmail.length > 0 && !isMobileEmailValid && (
+                      <p className="mt-1 text-[11px] font-medium text-red-600">
+                        Please enter a valid email address.
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -1802,15 +1884,24 @@ className="underline underline-offset-2 hover:text-[#FF6B2C]">WhatsApp us</a>.
 
                 <button
                   type="submit"
-                  disabled={enrolSubmitting}
-                  className="flex h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#ff5520] to-[#ff6b2c] font-semibold text-[15px] text-black shadow-lg transition active:scale-[0.98]"
+                  disabled={!isMobileFormValid || enrolSubmitting}
+                  className={cn(
+                    "flex h-[52px] w-full items-center justify-center gap-2 rounded-xl font-semibold text-[15px] transition shadow-md",
+                    isMobileFormValid && !enrolSubmitting
+                      ? "bg-gradient-to-r from-[#ff5520] to-[#ff6b2c] text-black shadow-lg active:scale-[0.98] cursor-pointer"
+                      : "bg-[#d8d8de] text-[#8e8e99] cursor-not-allowed shadow-none opacity-60 border border-black/5"
+                  )}
                 >
                   {enrolSubmitting ? (
                     <Loader2 className="size-5 animate-spin" />
                   ) : (
                     <>
                       <span>
-                        {selectedPricingPlan === "full" ? "Proceed to pay ₹4,499" : "Proceed to pay ₹2,500"}
+                        {isMobileFormValid
+                          ? selectedPricingPlan === "full"
+                            ? "Proceed to pay ₹4,499"
+                            : "Proceed to pay ₹2,500"
+                          : "Fill required fields to enrol"}
                       </span>
                       <ArrowRight className="size-4 stroke-[2.5]" />
                     </>

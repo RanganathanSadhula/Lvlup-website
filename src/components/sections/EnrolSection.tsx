@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowRight, Check, ChevronDown, Loader2, UsersRound } from "lucide-react";
+import { ArrowRight, ChevronDown, Loader2, UsersRound, AlertCircle } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { Section } from "@/components/ui/Section";
@@ -14,18 +14,72 @@ export function EnrolSection() {
   const [payPlan, setPayPlan] = useState<"full" | "parts">("full");
   const [agreed, setAgreed] = useState(false);
   const [isImageColored, setIsImageColored] = useState(false);
+
+  // Form input states
   const [childName, setChildName] = useState("");
+  const [grade, setGrade] = useState("Grade 6");
+  const [section, setSection] = useState("A");
+  const [schoolCode, setSchoolCode] = useState("");
   const [parentName, setParentName] = useState("");
+  const [relationship, setRelationship] = useState("Mother");
   const [mobile, setMobile] = useState("");
+  const [email, setEmail] = useState("");
+
+  const [orderRef, setOrderRef] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  function handleEnrolSubmit(e: React.FormEvent) {
+  // Field validation checks
+  const isSchoolCodeValid = schoolCode.trim().length === 5;
+  const isMobileValid = /^\d{10}$/.test(mobile.trim());
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const isChildNameValid = childName.trim().length >= 2;
+  const isParentNameValid = parentName.trim().length >= 2;
+
+  // Complete form requirement check
+  const isFormValid =
+    isChildNameValid &&
+    isSchoolCodeValid &&
+    isParentNameValid &&
+    isMobileValid &&
+    isEmailValid &&
+    agreed;
+
+  async function handleEnrolSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!isFormValid || submitting) return;
+
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
+    setErrorMsg(null);
+
+    const amountInRupees = payPlan === "parts" ? 2500 : 4499;
+
+    try {
+      const res = await fetch("/api/cashfree/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          studentName: childName.trim(),
+          parentName: parentName.trim(),
+          parentEmail: email.trim(),
+          parentPhone: mobile.trim(),
+          schoolUid: schoolCode.trim().toUpperCase(),
+          grade: parseInt(grade.replace(/\D/g, "") || "6", 10),
+          paymentPlan: payPlan === "full" ? "FULL" : "INSTALLMENTS",
+          amountInRupees,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || data.error || "Failed to create enrolment order.");
+      }
+
+      const result = await res.json();
+      setOrderRef(result.orderId || `LVL-${Date.now().toString().slice(-6)}`);
       setIsSubmitted(true);
+
       setTimeout(() => {
         const el = document.getElementById("enrol");
         if (el) {
@@ -33,7 +87,12 @@ export function EnrolSection() {
           window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
         }
       }, 50);
-    }, 600);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setErrorMsg(msg);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (isSubmitted) {
@@ -42,7 +101,9 @@ export function EnrolSection() {
         <EnrolSuccessView
           childName={childName}
           payPlan={payPlan}
-          email={parentName ? `${parentName.toLowerCase().replace(/\s+/g, ".")}@example.com` : "you@example.com"}
+          email={email.trim()}
+          schoolCode={schoolCode.trim().toUpperCase()}
+          orderRef={orderRef}
           onEdit={() => setIsSubmitted(false)}
         />
       </Section>
@@ -52,94 +113,94 @@ export function EnrolSection() {
   return (
     <Section id="enrol" tone="light" topo aria-labelledby="enrol-title" className="py-20 lg:py-28">
       <Container>
-          <div className="grid gap-10 lg:grid-cols-[380px_minmax(0,1fr)] lg:gap-16 items-start">
-            {/* ── LEFT COLUMN: Enrol title, steps, support callout, and mother image ── */}
-            <ScrollReveal>
-              <div>
-                <h2
-                  id="enrol-title"
-                  className="font-display text-[38px] font-normal leading-[1.05] tracking-[-0.03em] text-ink sm:text-[46px]"
-                >
-                  Enrol your child
-                </h2>
-                <p className="mt-4 text-[15px] leading-relaxed text-muted">
-                  It takes about three minutes. Keep your school code handy. Your school shares it with parents.
-                </p>
+        <div className="grid gap-10 lg:grid-cols-[380px_minmax(0,1fr)] lg:gap-16 items-start">
+          {/* ── LEFT COLUMN: Enrol title, steps, support callout, and mother image ── */}
+          <ScrollReveal>
+            <div>
+              <h2
+                id="enrol-title"
+                className="font-display text-[38px] font-normal leading-[1.05] tracking-[-0.03em] text-ink sm:text-[46px]"
+              >
+                Enrol your child
+              </h2>
+              <p className="mt-4 text-[15px] leading-relaxed text-muted">
+                It takes about three minutes. Keep your school code handy. Your school shares it with parents.
+              </p>
 
-                {/* Steps list */}
-                <ol className="mt-8 space-y-5">
-                  <li className="flex items-start gap-3.5">
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-brand text-xs font-bold text-white">
-                      1
-                    </span>
-                    <div>
-                      <h3 className="text-sm font-semibold text-ink">Fill in the form</h3>
-                      <p className="mt-0.5 text-xs text-muted">Your child's details and yours</p>
-                    </div>
-                  </li>
-
-                  <li className="flex items-start gap-3.5">
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-black/20 bg-white text-xs font-bold text-muted">
-                      2
-                    </span>
-                    <div>
-                      <h3 className="text-sm font-semibold text-ink">Choose how to pay</h3>
-                      <p className="mt-0.5 text-xs text-muted">In full for ₹4,499, or two parts for ₹4,999</p>
-                    </div>
-                  </li>
-
-                  <li className="flex items-start gap-3.5">
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-black/20 bg-white text-xs font-bold text-muted">
-                      3
-                    </span>
-                    <div>
-                      <h3 className="text-sm font-semibold text-ink">Pay and get confirmation</h3>
-                      <p className="mt-0.5 text-xs text-muted">On WhatsApp, with the batch start date</p>
-                    </div>
-                  </li>
-                </ol>
-
-                {/* No school code callout */}
-                <div className="mt-7 flex items-center gap-3 rounded-2xl border border-black/[0.08] bg-white p-4 shadow-sm">
-                  <UsersRound aria-hidden className="size-5 shrink-0 text-ink/75" />
-                  <p className="text-xs font-medium leading-snug text-ink/80">
-                    No school code? Ask your class teacher or <a href={siteConfig.whatsappUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-[#ff5520]">WhatsApp us</a>.
-                  </p>
-                </div>
-
-                {/* Mother Image: Smooth transition from black to colour on hover, touch & click */}
-                <div
-                  className="group/aunty-card mt-6 overflow-hidden rounded-2xl border border-black/[0.08] bg-white shadow-md cursor-pointer transition-all duration-300 hover:shadow-xl hover:border-black/20"
-                  onMouseEnter={() => setIsImageColored(true)}
-                  onMouseLeave={() => setIsImageColored(false)}
-                  onClick={() => setIsImageColored((prev) => !prev)}
-                  onTouchStart={() => setIsImageColored(true)}
-                  onTouchEnd={() => setIsImageColored(false)}
-                >
-                  <div className="overflow-hidden">
-                    <Image
-                      src="/images/enrol-parent-color.png"
-                      alt="A smiling parent sitting on sofa with book"
-                      width={524}
-                      height={391}
-                      unoptimized
-                      quality={100}
-                      className={cn(
-                        "h-auto w-full object-cover transition-all duration-700 ease-out transform-gpu",
-                        "group-hover/aunty-card:grayscale-0 group-hover/aunty-card:scale-105 group-hover/aunty-card:contrast-100 group-hover/aunty-card:brightness-100",
-                        isImageColored
-                          ? "grayscale-0 scale-105 contrast-100 brightness-100"
-                          : "grayscale scale-100 contrast-[1.08] brightness-95"
-                      )}
-                    />
+              {/* Steps list */}
+              <ol className="mt-8 space-y-5">
+                <li className="flex items-start gap-3.5">
+                  <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-brand text-xs font-bold text-white">
+                    1
+                  </span>
+                  <div>
+                    <h3 className="text-sm font-semibold text-ink">Fill in the form</h3>
+                    <p className="mt-0.5 text-xs text-muted">Your child's details and yours</p>
                   </div>
+                </li>
+
+                <li className="flex items-start gap-3.5">
+                  <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-black/20 bg-white text-xs font-bold text-muted">
+                    2
+                  </span>
+                  <div>
+                    <h3 className="text-sm font-semibold text-ink">Choose how to pay</h3>
+                    <p className="mt-0.5 text-xs text-muted">In full for ₹4,499, or two parts for ₹4,999</p>
+                  </div>
+                </li>
+
+                <li className="flex items-start gap-3.5">
+                  <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-black/20 bg-white text-xs font-bold text-muted">
+                    3
+                  </span>
+                  <div>
+                    <h3 className="text-sm font-semibold text-ink">Pay and get confirmation</h3>
+                    <p className="mt-0.5 text-xs text-muted">On WhatsApp, with the batch start date</p>
+                  </div>
+                </li>
+              </ol>
+
+              {/* No school code callout */}
+              <div className="mt-7 flex items-center gap-3 rounded-2xl border border-black/[0.08] bg-white p-4 shadow-sm">
+                <UsersRound aria-hidden className="size-5 shrink-0 text-ink/75" />
+                <p className="text-xs font-medium leading-snug text-ink/80">
+                  No school code? Ask your class teacher or <a href={siteConfig.whatsappUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-[#ff5520]">WhatsApp us</a>.
+                </p>
+              </div>
+
+              {/* Mother Image */}
+              <div
+                className="group/aunty-card mt-6 overflow-hidden rounded-2xl border border-black/[0.08] bg-white shadow-md cursor-pointer transition-all duration-300 hover:shadow-xl hover:border-black/20"
+                onMouseEnter={() => setIsImageColored(true)}
+                onMouseLeave={() => setIsImageColored(false)}
+                onClick={() => setIsImageColored((prev) => !prev)}
+                onTouchStart={() => setIsImageColored(true)}
+                onTouchEnd={() => setIsImageColored(false)}
+              >
+                <div className="overflow-hidden">
+                  <Image
+                    src="/images/enrol-parent-color.png"
+                    alt="A smiling parent sitting on sofa with book"
+                    width={524}
+                    height={391}
+                    unoptimized
+                    quality={100}
+                    className={cn(
+                      "h-auto w-full object-cover transition-all duration-700 ease-out transform-gpu",
+                      "group-hover/aunty-card:grayscale-0 group-hover/aunty-card:scale-105 group-hover/aunty-card:contrast-100 group-hover/aunty-card:brightness-100",
+                      isImageColored
+                        ? "grayscale-0 scale-105 contrast-100 brightness-100"
+                        : "grayscale scale-100 contrast-[1.08] brightness-95"
+                    )}
+                  />
                 </div>
               </div>
-            </ScrollReveal>
+            </div>
+          </ScrollReveal>
 
-            {/* ── RIGHT COLUMN: Enrolment Form ── */}
-            <ScrollReveal delay={120}>
-              <div className="rounded-3xl border border-black/[0.08] bg-white p-6 shadow-xl sm:p-8 lg:p-9">
+          {/* ── RIGHT COLUMN: Enrolment Form ── */}
+          <ScrollReveal delay={120}>
+            <div className="rounded-3xl border border-black/[0.08] bg-white p-6 shadow-xl sm:p-8 lg:p-9">
               <form onSubmit={handleEnrolSubmit}>
                 {/* 1. Student Details */}
                 <div>
@@ -147,11 +208,12 @@ export function EnrolSection() {
                   <div className="mt-4 grid gap-4 sm:grid-cols-2">
                     <div>
                       <label htmlFor="childName" className="block text-xs font-medium text-ink/70">
-                        Child's full name
+                        Child's full name <span className="text-red-500">*</span>
                       </label>
                       <input
                         id="childName"
                         type="text"
+                        required
                         placeholder="As on school records"
                         value={childName}
                         onChange={(e) => setChildName(e.target.value)}
@@ -161,12 +223,13 @@ export function EnrolSection() {
 
                     <div>
                       <label htmlFor="grade" className="block text-xs font-medium text-ink/70">
-                        Grade
+                        Grade <span className="text-red-500">*</span>
                       </label>
                       <div className="relative mt-1.5">
                         <select
                           id="grade"
-                          defaultValue="Grade 6"
+                          value={grade}
+                          onChange={(e) => setGrade(e.target.value)}
                           className="w-full appearance-none rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm text-ink focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand pr-10"
                         >
                           <option value="Grade 5">Grade 5</option>
@@ -185,21 +248,50 @@ export function EnrolSection() {
                       <input
                         id="section"
                         type="text"
-                        placeholder="B"
+                        placeholder="e.g. A, B"
+                        value={section}
+                        onChange={(e) => setSection(e.target.value)}
                         className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="schoolCode" className="block text-xs font-medium text-ink/70">
-                        School code
-                      </label>
+                      <div className="flex items-center justify-between">
+                        <label htmlFor="schoolCode" className="block text-xs font-medium text-ink/70">
+                          School code (5 digits) <span className="text-red-500">*</span>
+                        </label>
+                        <span
+                          className={cn(
+                            "text-[11px] font-mono",
+                            schoolCode.length === 5 ? "text-green-600 font-semibold" : "text-muted"
+                          )}
+                        >
+                          {schoolCode.length}/5
+                        </span>
+                      </div>
                       <input
                         id="schoolCode"
                         type="text"
-                        placeholder="e.g. PUNE-0427"
-                        className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm font-mono uppercase text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
+                        maxLength={5}
+                        placeholder="5 digits, e.g. 10245"
+                        value={schoolCode}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 5);
+                          setSchoolCode(val);
+                        }}
+                        className={cn(
+                          "mt-1.5 w-full rounded-xl border px-4 py-3 text-sm font-mono uppercase text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 transition",
+                          schoolCode.length > 0 && !isSchoolCodeValid
+                            ? "border-red-500 bg-red-50/20 text-red-950 focus:ring-red-500"
+                            : "border-black/5 bg-[#f4f5f7] focus:ring-brand"
+                        )}
                       />
+                      {schoolCode.length > 0 && !isSchoolCodeValid && (
+                        <p className="mt-1.5 flex items-center gap-1 text-[12px] font-medium text-red-600 animate-fadeIn">
+                          <AlertCircle className="size-3.5 shrink-0" />
+                          <span>School code must be exactly 5 digits.</span>
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -210,11 +302,12 @@ export function EnrolSection() {
                   <div className="mt-4 grid gap-4 sm:grid-cols-2">
                     <div>
                       <label htmlFor="parentName" className="block text-xs font-medium text-ink/70">
-                        Parent or guardian name
+                        Parent or guardian name <span className="text-red-500">*</span>
                       </label>
                       <input
                         id="parentName"
                         type="text"
+                        required
                         placeholder="Your full name"
                         value={parentName}
                         onChange={(e) => setParentName(e.target.value)}
@@ -229,7 +322,8 @@ export function EnrolSection() {
                       <div className="relative mt-1.5">
                         <select
                           id="relationship"
-                          defaultValue="Mother"
+                          value={relationship}
+                          onChange={(e) => setRelationship(e.target.value)}
                           className="w-full appearance-none rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm text-ink focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand pr-10"
                         >
                           <option value="Mother">Mother</option>
@@ -242,29 +336,68 @@ export function EnrolSection() {
                     </div>
 
                     <div>
-                      <label htmlFor="mobile" className="block text-xs font-medium text-ink/70">
-                        Mobile (WhatsApp)
-                      </label>
+                      <div className="flex items-center justify-between">
+                        <label htmlFor="mobile" className="block text-xs font-medium text-ink/70">
+                          Mobile (WhatsApp) <span className="text-red-500">*</span>
+                        </label>
+                        <span
+                          className={cn(
+                            "text-[11px] font-mono",
+                            mobile.length === 10 ? "text-green-600 font-semibold" : "text-muted"
+                          )}
+                        >
+                          {mobile.length}/10
+                        </span>
+                      </div>
                       <input
                         id="mobile"
                         type="tel"
+                        maxLength={10}
                         placeholder="10-digit number"
                         value={mobile}
-                        onChange={(e) => setMobile(e.target.value)}
-                        className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm font-mono text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, "").slice(0, 10);
+                          setMobile(val);
+                        }}
+                        className={cn(
+                          "mt-1.5 w-full rounded-xl border px-4 py-3 text-sm font-mono text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 transition",
+                          mobile.length > 0 && !isMobileValid
+                            ? "border-red-500 bg-red-50/20 text-red-950 focus:ring-red-500"
+                            : "border-black/5 bg-[#f4f5f7] focus:ring-brand"
+                        )}
                       />
+                      {mobile.length > 0 && !isMobileValid && (
+                        <p className="mt-1.5 flex items-center gap-1 text-[12px] font-medium text-red-600 animate-fadeIn">
+                          <AlertCircle className="size-3.5 shrink-0" />
+                          <span>Mobile number must be exactly 10 digits.</span>
+                        </p>
+                      )}
                     </div>
 
                     <div>
                       <label htmlFor="email" className="block text-xs font-medium text-ink/70">
-                        Email
+                        Email address <span className="text-red-500">*</span>
                       </label>
                       <input
                         id="email"
                         type="email"
+                        required
                         placeholder="you@example.com"
-                        className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className={cn(
+                          "mt-1.5 w-full rounded-xl border px-4 py-3 text-sm text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 transition",
+                          email.length > 0 && !isEmailValid
+                            ? "border-red-500 bg-red-50/20 text-red-950 focus:ring-red-500"
+                            : "border-black/5 bg-[#f4f5f7] focus:ring-brand"
+                        )}
                       />
+                      {email.length > 0 && !isEmailValid && (
+                        <p className="mt-1.5 flex items-center gap-1 text-[12px] font-medium text-red-600 animate-fadeIn">
+                          <AlertCircle className="size-3.5 shrink-0" />
+                          <span>Please enter a valid email address.</span>
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -345,9 +478,9 @@ export function EnrolSection() {
                     type="checkbox"
                     checked={agreed}
                     onChange={(e) => setAgreed(e.target.checked)}
-                    className="mt-1 size-4 rounded border-gray-300 text-brand focus:ring-brand"
+                    className="mt-1 size-4 rounded border-gray-300 text-brand focus:ring-brand cursor-pointer"
                   />
-                  <label htmlFor="consent" className="text-xs leading-relaxed text-ink/75">
+                  <label htmlFor="consent" className="text-xs leading-relaxed text-ink/75 cursor-pointer">
                     I am this child's parent or guardian. I agree to my child taking part in LvlUp and to LvlUp
                     keeping these details to run the course. Read the{" "}
                     <a href="/legal/consent" className="underline underline-offset-2 hover:text-ink">
@@ -357,24 +490,36 @@ export function EnrolSection() {
                     <a href="/legal/privacy" className="underline underline-offset-2 hover:text-ink">
                       privacy notice
                     </a>
-                    .
+                    . <span className="text-red-500">*</span>
                   </label>
                 </div>
 
-                {/* Submit button */}
+                {/* Error Banner */}
+                {errorMsg && (
+                  <div className="mt-4 rounded-xl bg-red-50 p-3 text-xs text-red-700 border border-red-200">
+                    {errorMsg}
+                  </div>
+                )}
+
+                {/* Submit button (Dull disabled state when incomplete) */}
                 <button
                   type="submit"
-                  disabled={submitting}
-                  className="mt-6 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-gradient px-6 py-4 text-center text-[15px] font-bold text-ink shadow-glow transition hover:opacity-95 disabled:opacity-75"
+                  disabled={!isFormValid || submitting}
+                  className={cn(
+                    "mt-6 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl py-4 text-center text-[15px] font-bold transition shadow-sm",
+                    isFormValid && !submitting
+                      ? "bg-brand-gradient text-ink shadow-glow hover:opacity-95 cursor-pointer active:scale-[0.99]"
+                      : "bg-[#e2e2ea] text-[#8e8e99] cursor-not-allowed shadow-none opacity-60 border border-black/5"
+                  )}
                 >
                   {submitting ? (
                     <>
                       <Loader2 className="size-4 animate-spin" />
-                      <span>Processing…</span>
+                      <span>Opening payment gateway…</span>
                     </>
                   ) : (
                     <>
-                      <span>Continue to payment</span>
+                      <span>{isFormValid ? "Continue to payment" : "Fill required fields to enrol"}</span>
                       <ArrowRight className="size-4" />
                     </>
                   )}
@@ -387,7 +532,7 @@ export function EnrolSection() {
             </div>
           </ScrollReveal>
         </div>
-        </Container>
+      </Container>
     </Section>
   );
 }
