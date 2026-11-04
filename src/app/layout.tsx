@@ -19,8 +19,8 @@ export const viewport: Viewport = { themeColor: "#0e0f12", width: "device-width"
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${sans.variable} ${display.variable} ${mono.variable}`}>
-      <body>
+    <html lang="en" suppressHydrationWarning className={`${sans.variable} ${display.variable} ${mono.variable}`}>
+      <body suppressHydrationWarning>
         <a
           href="#main"
           className="sr-only z-[60] rounded-md bg-white px-4 py-2 text-ink focus:not-sr-only focus:fixed focus:left-4 focus:top-4"

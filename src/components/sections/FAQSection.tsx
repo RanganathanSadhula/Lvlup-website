@@ -29,6 +29,7 @@ function Accordion({ items, idPrefix }: { items: FaqItem[]; idPrefix: string }) 
                 aria-expanded={open}
                 aria-controls={panelId}
                 onClick={() => setOpenIndex(open ? null : i)}
+                suppressHydrationWarning
                 className="flex min-h-[60px] w-full items-center justify-between gap-4 rounded-xl px-5 py-4 text-left text-[15px] font-semibold sm:px-6"
               >
                 {item.question}
@@ -78,6 +79,7 @@ export function FAQSection() {
                   aria-controls={`${uid}-tabpanel`}
                   tabIndex={tab === t.id ? 0 : -1}
                   onClick={() => setTab(t.id)}
+                  suppressHydrationWarning
                   onKeyDown={(e) => {
                     if (e.key === "ArrowRight" || e.key === "ArrowLeft") setTab(tab === "parents" ? "schools" : "parents");
                   }}
