@@ -51,7 +51,7 @@ describe("Cron Job Scheduler & Notification Verification", () => {
     // Verify WhatsApp
     const whatsApps = defaultDispatcher.getWhatsAppOutbox("+919876543210");
     expect(whatsApps.length).toBe(1);
-    expect(whatsApps[0]?.templateName).toBe("lvlup_installment_due_v1");
+    expect(whatsApps[0]?.templateName).toBe("thinkova_installment_due_v1");
     expect(whatsApps[0]?.fallbackText).toContain("₹2,499");
   });
 
@@ -70,7 +70,7 @@ describe("Cron Job Scheduler & Notification Verification", () => {
     // Verify WhatsApp
     const whatsApps = defaultDispatcher.getWhatsAppOutbox("+919876543210");
     expect(whatsApps.length).toBe(1);
-    expect(whatsApps[0]?.templateName).toBe("lvlup_enrollment_confirmation_v1");
+    expect(whatsApps[0]?.templateName).toBe("thinkova_enrollment_confirmation_v1");
   });
 
   it("4. Evaluates schedule in Indian Standard Time (Asia/Kolkata) accurately", () => {
@@ -101,7 +101,7 @@ describe("Cron Job Scheduler & Notification Verification", () => {
     // Verify WhatsApp Card
     const whatsApps = defaultDispatcher.getWhatsAppOutbox("+919876543210");
     expect(whatsApps.length).toBe(1);
-    expect(whatsApps[0]?.templateName).toBe("lvlup_weekly_assessment_card_v1");
+    expect(whatsApps[0]?.templateName).toBe("thinkova_weekly_assessment_card_v1");
     expect(whatsApps[0]?.fallbackText).toContain("Level 3");
     expect(whatsApps[0]?.fallbackText).toContain("School Homework Voice Agent");
 

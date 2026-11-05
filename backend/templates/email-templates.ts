@@ -1,5 +1,5 @@
 /**
- * Brand-consistent HTML and Text Email Templates for Thinkova / LvlUp
+ * Brand-consistent HTML and Text Email Templates for ThinkOva
  */
 
 export interface EnrolmentSuccessData {
@@ -97,14 +97,14 @@ export const emailTemplates = {
    * 1. Enrolment Success Email
    */
   enrolmentSuccess: (d: EnrolmentSuccessData) => ({
-    subject: `Enrolment Confirmed: ${d.studentName} is registered for LvlUp at ${d.schoolName}`,
-    text: `Hi ${d.parentName},\n\n${d.studentName}'s enrolment for Grade ${d.currentGrade} at ${d.schoolName} is confirmed!\n\nSchedule: ${d.batchSchedule}\nTutor: ${d.tutorName}\nPayment: ${d.amountPaid} (Ref: ${d.orderId})\n\nWe look forward to welcoming ${d.studentName}!\n\nTeam Thinkova`,
+    subject: `Enrolment Confirmed: ${d.studentName} is registered for ThinkOva AI Course at ${d.schoolName}`,
+    text: `Hi ${d.parentName},\n\n${d.studentName}'s enrolment for Grade ${d.currentGrade} at ${d.schoolName} is confirmed!\n\nSchedule: ${d.batchSchedule}\nTutor: ${d.tutorName}\nPayment: ${d.amountPaid} (Ref: ${d.orderId})\n\nWe look forward to welcoming ${d.studentName}!\n\nTeam ThinkOva`,
     html: `
       <div style="${baseStyles}">
         <div style="${cardStyles}">
           <h2 style="color: #0E0F12; margin-top: 0;">🎉 Enrolment Confirmed!</h2>
           <p>Hi <strong>${d.parentName}</strong>,</p>
-          <p>We are excited to confirm that <strong>${d.studentName}</strong> (Grade ${d.currentGrade}) is officially enrolled in the 8-week LvlUp AI program at <strong>${d.schoolName}</strong>.</p>
+          <p>We are excited to confirm that <strong>${d.studentName}</strong> (Grade ${d.currentGrade}) is officially enrolled in the 8-week ThinkOva AI program at <strong>${d.schoolName}</strong>.</p>
           
           <div style="background: #F4F3EE; border-radius: 10px; padding: 18px; margin: 20px 0;">
             <p style="margin: 4px 0;"><strong>School Lab Session:</strong> ${d.batchSchedule}</p>
@@ -124,8 +124,8 @@ export const emailTemplates = {
    * 2. Abandoned Cart Recovery (1 Hour Pending)
    */
   abandonedCart: (d: AbandonedCartData) => ({
-    subject: `Complete ${d.studentName}'s LvlUp registration at ${d.schoolName}`,
-    text: `Hi ${d.parentName},\n\nYou started enrolling ${d.studentName} for LvlUp at ${d.schoolName}. There are only ${d.seatsRemaining} seats remaining in this batch.\n\nComplete checkout here: ${d.checkoutUrl}`,
+    subject: `Complete ${d.studentName}'s ThinkOva registration at ${d.schoolName}`,
+    text: `Hi ${d.parentName},\n\nYou started enrolling ${d.studentName} for ThinkOva at ${d.schoolName}. There are only ${d.seatsRemaining} seats remaining in this batch.\n\nComplete checkout here: ${d.checkoutUrl}`,
     html: `
       <div style="${baseStyles}">
         <div style="${cardStyles}">
@@ -155,7 +155,7 @@ export const emailTemplates = {
         <div style="${cardStyles}">
           <h2 style="color: #D32F2F; margin-top: 0;">Payment Incomplete</h2>
           <p>Hi <strong>${d.parentName}</strong>,</p>
-          <p>We were unable to complete your payment of <strong>${d.amount}</strong> for <strong>${d.studentName}</strong>'s LvlUp enrolment.</p>
+          <p>We were unable to complete your payment of <strong>${d.amount}</strong> for <strong>${d.studentName}</strong>'s ThinkOva enrolment.</p>
           
           <div style="background: #FDE8E8; border-radius: 8px; padding: 14px; margin: 18px 0; color: #9B1C1C;">
             <strong>Bank notice:</strong> ${d.failureReason}
@@ -172,7 +172,7 @@ export const emailTemplates = {
    * 4. Installment 2 Reminder (3 Days Prior to Level 5)
    */
   installmentReminder: (d: InstallmentReminderData) => ({
-    subject: `Reminder: Installment 2 due for ${d.studentName}'s LvlUp Course (${d.dueDate})`,
+    subject: `Reminder: Installment 2 due for ${d.studentName}'s ThinkOva Course (${d.dueDate})`,
     text: `Hi ${d.parentName},\n\n${d.studentName} is reaching Level 5 (${d.levelStartName})! The final installment of ${d.installmentAmount} is due by ${d.dueDate}.\n\nPay online: ${d.paymentUrl}`,
     html: `
       <div style="${baseStyles}">

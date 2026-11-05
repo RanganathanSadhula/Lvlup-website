@@ -30,7 +30,7 @@ export function PricingSection() {
           {/* Main Pricing Card */}
           <ScrollReveal delay={80}>
             <article className="overflow-hidden rounded-3xl border-t-2 border-t-brand bg-gradient-to-b from-[#181920] to-[#121318] p-6 text-white shadow-2xl sm:p-8 lg:p-9">
-            <p className="font-mono text-xs text-muted-dark">LvlUp · all 8 levels</p>
+            <p className="font-mono text-xs text-muted-dark">ThinkOva · all 8 levels</p>
 
             <div className="mt-3 flex items-center gap-2.5">
               <span className="text-sm text-muted-dark">
@@ -141,7 +141,7 @@ export function PricingSection() {
             </a>
 
             <p className="mt-4 text-xs leading-relaxed text-muted-dark">
-              Partner school prices. Pay by UPI, card or net banking. Fees are paid to LvlUp, not to your school.
+              Partner school prices. Pay by UPI, card or net banking. Fees are paid to ThinkOva, not to your school.
             </p>
             </article>
           </ScrollReveal>

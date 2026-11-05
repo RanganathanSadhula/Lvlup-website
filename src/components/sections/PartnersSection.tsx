@@ -6,7 +6,7 @@ export function PartnersSection() {
   return (
     <ScrollReveal delay={150}>
       <div className="mt-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-4">
-        <h3 className="shrink-0 text-sm font-semibold text-muted-dark lg:mr-2">Schools running LvlUp</h3>
+        <h3 className="shrink-0 text-sm font-semibold text-muted-dark lg:mr-2">Schools running ThinkOva</h3>
         <ul className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {partnerSchools.map((s) => (
             <li key={s.name} className="flex items-center gap-3 rounded-lg border border-white/10 bg-ink-2 px-4 py-3.5">

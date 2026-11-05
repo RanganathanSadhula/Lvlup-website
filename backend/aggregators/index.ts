@@ -120,7 +120,7 @@ export const preAggregators: PreAggregatorCollection = {
         schoolName: school?.officialName || item.student.schoolUid,
         schoolUid: item.student.schoolUid,
         batchSchedule,
-        tutorName: tutor?.fullName || "Assigned LvlUp Tutor",
+        tutorName: tutor?.fullName || "Assigned ThinkOva Tutor",
         amountPaid: formatPaiseToRupees(item.order.amountInPaise),
         orderId: item.order.id,
       });

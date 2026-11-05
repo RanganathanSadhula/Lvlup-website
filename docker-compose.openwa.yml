@@ -1,0 +1,30 @@
+services:
+  openwa:
+    image: ghcr.io/rmyndharis/openwa:latest
+    container_name: thinkova-openwa
+    restart: unless-stopped
+    ports:
+      - "2785:2785"
+    environment:
+      # OpenWA Server Configuration
+      - PORT=2785
+      - API_KEY=${OPENWA_API_KEY:-thinkova_openwa_secure_key_2026}
+      - DB_ENGINE=sqlite
+      - MEDIA_STORAGE=local
+      - CHAT_MEDIA_ARCHIVE=false
+      - ENGINE_TYPE=baileys
+      - LOG_LEVEL=info
+    volumes:
+      # Persistent storage for session credentials, auth tokens, and media
+      - openwa-data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:2785/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  openwa-data:
+    driver: local
+

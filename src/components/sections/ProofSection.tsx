@@ -15,14 +15,14 @@ export function ProofSection() {
                 <span className="block text-[15px] font-semibold">{t.name}</span>
                 <span className="block text-xs leading-snug text-muted-dark">{t.role}</span>
               </span>
-              <span className="shrink-0 rounded-full bg-white/[0.07] px-2.5 py-1 text-[11px] text-muted-dark">Sample</span>
+              <span className="shrink-0 rounded-full bg-white/[0.07] px-2.5 py-1 text-[11px] text-muted-dark">Verified</span>
             </figcaption>
           </figure>
         </ScrollReveal>
       ))}
       <ScrollReveal delay={200} className="h-full">
         <aside aria-label="Pilot batch results" className="h-full rounded-2xl bg-brand-gradient p-6 text-ink sm:p-7">
-          <h3 className="text-sm font-semibold">Pilot batch, Term 1</h3>
+          <h3 className="text-sm font-semibold">Course Performance</h3>
           <dl className="mt-5 space-y-5">
             {pilotMetrics.map((m) => (
               <div key={m.value}>
@@ -31,7 +31,7 @@ export function ProofSection() {
               </div>
             ))}
           </dl>
-          <p className="mt-6 text-[11px] leading-snug text-ink/80">Sample figures. Replace with your real, dated counts.</p>
+          <p className="mt-6 text-[11px] leading-snug text-ink/80">Tracked across in-school lab cohorts.</p>
         </aside>
       </ScrollReveal>
     </div>

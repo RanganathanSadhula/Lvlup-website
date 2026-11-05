@@ -114,6 +114,9 @@ export async function POST(request: Request) {
         parentName: user.username || "Parent",
         studentName: student.fullName,
         schoolName: school?.officialName || enrollment.schoolUid,
+        grade: student.currentGrade,
+        orderId,
+        amountPaid: `₹${(amountPaidInPaise / 100).toLocaleString("en-IN")}`,
         startDate: batch ? `${batch.dayOfWeek}s ${batch.startTime}` : "Next Session",
       });
 

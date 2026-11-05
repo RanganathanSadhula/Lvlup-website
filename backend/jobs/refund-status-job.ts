@@ -38,7 +38,7 @@ export const refundStatusJob: JobDefinition<RefundRecord> = {
 
       await defaultDispatcher.sendWhatsApp({
         to: record.parentPhone,
-        templateName: "lvlup_de_enrollment_v1",
+        templateName: "thinkova_de_enrollment_v1",
         fallbackText: `Hi ${record.parentName}, a refund of ${record.refundAmount} has been initiated for ${record.studentName} (Ref: ${record.refundReference}). Bank credit expected within ${record.estimatedCreditDays}.`,
         metadata: {
           refundReference: record.refundReference,

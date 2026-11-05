@@ -95,10 +95,12 @@ export class CashfreeClient {
    */
   public async createOrder(input: CashfreeCreateOrderInput): Promise<CashfreeOrderResult> {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const isProd = (process.env.CASHFREE_ENV || "").toUpperCase() === "PRODUCTION";
+
     const returnUrl =
       input.returnUrl ||
-      `${siteUrl}/enrol/status?order_id=${encodeURIComponent(input.orderId)}`;
-    const notifyUrl = input.notifyUrl || `${siteUrl}/api/cashfree/webhook`;
+      (isProd && !siteUrl.startsWith("https://") ? "https://thinkova.ai/enrolled?order_id={order_id}" : `${siteUrl}/enrolled?order_id={order_id}`);
+    const notifyUrl = input.notifyUrl || (siteUrl.startsWith("https://") ? `${siteUrl}/api/cashfree/webhook` : (isProd ? "https://thinkova.ai/api/cashfree/webhook" : undefined));
 
     if (!this.isConfigured()) {
       // Dynamic Simulation Mode (for testing before credentials arrive)
@@ -138,7 +140,7 @@ export class CashfreeClient {
         notify_url: notifyUrl,
         payment_methods: "upi,cc,dc,nb",
       },
-      order_note: input.orderNote || "ThinkOva LvlUp Admission",
+      order_note: input.orderNote || "ThinkOva AI Program Admission",
     };
 
     const res = await fetch(url, {
@@ -160,7 +162,7 @@ export class CashfreeClient {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data = (await res.json()) as any;
-    const isProd = (process.env.CASHFREE_ENV || "").toUpperCase() === "PRODUCTION";
+
 
     return {
       orderId: data.order_id,

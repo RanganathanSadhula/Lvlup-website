@@ -35,11 +35,11 @@ export default async function LegalPlaceholderPage({ params }: { params: Params 
           {slug === "curriculum" && (
             <div className="mt-6">
               <a
-                href="/downloads/LvlUp-Eight-Week-Curriculum.pdf"
-                download="LvlUp Eight-Week Curriculum.pdf"
+                href="/downloads/ThinkOva-Eight-Week-Curriculum.pdf"
+                download="ThinkOva Eight-Week Curriculum.pdf"
                 className="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 font-semibold text-white shadow-sm transition hover:brightness-105"
               >
-                Download LvlUp Eight-Week Curriculum (PDF)
+                Download ThinkOva Eight-Week Curriculum (PDF)
               </a>
             </div>
           )}

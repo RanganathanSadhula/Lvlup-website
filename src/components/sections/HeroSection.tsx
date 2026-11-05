@@ -15,7 +15,7 @@ export function HeroSection() {
       className="group relative overflow-hidden bg-[#0b0c0f]"
       style={{ minHeight: "660px" }}
     >
-      {/* ── LvlUp Effect: Grain on dark (adjust opacity below for density: 0.55 = 55%) ── */}
+      {/* ── ThinkOva Effect: Grain on dark (adjust opacity below for density: 0.55 = 55%) ── */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-[2]"

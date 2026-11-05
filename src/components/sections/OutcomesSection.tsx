@@ -70,7 +70,7 @@ export function OutcomesSection() {
               <IconTile icon={outcomeIcons.cbse} />
               <h3 className={titleCls}>A head start on the new AI topics</h3>
               <p className={bodyCls}>
-                From 2026–27, CBSE brings AI and computational thinking into Classes 3 to 8. LvlUp lets your child practise those ideas by building.
+                From 2026–27, CBSE brings AI and computational thinking into Classes 3 to 8. ThinkOva lets your child practise those ideas by building.
               </p>
             </article>
           </ScrollReveal>

@@ -1,4 +1,4 @@
-# Thinkova (LvlUp) — Complete Backend Architecture Plan
+# ThinkOva — Complete Backend Architecture Plan
 
 ## Executive Summary
 Thinkova is an in-school cohort-based AI education program for school students (Grades 5–8) delivered through partner school computer labs. This document defines a production-ready, highly concurrent backend architecture covering:
@@ -361,7 +361,7 @@ sequenceDiagram
     participant DB as students_commerce_db
 
     Note over Svc,Parent: Event 1: Enrolment Confirmation
-    Svc->>Parent: "Hi {Parent}! {Student} is confirmed for LvlUp at {School} starting {Date}."
+    Svc->>Parent: "Hi {Parent}! {Student} is confirmed for ThinkOva at {School} starting {Date}."
 
     Note over Tutor,Parent: Event 2: Weekly Assessment Report (Levels 2, 4, 6)
     Tutor->>DB: Records attendance, score (1-5), and project artifact

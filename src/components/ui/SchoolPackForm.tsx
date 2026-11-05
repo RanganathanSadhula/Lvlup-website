@@ -15,7 +15,7 @@ type Status =
 
 const fields = [
   { name: "name", label: "Your name", placeholder: "e.g. Priya Sharma", autoComplete: "name", inputMode: "text" },
-  { name: "schoolCity", label: "School and city", placeholder: "e.g. [School name], Pune", autoComplete: "organization", inputMode: "text" },
+  { name: "schoolCity", label: "School and city", placeholder: "e.g. Delhi Public School, Pune", autoComplete: "organization", inputMode: "text" },
   { name: "role", label: "Your role", placeholder: "Principal, coordinator or teacher", autoComplete: "organization-title", inputMode: "text" },
   { name: "phone", label: "Phone or WhatsApp", placeholder: "10-digit mobile number", autoComplete: "tel-national", inputMode: "tel" },
 ] as const;

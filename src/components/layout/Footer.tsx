@@ -55,7 +55,7 @@ export function Footer() {
           </div>
         </div>
         <div className="flex flex-col gap-3 border-t border-white/10 py-6 text-sm text-muted-dark sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 LvlUp</p>
+          <p>© 2026 ThinkOva</p>
           <ul className="flex flex-wrap gap-x-2 gap-y-1">
             <li><Link className="hover:text-white" href={legalLinks.privacy}>Privacy</Link> ·</li>
             <li><Link className="hover:text-white" href={legalLinks.childSafety}>Child safety</Link> ·</li>

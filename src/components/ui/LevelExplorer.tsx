@@ -225,8 +225,8 @@ export function LevelExplorer() {
             </p>
           </div>
           <a
-            href="/downloads/LvlUp-Eight-Week-Curriculum.pdf"
-            download="LvlUp Eight-Week Curriculum.pdf"
+            href="/downloads/ThinkOva-Eight-Week-Curriculum.pdf"
+            download="ThinkOva Eight-Week Curriculum.pdf"
             className="inline-flex items-center gap-2.5 rounded-xl border border-black/80 bg-white px-4 py-2.5 text-[14px] font-semibold text-[#111216] shadow-sm transition-all duration-200 hover:bg-black/[0.04] active:scale-95 shrink-0 self-start sm:self-auto cursor-pointer"
           >
             <Download className="size-4 stroke-[2]" />

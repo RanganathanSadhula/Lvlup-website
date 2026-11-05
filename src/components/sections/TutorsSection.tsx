@@ -62,7 +62,7 @@ export function TutorsSection() {
                 <div>
                   <p className="font-semibold">{t.name}</p>
                   <p className="mt-0.5 text-[13px] text-muted-dark">{t.credentials}</p>
-                  <p className="mt-2 flex flex-wrap gap-2"><Chip>Background-checked</Chip><Chip>LvlUp trained</Chip></p>
+                  <p className="mt-2 flex flex-wrap gap-2"><Chip>Background-checked</Chip><Chip>ThinkOva trained</Chip></p>
                 </div>
               </li>
             ))}

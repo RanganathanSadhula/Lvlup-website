@@ -20,7 +20,7 @@ export function Header() {
 
       if (typeof window !== "undefined") {
         window.dispatchEvent(
-          new CustomEvent("lvlup-nav-jump", { detail: { targetId } })
+          new CustomEvent("thinkova-nav-jump", { detail: { targetId } })
         );
       }
 

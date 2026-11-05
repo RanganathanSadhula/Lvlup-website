@@ -15,10 +15,10 @@ const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL || defaultEmail;
 const city = process.env.NEXT_PUBLIC_CONTACT_CITY ?? "";
 
 export const siteConfig = {
-  name: "LvlUp",
-  title: "LvlUp · An eight-week AI course for Grades 5–8",
+  name: "ThinkOva",
+  title: "ThinkOva · An eight-week AI course for Grades 5–8",
   description:
-    "Don't just use AI. Build with it. LvlUp is an eight-week after-school AI course for Grades 5–8, taught by a trained tutor at your child's school. ₹4,999 all-in.",
+    "Don't just use AI. Build with it. ThinkOva is an eight-week after-school AI course for Grades 5–8, taught by a trained tutor at your child's school. ₹4,999 all-in.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   schoolName: process.env.NEXT_PUBLIC_SCHOOL_NAME ?? "",
   batchStartDate: process.env.NEXT_PUBLIC_BATCH_START ?? "",
@@ -48,7 +48,7 @@ export const legalLinks = {
   refunds: "/legal/refunds",
   terms: "/legal/terms",
   partnerTerms: "/legal/partner-terms",
-  curriculum: "/downloads/LvlUp-Eight-Week-Curriculum.pdf",
+  curriculum: "/downloads/ThinkOva-Eight-Week-Curriculum.pdf",
 } as const;
 
 export const legalPages: Record<string, { title: string; note: string }> = {

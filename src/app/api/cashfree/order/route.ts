@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { cashfreeClient } from "../../../../../backend/payments/cashfree";
 import { dbManager } from "../../../../../backend/database/client";
+import { defaultDispatcher } from "../../../../../backend/notifications/dispatcher";
+import { emailTemplates } from "../../../../../backend/templates/email-templates";
+import { whatsappTemplates } from "../../../../../backend/templates/whatsapp-templates";
 
 export const runtime = "nodejs";
 
@@ -15,6 +18,7 @@ interface CreateCashfreeOrderBody {
   paymentPlan?: "FULL" | "INSTALLMENTS";
   orderType?: "FULL_PAYMENT" | "INSTALLMENT_1" | "INSTALLMENT_2";
   amountInRupees?: number;
+  autoConfirm?: boolean;
 }
 
 /**
@@ -86,6 +90,46 @@ export async function POST(request: Request) {
   };
   await dbManager.commerce.upsertStudent(student);
 
+  // 2.5 Ensure School and Batch exist dynamically
+  const school = await dbManager.schools.findByUid(schoolUid);
+  if (!school) {
+    await dbManager.schools.upsertSchool({
+      id: `sch_${schoolUid.toLowerCase()}`,
+      schoolUid: schoolUid.toUpperCase().trim(),
+      officialName: `Partner School (${schoolUid.toUpperCase().trim()})`,
+      slug: `school-${schoolUid.toLowerCase().trim()}`,
+      city: process.env.NEXT_PUBLIC_CONTACT_CITY || "Pune",
+      state: "Maharashtra",
+      board: "CBSE",
+      labCapacity: 25,
+      partnerCommissionPct: 0,
+      status: "ACTIVE",
+      createdAt: new Date(),
+    });
+  }
+
+  const batchId = `batch_${schoolUid.toLowerCase()}_01`;
+  const existingBatch = await dbManager.schools.getBatch(batchId);
+  if (!existingBatch) {
+    await dbManager.schools.upsertBatch({
+      id: batchId,
+      schoolId: `sch_${schoolUid.toLowerCase()}`,
+      tutorId: "tutor_lead_01",
+      batchCode: `BATCH-${schoolUid.toUpperCase().trim()}-01`,
+      gradeLevels: [grade],
+      dayOfWeek: "Saturday",
+      startTime: "10:00",
+      endTime: "11:30",
+      maxCapacity: 25,
+      confirmedStudentsCount: 1,
+      startDate: new Date(Date.now() + 7 * 24 * 3600 * 1000),
+      level5Date: new Date(Date.now() + 35 * 24 * 3600 * 1000),
+      demoDayDate: new Date(Date.now() + 56 * 24 * 3600 * 1000),
+      status: "UPCOMING",
+      createdAt: new Date(),
+    });
+  }
+
   // 3. Create Enrollment entity
   const enrollment = {
     id: enrollmentId,
@@ -100,10 +144,7 @@ export async function POST(request: Request) {
   };
   await dbManager.commerce.upsertEnrollment(enrollment);
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const checkoutUrl = `${siteUrl}/enrol/checkout?orderId=${encodeURIComponent(orderId)}`;
-
-  // 4. Create Order with Cashfree (or Dynamic Simulation mode)
+  // 4. Create Cashfree Gateway Order
   try {
     const cfOrder = await cashfreeClient.createOrder({
       orderId,
@@ -115,8 +156,18 @@ export async function POST(request: Request) {
         customerEmail: parentEmail,
         customerPhone: parentPhone,
       },
-      orderNote: `LvlUp Course Admission - ${schoolUid.toUpperCase()} (${studentName})`,
+      orderNote: `ThinkOva Course Admission - ${schoolUid.toUpperCase()} (${studentName})`,
     });
+
+    const origin = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const checkoutUrl =
+      cfOrder.paymentSessionId && cfOrder.environment === "SANDBOX"
+        ? `https://sandbox.cashfree.com/pg/orders/${cfOrder.orderId}`
+        : `${origin}/enrolled?orderRef=${cfOrder.orderId}&childName=${encodeURIComponent(
+            studentName
+          )}&parentEmail=${encodeURIComponent(parentEmail)}&school=${encodeURIComponent(
+            schoolUid
+          )}&plan=${paymentPlan === "INSTALLMENTS" ? "parts" : "full"}`;
 
     // 5. Persist Order in dynamic repository
     await dbManager.commerce.upsertOrder({
@@ -130,6 +181,62 @@ export async function POST(request: Request) {
       expiresAt: new Date(Date.now() + 2 * 3600 * 1000), // 2 hour hold
       createdAt: new Date(),
     });
+
+    // When autoConfirm is requested (e.g. from the website enrolment form in demo mode),
+    // auto-complete virtual payment and immediately dispatch confirmation email (SMTP) & WhatsApp (OpenWA)!
+    if (body.autoConfirm === true) {
+      await dbManager.commerce.updateOrderStatus(cfOrder.orderId, "PAID");
+      await dbManager.commerce.updateEnrollmentStatus(enrollmentId, "ENROLLED");
+
+      await dbManager.commerce.upsertPayment({
+        id: `pay_${Date.now()}_sim`,
+        orderId: cfOrder.orderId,
+        gateway: "CASHFREE",
+        gatewayOrderId: cfOrder.orderId,
+        gatewayPaymentId: `cf_pay_sim_${Date.now()}`,
+        paymentMethod: "UPI",
+        amountInPaise,
+        status: "SUCCESS",
+        paidAt: new Date(),
+      });
+
+      const email = emailTemplates.enrolmentSuccess({
+        parentName: user?.username || parentName || "Parent",
+        studentName: student.fullName,
+        currentGrade: student.currentGrade,
+        schoolName: student.schoolUid,
+        batchSchedule: "Weekly Computer Lab Sessions",
+        tutorName: "Lead AI Mentor",
+        amountPaid: `₹${amount.toLocaleString("en-IN")}`,
+        orderId: cfOrder.orderId,
+      });
+
+      await defaultDispatcher.sendEmail({
+        to: parentEmail,
+        subject: email.subject,
+        html: email.html,
+        text: email.text,
+        metadata: { orderId: cfOrder.orderId, type: "ENROLMENT_RECEIPT" },
+      });
+
+      const wa = whatsappTemplates.enrolmentConfirmed({
+        parentPhone,
+        parentName: user?.username || parentName || "Parent",
+        studentName: student.fullName,
+        schoolName: student.schoolUid,
+        grade: student.currentGrade,
+        orderId: cfOrder.orderId,
+        amountPaid: `₹${amount.toLocaleString("en-IN")}`,
+        startDate: "the upcoming Saturday batch",
+      });
+
+      await defaultDispatcher.sendWhatsApp({
+        to: parentPhone,
+        templateName: "thinkova_enrolment_confirmed",
+        fallbackText: wa.fallbackText,
+        metadata: { orderId: cfOrder.orderId, type: "ENROLMENT_RECEIPT" },
+      });
+    }
 
     return NextResponse.json({
       status: "success",

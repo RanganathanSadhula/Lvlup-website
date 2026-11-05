@@ -1,4 +1,5 @@
 import { smtpMailer } from "./smtp";
+import { openwaClient } from "./openwa";
 
 /**
  * Unified Dispatcher & Outbox Ledger for Emails and WhatsApp Messages
@@ -142,8 +143,31 @@ export class NotificationDispatcher {
       metadata: payload.metadata,
     };
 
-    // If external WhatsApp provider (e.g. WATI, Interakt) is configured, invoke it here:
-    if (process.env.WATI_API_ENDPOINT && process.env.WATI_BEARER_TOKEN) {
+    // 1. Prioritize self-hosted OpenWA gateway if configured:
+    if (openwaClient.isConfigured()) {
+      try {
+        const waResult = await openwaClient.sendText(payload.to, payload.fallbackText);
+        record.metadata = {
+          ...record.metadata,
+          transport: "OPENWA",
+          messageId: waResult.messageId,
+          recipientJid: waResult.recipientJid,
+          deliveredLive: !waResult.isSimulation,
+        };
+        if (waResult.status === "FAILED") {
+          record.status = "FAILED";
+          record.metadata.error = waResult.error;
+        } else {
+          console.info(`[Dispatcher] Live WhatsApp dispatched via OpenWA to ${payload.to}`);
+        }
+      } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        console.error(`[Dispatcher] OpenWA dispatch error to ${payload.to}:`, errorMsg);
+        record.status = "FAILED";
+        record.metadata = { ...record.metadata, transport: "OPENWA", error: errorMsg };
+      }
+    } else if (process.env.WATI_API_ENDPOINT && process.env.WATI_BEARER_TOKEN) {
+      // 2. Fallback to external WhatsApp provider (WATI/Interakt) if configured:
       try {
         await fetch(`${process.env.WATI_API_ENDPOINT}/api/v1/sendTemplateMessage`, {
           method: "POST",
@@ -154,12 +178,14 @@ export class NotificationDispatcher {
           body: JSON.stringify({
             whatsappNumber: payload.to,
             template_name: payload.templateName,
-            broadcast_name: "lvlup_notification",
+            broadcast_name: "thinkova_notification",
           }),
         });
       } catch (err) {
         console.error(`[Dispatcher] Failed to dispatch live WhatsApp via WATI:`, err);
       }
+    } else {
+      record.metadata = { ...record.metadata, deliveredLive: false, mode: "SIMULATED_OUTBOX" };
     }
 
     this.whatsAppOutbox.unshift(record);
@@ -191,4 +217,3 @@ export class NotificationDispatcher {
 }
 
 export const defaultDispatcher = new NotificationDispatcher();
-

@@ -29,7 +29,7 @@ export function SchoolsSection() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.name || "School representative",
-          schoolCity: `${formData.schoolName || "[School name]"}, ${formData.city || "India"}`,
+          schoolCity: `${formData.schoolName || "Partner School"}, ${formData.city || "India"}`,
           role: formData.role,
           phone: formData.phone || "9999999999",
         }),
@@ -59,7 +59,7 @@ export function SchoolsSection() {
             id="schools-title"
             className="font-display text-[38px] font-normal leading-[1.06] tracking-[-0.03em] text-white sm:text-[46px] lg:text-[52px]"
           >
-            Bring LvlUp to your school.
+            Bring ThinkOva to your school.
           </h2>
 
           <p className="mt-5 max-w-[540px] text-[16px] sm:text-[17px] leading-relaxed text-white/70">
@@ -96,8 +96,8 @@ export function SchoolsSection() {
             </a>
 
             <a
-              href="/downloads/LvlUp-Eight-Week-Curriculum.pdf"
-              download="LvlUp Eight-Week Curriculum.pdf"
+              href="/downloads/ThinkOva-Eight-Week-Curriculum.pdf"
+              download="ThinkOva Eight-Week Curriculum.pdf"
               className="flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-black/40 px-6 py-3.5 text-center text-[15px] font-medium text-white backdrop-blur-sm transition-all duration-200 transform-gpu hover:border-white/30 hover:bg-white/10 active:scale-95 cursor-pointer"
             >
               <span>Download the school pack (PDF)</span>
@@ -140,8 +140,8 @@ export function SchoolsSection() {
                 <h4 className="text-sm font-semibold text-ink">While you wait</h4>
                 <p className="mt-1.5 text-xs sm:text-[13px] leading-relaxed text-ink/75">
                   <a
-                    href="/downloads/LvlUp-Eight-Week-Curriculum.pdf"
-                    download="LvlUp Eight-Week Curriculum.pdf"
+                    href="/downloads/ThinkOva-Eight-Week-Curriculum.pdf"
+                    download="ThinkOva Eight-Week Curriculum.pdf"
                     className="underline underline-offset-2 hover:text-ink font-medium"
                   >
                     Download the school pack (PDF)
@@ -183,7 +183,7 @@ export function SchoolsSection() {
                   id="schoolName"
                   type="text"
                   required
-                  placeholder="e.g. [School name]"
+                  placeholder="e.g. Delhi Public School"
                   value={formData.schoolName}
                   onChange={(e) => setFormData({ ...formData, schoolName: e.target.value })}
                   className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"

@@ -24,7 +24,10 @@ export function EnrolSuccessView({
   const amount = payPlan === "parts" ? "₹2,500" : "₹4,499";
   const name = childName.trim() || "Your child";
   const userEmail = email.trim() || "your email address";
-  const referenceId = orderRef ? (orderRef.startsWith("ord_") ? `LVL-[${orderRef.slice(-6).toUpperCase()}]` : orderRef) : "LVL-[000123]";
+  const cleanOrderDigits = orderRef
+    ? orderRef.replace(/[^A-Za-z0-9]/g, "").slice(-6).toUpperCase()
+    : "102450";
+  const referenceId = orderRef && orderRef.startsWith("THK-") ? orderRef : `THK-${cleanOrderDigits}`;
   const planLabel = payPlan === "parts" ? "Paid part 1 (₹2,500)" : "Paid in full";
 
   return (
@@ -97,8 +100,8 @@ export function EnrolSuccessView({
         {/* Buttons */}
         <div className="mt-6 sm:mt-7 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
           <a
-            href="/downloads/LvlUp-Eight-Week-Curriculum.pdf"
-            download="LvlUp Eight-Week Curriculum.pdf"
+            href="/downloads/ThinkOva-Eight-Week-Curriculum.pdf"
+            download="ThinkOva Eight-Week Curriculum.pdf"
             className="flex h-12 w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#ff5520] to-[#ff6b2c] px-6 text-[14px] font-semibold text-white shadow-sm transition hover:brightness-105 active:scale-95"
           >
             <span>Download the curriculum (PDF)</span>

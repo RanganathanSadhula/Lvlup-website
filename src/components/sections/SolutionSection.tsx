@@ -19,7 +19,7 @@ export function SolutionSection() {
         <SectionHeader
           id="solution-title"
           tone="dark"
-          title={<>LvlUp turns AI users into thoughtful builders.</>}
+          title={<>ThinkOva turns AI users into thoughtful builders.</>}
           description="Every class mixes a short idea, a tutor demo and a lot of hands-on making. Children learn how AI works by using it for something real, with a tutor beside them."
         />
         <ul className="mt-12 grid gap-6 md:grid-cols-3 lg:mt-14">

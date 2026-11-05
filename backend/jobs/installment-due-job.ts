@@ -41,7 +41,7 @@ export const installmentDueJob: JobDefinition<InstallmentDueRecord> = {
       // 2. Dispatch WhatsApp Reminder
       await defaultDispatcher.sendWhatsApp({
         to: record.parentPhone,
-        templateName: "lvlup_installment_due_v1",
+        templateName: "thinkova_installment_due_v1",
         fallbackText: `Hi ${record.parentName}, ${record.studentName} is reaching Level 5! Installment 2 (${record.installmentAmount}) is due by ${record.dueDate}. Pay online: ${record.paymentUrl}`,
         metadata: {
           enrollmentId: record.enrollmentId,

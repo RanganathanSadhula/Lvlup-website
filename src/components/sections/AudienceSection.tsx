@@ -25,7 +25,7 @@ export function AudienceSection() {
       <Container>
         <SectionHeader
           id="fit-title"
-          title="Is LvlUp right for your child?"
+          title="Is ThinkOva right for your child?"
           description="An honest list, so you can decide quickly."
         />
 

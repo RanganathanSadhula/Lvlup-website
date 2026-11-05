@@ -68,6 +68,7 @@ export function EnrolSection() {
           grade: parseInt(grade.replace(/\D/g, "") || "6", 10),
           paymentPlan: payPlan === "full" ? "FULL" : "INSTALLMENTS",
           amountInRupees,
+
         }),
       });
 
@@ -77,7 +78,45 @@ export function EnrolSection() {
       }
 
       const result = await res.json();
-      setOrderRef(result.orderId || `LVL-${Date.now().toString().slice(-6)}`);
+      setOrderRef(result.orderId || `THK-${Date.now().toString().slice(-6)}`);
+      // Seamless Cashfree Live Gateway Checkout
+      if (result.paymentSessionId) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const loadCashfreeSdk = (): Promise<any> => {
+          return new Promise((resolve, reject) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            if (typeof (window as any).Cashfree !== "undefined") {
+              const mode = (result.environment || "PRODUCTION").toLowerCase();
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              resolve((window as any).Cashfree({ mode }));
+              return;
+            }
+            const script = document.createElement("script");
+            script.src = "https://sdk.cashfree.com/js/v3/cashfree.js";
+            script.async = true;
+            script.onload = () => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              if (typeof (window as any).Cashfree !== "undefined") {
+                const mode = (result.environment || "PRODUCTION").toLowerCase();
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                resolve((window as any).Cashfree({ mode }));
+              } else {
+                reject(new Error("Cashfree SDK failed to initialize."));
+              }
+            };
+            script.onerror = () => reject(new Error("Failed to load Cashfree payment SDK."));
+            document.body.appendChild(script);
+          });
+        };
+
+        const cashfree = await loadCashfreeSdk();
+        await cashfree.checkout({
+          paymentSessionId: result.paymentSessionId,
+          redirectTarget: "_self",
+        });
+        return;
+      }
+
       setIsSubmitted(true);
 
       setTimeout(() => {
@@ -481,7 +520,7 @@ export function EnrolSection() {
                     className="mt-1 size-4 rounded border-gray-300 text-brand focus:ring-brand cursor-pointer"
                   />
                   <label htmlFor="consent" className="text-xs leading-relaxed text-ink/75 cursor-pointer">
-                    I am this child's parent or guardian. I agree to my child taking part in LvlUp and to LvlUp
+                    I am this child's parent or guardian. I agree to my child taking part in ThinkOva and to ThinkOva
                     keeping these details to run the course. Read the{" "}
                     <a href="/legal/consent" className="underline underline-offset-2 hover:text-ink">
                       consent form

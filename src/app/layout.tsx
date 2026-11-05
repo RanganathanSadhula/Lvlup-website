@@ -10,7 +10,7 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", displ
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
-  title: { default: siteConfig.title, template: "%s · LvlUp" },
+  title: { default: siteConfig.title, template: "%s · ThinkOva" },
   description: siteConfig.description,
   openGraph: { title: siteConfig.title, description: siteConfig.description, type: "website", locale: "en_IN" },
 };

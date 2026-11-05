@@ -8,7 +8,7 @@ export const facts = [
 ] as const;
 
 export const heroMeta = [
-  { label: "Next batch", value: "[Month] 2027" },
+  { label: "Next batch", value: "Upcoming Batch" },
   { label: "Class", value: "90 min, once a week" },
   { label: "Fee", value: "₹4,999 all-in" },
 ] as const;
@@ -51,7 +51,7 @@ export const safetyCommitments = [
 export const joiningSteps = [
   { title: "Get your school code", body: "It is in your school’s circular or WhatsApp message.", icon: Landmark },
   { title: "Enrol online", body: "Two minutes: your child’s name, grade and your WhatsApp number.", icon: LaptopMinimal },
-  { title: "Pay ₹2,500 to join", body: "UPI, card or net banking. Paid to LvlUp, not to the school.", icon: Award },
+  { title: "Pay ₹2,500 to join", body: "UPI, card or net banking. Paid to ThinkOva, not to the school.", icon: Award },
   { title: "Meet us online", body: "A 30-minute parent session before level 1. Ask us anything.", icon: UsersRound },
   { title: "Level up each week", body: "Updates after levels 2, 4 and 6. Second payment before level 5.", icon: Footprints },
   { title: "Demo day", body: "Your child presents their AI helper to you, at school.", icon: MonitorPlay },
@@ -73,7 +73,7 @@ export const pricing = {
   promisePoints: [
     "At demo day, the helper must complete the two tasks your child set for it.",
     "You watch it happen, so there is nothing to argue about.",
-    "Refunds are paid back to your account within [7] working days.",
+    "Refunds are paid back to your account within 5–7 working days.",
   ],
 } as const;
 

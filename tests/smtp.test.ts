@@ -85,7 +85,7 @@ describe("SMTP Mailer & Dispatcher Automation", () => {
     const mailer = new SmtpMailer();
     const result = await mailer.sendMail({
       to: "parent@example.com",
-      subject: "Welcome to LvlUp",
+      subject: "Welcome to ThinkOva",
       html: "<p>Welcome to ThinkOva!</p>",
     });
 
@@ -93,7 +93,7 @@ describe("SMTP Mailer & Dispatcher Automation", () => {
     expect(mockSendMail).toHaveBeenCalledWith(
       expect.objectContaining({
         to: "parent@example.com",
-        subject: "Welcome to LvlUp",
+        subject: "Welcome to ThinkOva",
         html: "<p>Welcome to ThinkOva!</p>",
       })
     );

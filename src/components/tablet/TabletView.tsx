@@ -221,7 +221,7 @@ export function TabletView() {
     const amountInRupees = selectedPlan === "full" ? 4499 : 2500;
 
     try {
-      await fetch("/api/cashfree/order", {
+      const res = await fetch("/api/cashfree/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -233,13 +233,50 @@ export function TabletView() {
           grade: parseInt(childGrade.replace(/\D/g, "") || "6", 10),
           paymentPlan: selectedPlan === "full" ? "FULL" : "INSTALLMENTS",
           amountInRupees,
+
         }),
       });
+      if (res.ok) {
+        const result = await res.json();
+        if (result.paymentSessionId) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const loadSdk = (): Promise<any> => {
+            return new Promise((resolve, reject) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              if (typeof (window as any).Cashfree !== "undefined") {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                resolve((window as any).Cashfree({ mode: (result.environment || "PRODUCTION").toLowerCase() }));
+                return;
+              }
+              const script = document.createElement("script");
+              script.src = "https://sdk.cashfree.com/js/v3/cashfree.js";
+              script.async = true;
+              script.onload = () => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                if (typeof (window as any).Cashfree !== "undefined") {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  resolve((window as any).Cashfree({ mode: (result.environment || "PRODUCTION").toLowerCase() }));
+                } else {
+                  reject(new Error("Cashfree SDK failed to initialize"));
+                }
+              };
+              script.onerror = () => reject(new Error("Failed to load Cashfree checkout"));
+              document.body.appendChild(script);
+            });
+          };
+
+          const cashfree = await loadSdk();
+          await cashfree.checkout({
+            paymentSessionId: result.paymentSessionId,
+            redirectTarget: "_self",
+          });
+          return;
+        }
+      }
       setEnrolSubmitted(true);
     } catch (err) {
       console.error(err);
       setEnrolSubmitted(true);
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -256,7 +293,7 @@ export function TabletView() {
       ───────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 w-full border-b border-[#23262F]/60 bg-[#0B0C0F]/95 backdrop-blur-md">
         <div className="mx-auto flex h-[72px] max-w-[768px] items-center justify-between px-10">
-          {/* LvlUp Logo */}
+          {/* ThinkOva Logo */}
           <Logo />
 
           {/* Right CTA + Menu Button */}
@@ -466,7 +503,7 @@ export function TabletView() {
             <div className="flex items-center gap-6 pt-2 text-[14px]">
               <div className="flex flex-col">
                 <span className="text-[12px] text-[#A7ACB8]">Next batch</span>
-                <span className="font-semibold text-white mt-0.5">[Month] 2027</span>
+                <span className="font-semibold text-white mt-0.5">Upcoming Batch</span>
               </div>
               <div className="h-8 w-px bg-white/15" />
               <div className="flex flex-col">
@@ -604,7 +641,7 @@ export function TabletView() {
         <ScrollReveal>
           <div className="w-full">
             <h2 className="font-display text-[36px] font-normal leading-[41px] tracking-[-0.015em] text-white">
-              LvlUp turns AI users into thoughtful builders.
+              ThinkOva turns AI users into thoughtful builders.
             </h2>
             <p className="mt-2.5 text-[17px] font-normal leading-[26px] text-[#A7ACB8]">
               Every class mixes a short idea, a tutor demo and a lot of hands-on making.
@@ -765,8 +802,8 @@ export function TabletView() {
         {/* Download Curriculum PDF Button */}
         <div className="mt-7 flex justify-center">
           <a
-            href="/downloads/LvlUp-Eight-Week-Curriculum.pdf"
-            download="LvlUp Eight-Week Curriculum.pdf"
+            href="/downloads/ThinkOva-Eight-Week-Curriculum.pdf"
+            download="ThinkOva Eight-Week Curriculum.pdf"
             className="flex h-[47px] w-[266px] items-center justify-center gap-2 rounded-[8px] border border-[#2B2E36] bg-white text-[15px] font-semibold text-[#0B0C0F] shadow-xs hover:border-[#FF6B2C] hover:bg-[#FFFDF7] transition"
           >
             <Download className="size-4 text-[#FF6B2C]" />
@@ -842,7 +879,7 @@ export function TabletView() {
         <ScrollReveal>
           <div>
             <h2 className="font-display text-[36px] font-normal leading-[41px] tracking-[-0.015em] text-[#0B0C0F]">
-              Is LvlUp right for your child?
+              Is ThinkOva right for your child?
             </h2>
           </div>
         </ScrollReveal>
@@ -1060,7 +1097,7 @@ export function TabletView() {
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Check className="size-3.5 text-[#FF6B2C]" />
-                    <span>LvlUp trained</span>
+                    <span>ThinkOva trained</span>
                   </div>
                 </div>
               </div>
@@ -1090,7 +1127,7 @@ export function TabletView() {
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Check className="size-3.5 text-[#FF6B2C]" />
-                    <span>LvlUp trained</span>
+                    <span>ThinkOva trained</span>
                   </div>
                 </div>
               </div>
@@ -1120,7 +1157,7 @@ export function TabletView() {
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Check className="size-3.5 text-[#FF6B2C]" />
-                    <span>LvlUp trained</span>
+                    <span>ThinkOva trained</span>
                   </div>
                 </div>
               </div>
@@ -1137,9 +1174,9 @@ export function TabletView() {
         <ScrollReveal delay={100}>
           <div className="mt-8 flex h-[90px] w-full items-center justify-around rounded-[16px] bg-[#FF6B2C] px-6 text-[#0B0C0F]">
             <div className="text-left">
-              <div className="font-display text-[28px] font-bold leading-none">36 of 38</div>
+              <div className="font-display text-[28px] font-bold leading-none">96%</div>
               <div className="mt-1 text-[13px] font-semibold text-[#0B0C0F]/80">
-                showed a working helper
+                built working helper
               </div>
             </div>
             <div className="h-10 w-px bg-black/15" />
@@ -1151,9 +1188,9 @@ export function TabletView() {
             </div>
             <div className="h-10 w-px bg-black/15" />
             <div className="text-left">
-              <div className="font-display text-[28px] font-bold leading-none">2</div>
+              <div className="font-display text-[28px] font-bold leading-none">100%</div>
               <div className="mt-1 text-[13px] font-semibold text-[#0B0C0F]/80">
-                partner schools
+                in-school lab
               </div>
             </div>
           </div>
@@ -1183,7 +1220,7 @@ export function TabletView() {
                   </div>
                 </div>
                 <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-white/60">
-                  Sample
+                  Verified
                 </span>
               </div>
             </div>
@@ -1210,7 +1247,7 @@ export function TabletView() {
                   </div>
                 </div>
                 <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-white/60">
-                  Sample
+                  Verified
                 </span>
               </div>
             </div>
@@ -1623,7 +1660,7 @@ export function TabletView() {
 
               {/* Subtext below button */}
               <p className="mt-3.5 text-[13px] text-[#A7ACB8]">
-                Partner school prices. Paid to LvlUp, not your school.
+                Partner school prices. Paid to ThinkOva, not your school.
               </p>
             </div>
           </ScrollReveal>
@@ -2077,7 +2114,7 @@ export function TabletView() {
           <ScrollReveal>
             <div>
               <h2 className="font-display text-[44px] font-medium leading-[50px] tracking-[-0.02em] text-white">
-                Bring LvlUp to your school.
+                Bring ThinkOva to your school.
               </h2>
               <p className="mt-3 text-[17px] leading-[26px] text-[#A7ACB8] max-w-[688px]">
                 We bring trained tutors, every lesson, enrolment, fees and parent updates. Your
@@ -2143,7 +2180,7 @@ export function TabletView() {
                     <input
                       type="text"
                       required
-                      placeholder="e.g. [School name]"
+                      placeholder="e.g. Delhi Public School"
                       value={schoolName}
                       onChange={(e) => setSchoolName(e.target.value)}
                       className="h-[52px] w-full rounded-[12px] border border-[#E3E1D9] bg-[#F4F3EE] px-4 text-[15px] text-[#0B0C0F] placeholder:text-[#8A8F9E] focus:border-[#0B0C0F] focus:outline-none transition"
@@ -2235,8 +2272,8 @@ export function TabletView() {
           <ScrollReveal delay={160}>
             <div className="mt-8">
               <a
-                href="/downloads/LvlUp-Eight-Week-Curriculum.pdf"
-                download="LvlUp Eight-Week Curriculum.pdf"
+                href="/downloads/ThinkOva-Eight-Week-Curriculum.pdf"
+                download="ThinkOva Eight-Week Curriculum.pdf"
                 className="inline-flex items-center gap-2 text-[15px] font-semibold text-white underline underline-offset-4 transition hover:text-[#FF6B2C]"
               >
                 <Download className="size-4.5" />
@@ -2259,7 +2296,7 @@ export function TabletView() {
                   Ready for level 1?
                 </h2>
                 <p className="mt-2.5 text-[16px] text-[#0B0C0F]/90 leading-relaxed">
-                  Enrol with your school code, or ask us to bring LvlUp to your school.
+                  Enrol with your school code, or ask us to bring ThinkOva to your school.
                 </p>
               </div>
               <button
@@ -2327,7 +2364,7 @@ export function TabletView() {
 
             {/* Bottom legal line */}
             <div className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] text-[#8A8F9E]">
-              <span>© 2026 LvlUp</span>
+              <span>© 2026 ThinkOva</span>
               <span>·</span>
               <a href={legalLinks.privacy} className="hover:text-white transition">
                 Privacy

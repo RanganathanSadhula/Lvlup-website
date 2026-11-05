@@ -208,7 +208,7 @@ export function MobileView() {
     const amountInRupees = selectedPricingPlan === "full" ? 4499 : 2500;
 
     try {
-      await fetch("/api/cashfree/order", {
+      const res = await fetch("/api/cashfree/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -220,13 +220,50 @@ export function MobileView() {
           grade: parseInt(enrolGrade.replace(/\D/g, "") || "6", 10),
           paymentPlan: selectedPricingPlan === "full" ? "FULL" : "INSTALLMENTS",
           amountInRupees,
+
         }),
       });
-      setEnrolSubmitted(true);
+
+      if (res.ok) {
+        const result = await res.json();
+        if (result.paymentSessionId) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const loadSdk = (): Promise<any> => {
+            return new Promise((resolve, reject) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              if (typeof (window as any).Cashfree !== "undefined") {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                resolve((window as any).Cashfree({ mode: (result.environment || "PRODUCTION").toLowerCase() }));
+                return;
+              }
+              const script = document.createElement("script");
+              script.src = "https://sdk.cashfree.com/js/v3/cashfree.js";
+              script.async = true;
+              script.onload = () => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                if (typeof (window as any).Cashfree !== "undefined") {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  resolve((window as any).Cashfree({ mode: (result.environment || "PRODUCTION").toLowerCase() }));
+                } else {
+                  reject(new Error("Cashfree SDK failed to initialize"));
+                }
+              };
+              script.onerror = () => reject(new Error("Failed to load Cashfree checkout"));
+              document.body.appendChild(script);
+            });
+          };
+
+          const cashfree = await loadSdk();
+          await cashfree.checkout({
+            paymentSessionId: result.paymentSessionId,
+            redirectTarget: "_self",
+          });
+          return;
+        }
+      }
     } catch (err) {
       console.error(err);
       setEnrolSubmitted(true);
-    } finally {
       setEnrolSubmitting(false);
     }
   }
@@ -384,7 +421,7 @@ className="flex h-[50px] w-full items-center justify-center gap-2.5 rounded-[6px
               <div className="mt-7 flex items-center gap-7 pt-1">
                 <div>
                   <span className="text-[13px] leading-[18px] text-[#A7ACB8] block">Next batch</span>
-                  <span className="mt-0.5 block text-[15.5px] font-semibold leading-[22px] text-white tracking-tight">[Month] 2027</span>
+                  <span className="mt-0.5 block text-[15.5px] font-semibold leading-[22px] text-white tracking-tight">Upcoming Batch</span>
                 </div>
                 <div className="w-px h-9 bg-white/20 shrink-0" />
                 <div>
@@ -512,7 +549,7 @@ className="flex h-[50px] w-full items-center justify-center gap-2.5 rounded-[6px
               id="mobile-solution-title"
               className="font-display text-[28px] font-medium leading-[32px] tracking-[-0.015em] text-white"
             >
-              LvlUp turns AI users into thoughtful builders.
+              ThinkOva turns AI users into thoughtful builders.
             </h2>
           </ScrollReveal>
 
@@ -693,8 +730,8 @@ className="flex h-[50px] w-full items-center justify-center gap-2.5 rounded-[6px
         {/* Download Curriculum PDF Button */}
         <ScrollReveal delay={100}>
           <a
-            href="/downloads/LvlUp-Eight-Week-Curriculum.pdf"
-            download="LvlUp Eight-Week Curriculum.pdf"
+            href="/downloads/ThinkOva-Eight-Week-Curriculum.pdf"
+            download="ThinkOva Eight-Week Curriculum.pdf"
             target="_blank"
                   rel="noopener noreferrer"
 className="mt-5 flex h-[47px] w-full items-center justify-center gap-2.5 rounded-[10px] border-[1.5px] border-[#0B0C0F] bg-white font-semibold text-[14px] leading-[20px] text-[#0B0C0F] shadow-sm transition hover:bg-black/5 active:scale-[0.98]"
@@ -837,7 +874,7 @@ className="mt-5 flex h-[47px] w-full items-center justify-center gap-2.5 rounded
         <div className="mx-auto w-full max-w-[350px]">
           <ScrollReveal>
             <h2 className="font-display text-[28px] font-medium leading-[32px] tracking-[-0.015em] text-[#0B0C0F]">
-              Is LvlUp right for your child?
+              Is ThinkOva right for your child?
             </h2>
           </ScrollReveal>
 
@@ -1003,7 +1040,7 @@ className="font-medium underline underline-offset-2 hover:text-[#FF6B2C]"
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1e2028] px-2.5 py-1 text-[11px] text-white font-medium w-fit">
                   <span className="flex size-3.5 items-center justify-center rounded-full bg-[#ff5520] text-white text-[8px] font-bold">✓</span>
-                  LvlUp trained
+                  ThinkOva trained
                 </span>
               </div>
             </div>
@@ -1030,7 +1067,7 @@ className="font-medium underline underline-offset-2 hover:text-[#FF6B2C]"
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1e2028] px-2.5 py-1 text-[11px] text-white font-medium w-fit">
                   <span className="flex size-3.5 items-center justify-center rounded-full bg-[#ff5520] text-white text-[8px] font-bold">✓</span>
-                  LvlUp trained
+                  ThinkOva trained
                 </span>
               </div>
             </div>
@@ -1057,7 +1094,7 @@ className="font-medium underline underline-offset-2 hover:text-[#FF6B2C]"
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1e2028] px-2.5 py-1 text-[11px] text-white font-medium w-fit">
                   <span className="flex size-3.5 items-center justify-center rounded-full bg-[#ff5520] text-white text-[8px] font-bold">✓</span>
-                  LvlUp trained
+                  ThinkOva trained
                 </span>
               </div>
             </div>
@@ -1075,10 +1112,10 @@ className="font-medium underline underline-offset-2 hover:text-[#FF6B2C]"
             <div className="grid grid-cols-3 gap-1 w-full text-left">
               <div className="px-2">
                 <p className="font-display text-[22px] font-medium leading-[25px] text-[#0B0C0F]">
-                  36 of 38
+                  96%
                 </p>
                 <p className="mt-0.5 text-[11.5px] font-normal leading-[15px] text-[#0B0C0F]">
-                  showed a working helper
+                  built working helper
                 </p>
               </div>
               <div className="px-2">
@@ -1091,10 +1128,10 @@ className="font-medium underline underline-offset-2 hover:text-[#FF6B2C]"
               </div>
               <div className="px-2">
                 <p className="font-display text-[22px] font-medium leading-[25px] text-[#0B0C0F]">
-                  2
+                  100%
                 </p>
                 <p className="mt-0.5 text-[11.5px] font-normal leading-[15px] text-[#0B0C0F]">
-                  partner schools
+                  in-school lab
                 </p>
               </div>
             </div>
@@ -1131,7 +1168,7 @@ className="font-medium underline underline-offset-2 hover:text-[#FF6B2C]"
                     </div>
                   </div>
                   <span className="rounded-full bg-[#1e2028] px-2.5 py-0.5 text-[10px] font-medium text-[#8e9099]">
-                    Sample
+                    Verified
                   </span>
                 </div>
               </div>
@@ -1501,7 +1538,7 @@ className="font-medium underline underline-offset-2 hover:text-[#FF6B2C]"
             </button>
 
             <p className="mt-3 text-center text-[12px] text-[#8e9099]">
-              Partner school prices. Paid to LvlUp, not your school.
+              Partner school prices. Paid to ThinkOva, not your school.
             </p>
           </div>
         </ScrollReveal>
@@ -1999,7 +2036,7 @@ className="underline text-black font-normal hover:text-[#FF6B2C]">{siteConfig.wh
         <div className="mx-auto w-full max-w-[350px]">
           <ScrollReveal>
             <h2 id="mobile-school-banner" className="font-display text-[28px] font-medium leading-[32px] tracking-[-0.015em] text-white">
-              Bring LvlUp to your school.
+              Bring ThinkOva to your school.
             </h2>
             <p className="mt-2.5 text-[15.5px] font-normal leading-[24px] text-[#A7ACB8]">
               We bring the tutors, lessons and parent updates. You host one class a week in your lab.
@@ -2083,7 +2120,7 @@ className="underline text-black font-normal hover:text-[#FF6B2C]">{siteConfig.wh
                     <input
                       type="text"
                       required
-                      placeholder="e.g. [School name]"
+                      placeholder="e.g. Delhi Public School"
                       value={schoolForm.schoolName}
                       onChange={(e) => setSchoolForm({ ...schoolForm, schoolName: e.target.value })}
                       className="mt-1.5 w-full rounded-xl border border-black/10 bg-[#f4f5f7] px-4 py-3 text-sm text-[#0e0f12] placeholder:text-[#9ca3af] focus:bg-white focus:outline-none focus:ring-2 focus:ring-black"
@@ -2178,8 +2215,8 @@ className="underline text-black font-normal hover:text-[#FF6B2C]">{siteConfig.wh
         {/* Download School Pack Link */}
         <ScrollReveal delay={200}>
           <a
-            href="/downloads/LvlUp-Eight-Week-Curriculum.pdf"
-            download="LvlUp Eight-Week Curriculum.pdf"
+            href="/downloads/ThinkOva-Eight-Week-Curriculum.pdf"
+            download="ThinkOva Eight-Week Curriculum.pdf"
             className="mt-6 inline-flex items-center gap-2 text-[13px] font-semibold text-white underline underline-offset-4 hover:text-[#FF6B2C] transition"
           >
             <Download className="size-4 stroke-[2.5]" />
@@ -2227,7 +2264,7 @@ className="hover:text-[#ff5520] transition">
 
           {/* Legal & Copyright */}
           <p className="text-[12px] sm:text-[13px] text-[#6b7280] flex flex-wrap items-center gap-1.5 leading-relaxed">
-            <span>&copy; 2026 LvlUp</span>
+            <span>&copy; 2026 ThinkOva</span>
             <span>&middot;</span>
             <Link className="hover:text-white transition" href={legalLinks.privacy}>Privacy</Link>
             <span>&middot;</span>

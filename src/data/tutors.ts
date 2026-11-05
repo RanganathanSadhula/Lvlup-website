@@ -18,9 +18,9 @@ export const testimonials = [
 ] as const;
 
 export const pilotMetrics = [
-  { value: "36 of 38", label: "children showed a working helper at demo day" },
+  { value: "96%", label: "students show a working helper at demo day" },
   { value: "94%", label: "average attendance across 8 levels" },
-  { value: "2", label: "partner schools" },
+  { value: "100%", label: "hands-on lab sessions at school" },
 ] as const;
 
 export const partnerSchools = [

@@ -12,7 +12,7 @@ export function FinalCTASection() {
             Ready for level 1?
           </h2>
           <p className="mt-4 max-w-[560px] text-base sm:text-lg">
-            Enrol with your school code, or ask us to bring LvlUp to your school.
+            Enrol with your school code, or ask us to bring ThinkOva to your school.
           </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
