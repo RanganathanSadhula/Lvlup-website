@@ -1,4 +1,4 @@
-import { smtpMailer } from "./smtp";
+import { graphMailer } from "./graph-mailer";
 import { openwaClient } from "./openwa";
 
 /**
@@ -53,10 +53,10 @@ export class NotificationDispatcher {
       metadata: payload.metadata,
     };
 
-    // 1. Prioritize SMTP automation if configured:
-    if (smtpMailer.isConfigured()) {
+    // 1. Prioritize Microsoft Graph API automation if configured:
+    if (graphMailer.isConfigured()) {
       try {
-        const info = await smtpMailer.sendMail({
+        const info = await graphMailer.sendEmail({
           to: payload.to,
           subject: payload.subject,
           html: payload.html,
@@ -65,17 +65,17 @@ export class NotificationDispatcher {
 
         record.metadata = {
           ...record.metadata,
-          transport: "SMTP",
+          transport: "MICROSOFT_GRAPH",
           messageId: info.messageId,
-          response: info.response,
+          sender: info.sender,
           deliveredLive: true,
         };
-        console.info(`[Dispatcher] Live email dispatched via SMTP to ${payload.to} (MessageID: ${info.messageId})`);
+        console.info(`[Dispatcher] Live email dispatched via Microsoft Graph to ${payload.to} (MessageID: ${info.messageId})`);
       } catch (err: unknown) {
         const errorMsg = err instanceof Error ? err.message : String(err);
-        console.error(`[Dispatcher] SMTP dispatch error to ${payload.to}:`, errorMsg);
+        console.error(`[Dispatcher] Microsoft Graph dispatch error to ${payload.to}:`, errorMsg);
         record.status = "FAILED";
-        record.metadata = { ...record.metadata, transport: "SMTP", error: errorMsg };
+        record.metadata = { ...record.metadata, transport: "MICROSOFT_GRAPH", error: errorMsg };
       }
     } else if (process.env.RESEND_API_KEY) {
       // 2. Fallback to Resend HTTP API if configured:

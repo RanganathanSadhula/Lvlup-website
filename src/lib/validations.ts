@@ -14,8 +14,12 @@ export const schoolPackSchema = z.object({
     .string()
     .trim()
     .min(3, "Please enter your school and city")
-    .max(120, "That is too long"),
-  role: z.string().trim().min(2, "Please tell us your role").max(60, "That is too long"),
+    .max(120, "That is too long")
+    .optional(),
+  schoolName: z.string().trim().max(120).optional(),
+  city: z.string().trim().max(80).optional(),
+  email: z.string().trim().email("Enter a valid email address").optional().or(z.literal("")),
+  role: z.string().trim().min(2, "Please tell us your role").max(60, "That is too long").default("Principal"),
   phone: z
     .string()
     .trim()

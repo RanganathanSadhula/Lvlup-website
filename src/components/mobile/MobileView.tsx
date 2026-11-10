@@ -273,6 +273,7 @@ export function MobileView() {
     schoolName: "",
     name: "",
     role: "Principal",
+    email: "",
     city: "",
     phone: "",
   });
@@ -281,10 +282,30 @@ export function MobileView() {
 
   async function handleSchoolSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!schoolForm.schoolName.trim() || !schoolForm.name.trim() || !schoolForm.phone.trim()) {
+      return;
+    }
     setSchoolSubmitting(true);
-    await new Promise((r) => setTimeout(r, 600));
-    setSchoolSubmitting(false);
-    setSchoolSubmitted(true);
+    try {
+      await fetch("/api/school-pack", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: schoolForm.name.trim(),
+          schoolName: schoolForm.schoolName.trim(),
+          city: schoolForm.city.trim() || "India",
+          schoolCity: `${schoolForm.schoolName.trim()}, ${schoolForm.city.trim() || "India"}`,
+          role: schoolForm.role,
+          phone: schoolForm.phone.trim(),
+          email: schoolForm.email.trim() || undefined,
+        }),
+      }).catch(() => null);
+    } catch {
+      // ignore
+    } finally {
+      setSchoolSubmitting(false);
+      setSchoolSubmitted(true);
+    }
   }
 
   const faqItems = faqTab === "parents" ? parentFaq : schoolFaq;
@@ -2093,11 +2114,19 @@ className="underline text-black font-normal hover:text-[#FF6B2C]">{siteConfig.wh
                   Callback request received!
                 </h3>
                 <p className="mt-2 text-[13px] leading-relaxed text-[#5f6068]">
-                  Thank you. Our school partnerships team will call you within one working day.
+                  Thank you, {schoolForm.name.trim().split(" ")[0] || "Principal"}. Our school partnerships team will call you within one working day.
                 </p>
+                {schoolForm.email.trim() && (
+                  <p className="mt-2 text-xs font-medium text-[#109e58]">
+                    ✓ Partnership pack sent to {schoolForm.email.trim()}.
+                  </p>
+                )}
                 <button
                   type="button"
-                  onClick={() => setSchoolSubmitted(false)}
+                  onClick={() => {
+                    setSchoolForm({ schoolName: "", name: "", role: "Principal", email: "", city: "", phone: "" });
+                    setSchoolSubmitted(false);
+                  }}
                   className="mt-4 text-[13px] font-semibold text-[#ff5520] underline"
                 >
                   Submit another request
@@ -2135,7 +2164,7 @@ className="underline text-black font-normal hover:text-[#FF6B2C]">{siteConfig.wh
                       <input
                         type="text"
                         required
-                        placeholder="Priya Sharma"
+                        placeholder="e.g. Dr. Priya Sharma"
                         value={schoolForm.name}
                         onChange={(e) => setSchoolForm({ ...schoolForm, name: e.target.value })}
                         className="mt-1.5 w-full rounded-xl border border-black/10 bg-[#f4f5f7] px-4 py-3 text-sm text-[#0e0f12] placeholder:text-[#9ca3af] focus:bg-white focus:outline-none focus:ring-2 focus:ring-black"
@@ -2170,7 +2199,7 @@ className="underline text-black font-normal hover:text-[#FF6B2C]">{siteConfig.wh
                       <input
                         type="text"
                         required
-                        placeholder="Pune"
+                        placeholder="e.g. Pune"
                         value={schoolForm.city}
                         onChange={(e) => setSchoolForm({ ...schoolForm, city: e.target.value })}
                         className="mt-1.5 w-full rounded-xl border border-black/10 bg-[#f4f5f7] px-4 py-3 text-sm text-[#0e0f12] placeholder:text-[#9ca3af] focus:bg-white focus:outline-none focus:ring-2 focus:ring-black"
@@ -2190,6 +2219,19 @@ className="underline text-black font-normal hover:text-[#FF6B2C]">{siteConfig.wh
                         className="mt-1.5 w-full rounded-xl border border-black/10 bg-[#f4f5f7] px-4 py-3 text-sm font-mono text-[#0e0f12] placeholder:text-[#9ca3af] focus:bg-white focus:outline-none focus:ring-2 focus:ring-black"
                       />
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#0e0f12]">
+                      Official Email (optional)
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="principal@school.edu.in"
+                      value={schoolForm.email}
+                      onChange={(e) => setSchoolForm({ ...schoolForm, email: e.target.value })}
+                      className="mt-1.5 w-full rounded-xl border border-black/10 bg-[#f4f5f7] px-4 py-3 text-sm text-[#0e0f12] placeholder:text-[#9ca3af] focus:bg-white focus:outline-none focus:ring-2 focus:ring-black"
+                    />
                   </div>
 
                   <button

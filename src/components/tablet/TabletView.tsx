@@ -281,9 +281,32 @@ export function TabletView() {
     }
   };
 
-  const handleSchoolSubmit = (e: React.FormEvent) => {
+  const [schoolSubmitting, setSchoolSubmitting] = useState(false);
+
+  const handleSchoolSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSchoolSubmitted(true);
+    if (!schoolName.trim() || !contactPerson.trim() || !schoolPhone.trim()) return;
+    setSchoolSubmitting(true);
+    try {
+      await fetch("/api/school-pack", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: contactPerson.trim(),
+          schoolName: schoolName.trim(),
+          city: schoolCity.trim() || "India",
+          schoolCity: `${schoolName.trim()}, ${schoolCity.trim() || "India"}`,
+          role: schoolRole,
+          phone: schoolPhone.trim(),
+          email: schoolEmail.trim() || undefined,
+        }),
+      }).catch(() => null);
+    } catch {
+      // ignore
+    } finally {
+      setSchoolSubmitting(false);
+      setSchoolSubmitted(true);
+    }
   };
 
   return (
@@ -2168,7 +2191,7 @@ export function TabletView() {
 
               {schoolSubmitted ? (
                 <div className="mt-6 rounded-[12px] bg-[#1F9D55]/15 p-5 text-[#1F9D55] text-[15px]">
-                  ✓ Callback requested! Our school partnerships team will get in touch within one working day.
+                  ✓ Callback requested for {schoolName}! Our school partnerships team will call {contactPerson.trim().split(" ")[0] || "you"} within one working day.
                 </div>
               ) : (
                 <form onSubmit={handleSchoolSubmit} className="mt-7 space-y-5">
@@ -2196,7 +2219,7 @@ export function TabletView() {
                       <input
                         type="text"
                         required
-                        placeholder="Priya Sharma"
+                        placeholder="e.g. Dr. Priya Sharma"
                         value={contactPerson}
                         onChange={(e) => setContactPerson(e.target.value)}
                         className="h-[52px] w-full rounded-[12px] border border-[#E3E1D9] bg-[#F4F3EE] px-4 text-[15px] text-[#0B0C0F] placeholder:text-[#8A8F9E] focus:border-[#0B0C0F] focus:outline-none transition"
@@ -2233,7 +2256,7 @@ export function TabletView() {
                       <input
                         type="text"
                         required
-                        placeholder="Pune"
+                        placeholder="e.g. Pune"
                         value={schoolCity}
                         onChange={(e) => setSchoolCity(e.target.value)}
                         className="h-[52px] w-full rounded-[12px] border border-[#E3E1D9] bg-[#F4F3EE] px-4 text-[15px] text-[#0B0C0F] placeholder:text-[#8A8F9E] focus:border-[#0B0C0F] focus:outline-none transition"
@@ -2253,6 +2276,20 @@ export function TabletView() {
                         className="h-[52px] w-full rounded-[12px] border border-[#E3E1D9] bg-[#F4F3EE] px-4 text-[15px] text-[#0B0C0F] placeholder:text-[#8A8F9E] focus:border-[#0B0C0F] focus:outline-none transition"
                       />
                     </div>
+                  </div>
+
+                  {/* Email (Optional) */}
+                  <div>
+                    <label className="block text-[14px] font-medium text-[#0B0C0F] mb-2">
+                      Official Email (optional)
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="e.g. principal@school.edu.in"
+                      value={schoolEmail}
+                      onChange={(e) => setSchoolEmail(e.target.value)}
+                      className="h-[52px] w-full rounded-[12px] border border-[#E3E1D9] bg-[#F4F3EE] px-4 text-[15px] text-[#0B0C0F] placeholder:text-[#8A8F9E] focus:border-[#0B0C0F] focus:outline-none transition"
+                    />
                   </div>
 
                   {/* Submit Button */}

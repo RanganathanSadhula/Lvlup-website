@@ -18,6 +18,7 @@ const fields = [
   { name: "schoolCity", label: "School and city", placeholder: "e.g. Delhi Public School, Pune", autoComplete: "organization", inputMode: "text" },
   { name: "role", label: "Your role", placeholder: "Principal, coordinator or teacher", autoComplete: "organization-title", inputMode: "text" },
   { name: "phone", label: "Phone or WhatsApp", placeholder: "10-digit mobile number", autoComplete: "tel-national", inputMode: "tel" },
+  { name: "email", label: "Official Email (optional)", placeholder: "e.g. principal@school.edu.in", autoComplete: "email", inputMode: "email" },
 ] as const;
 
 export function SchoolPackForm() {

@@ -1,9 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SmtpMailer } from "../backend/notifications/smtp";
+import { MicrosoftGraphMailer } from "../backend/notifications/graph-mailer";
 import { NotificationDispatcher } from "../backend/notifications/dispatcher";
-import nodemailer from "nodemailer";
 
-describe("SMTP Mailer & Dispatcher Automation", () => {
+describe("Email Automation & Microsoft Graph Service", () => {
   const originalEnv = { ...process.env };
 
   beforeEach(() => {
@@ -16,11 +15,11 @@ describe("SMTP Mailer & Dispatcher Automation", () => {
   });
 
   it("1. Reports not configured when environment variables are missing", () => {
-    delete process.env.SMTP_HOST;
-    delete process.env.SMTP_USER;
-    delete process.env.SMTP_PASSWORD;
+    delete process.env.AZURE_TENANT_ID;
+    delete process.env.AZURE_CLIENT_ID;
+    delete process.env.AZURE_CLIENT_SECRET;
 
-    const mailer = new SmtpMailer();
+    const mailer = new MicrosoftGraphMailer();
     expect(mailer.isConfigured()).toBe(false);
     expect(mailer.getConfig()).toBeNull();
 
@@ -28,90 +27,77 @@ describe("SMTP Mailer & Dispatcher Automation", () => {
     expect(summary.configured).toBe(false);
   });
 
-  it("2. Parses SMTP config correctly and masks username in summary", () => {
-    process.env.SMTP_HOST = "smtp.zoho.com";
-    process.env.SMTP_PORT = "465";
-    process.env.SMTP_USER = "info@thinkova.ai";
-    process.env.SMTP_PASSWORD = "secret_password_123";
-    process.env.SMTP_FROM = "ThinkOva AI <info@thinkova.ai>";
+  it("2. Parses Microsoft Graph config correctly and masks secrets in summary", () => {
+    process.env.AZURE_TENANT_ID = "00000000-1111-2222-3333-444444444444";
+    process.env.AZURE_CLIENT_ID = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
+    process.env.AZURE_CLIENT_SECRET = "secret_password_123";
+    process.env.MAIL_SENDER = "info@thinkova.ai";
 
-    const mailer = new SmtpMailer();
+    const mailer = new MicrosoftGraphMailer();
     expect(mailer.isConfigured()).toBe(true);
 
     const cfg = mailer.getConfig();
-    expect(cfg?.host).toBe("smtp.zoho.com");
-    expect(cfg?.port).toBe(465);
-    expect(cfg?.secure).toBe(true);
-    expect(cfg?.from).toBe("ThinkOva AI <info@thinkova.ai>");
+    expect(cfg?.tenantId).toBe("00000000-1111-2222-3333-444444444444");
+    expect(cfg?.clientId).toBe("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+    expect(cfg?.sender).toBe("info@thinkova.ai");
 
     const summary = mailer.getConfigSummary();
     expect(summary.configured).toBe(true);
-    expect(summary.user).toBe("in***@thinkova.ai");
-    expect(summary.user).not.toContain("secret_password_123");
+    expect(summary.sender).toBe("info@thinkova.ai");
+    expect(JSON.stringify(summary)).not.toContain("secret_password_123");
   });
 
-  it("3. Verifies connection handshake against mock transporter", async () => {
-    process.env.SMTP_HOST = "smtp.zoho.com";
-    process.env.SMTP_USER = "info@thinkova.ai";
-    process.env.SMTP_PASSWORD = "secret_app_password";
-
-    const mockVerify = vi.fn().mockResolvedValue(true);
-    vi.spyOn(nodemailer, "createTransport").mockReturnValue({
-      verify: mockVerify,
-    } as unknown as ReturnType<typeof nodemailer.createTransport>);
-
-    const mailer = new SmtpMailer();
+  it("3. Verifies connection handling when unconfigured or invalid", async () => {
+    delete process.env.AZURE_TENANT_ID;
+    const mailer = new MicrosoftGraphMailer();
     const result = await mailer.verifyConnection();
 
-    expect(result.success).toBe(true);
-    expect(result.message).toContain("SMTP connection established");
-    expect(mockVerify).toHaveBeenCalled();
+    expect(result.success).toBe(false);
+    expect(result.message).toContain("Microsoft Graph API credentials not configured");
   });
 
-  it("4. Sends email and returns messageId using transporter.sendMail", async () => {
-    process.env.SMTP_HOST = "smtp.zoho.com";
-    process.env.SMTP_USER = "info@thinkova.ai";
-    process.env.SMTP_PASSWORD = "secret_app_password";
+  it("4. Sends email and returns messageId using Graph Client", async () => {
+    process.env.AZURE_TENANT_ID = "00000000-1111-2222-3333-444444444444";
+    process.env.AZURE_CLIENT_ID = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
+    process.env.AZURE_CLIENT_SECRET = "secret_app_password";
+    process.env.MAIL_SENDER = "info@thinkova.ai";
 
-    const mockSendMail = vi.fn().mockResolvedValue({
-      messageId: "<test-smtp-msg-01@thinkova.ai>",
-      response: "250 2.0.0 OK: message queued",
-    });
+    const mailer = new MicrosoftGraphMailer();
+    const mockPost = vi.fn().mockResolvedValue({});
+    const mockApi = vi.fn().mockReturnValue({ post: mockPost });
 
-    vi.spyOn(nodemailer, "createTransport").mockReturnValue({
-      sendMail: mockSendMail,
-    } as unknown as ReturnType<typeof nodemailer.createTransport>);
+    vi.spyOn(mailer, "getClient").mockReturnValue({
+      api: mockApi,
+    } as unknown as ReturnType<typeof mailer.getClient>);
 
-    const mailer = new SmtpMailer();
-    const result = await mailer.sendMail({
+    const result = await mailer.sendEmail({
       to: "parent@example.com",
       subject: "Welcome to ThinkOva",
       html: "<p>Welcome to ThinkOva!</p>",
     });
 
-    expect(result.messageId).toBe("<test-smtp-msg-01@thinkova.ai>");
-    expect(mockSendMail).toHaveBeenCalledWith(
-      expect.objectContaining({
-        to: "parent@example.com",
-        subject: "Welcome to ThinkOva",
-        html: "<p>Welcome to ThinkOva!</p>",
-      })
-    );
+    expect(result.success).toBe(true);
+    expect(result.transport).toBe("MICROSOFT_GRAPH");
+    expect(result.messageId).toContain("@thinkova.ai");
+    expect(mockApi).toHaveBeenCalledWith("/users/info@thinkova.ai/sendMail");
+    expect(mockPost).toHaveBeenCalled();
   });
 
-  it("5. NotificationDispatcher automatically routes emails via SMTP when configured", async () => {
-    process.env.SMTP_HOST = "smtp.zoho.com";
-    process.env.SMTP_USER = "info@thinkova.ai";
-    process.env.SMTP_PASSWORD = "secret_app_password";
+  it("5. NotificationDispatcher automatically routes emails via Microsoft Graph when configured", async () => {
+    process.env.AZURE_TENANT_ID = "00000000-1111-2222-3333-444444444444";
+    process.env.AZURE_CLIENT_ID = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
+    process.env.AZURE_CLIENT_SECRET = "secret_app_password";
+    process.env.MAIL_SENDER = "info@thinkova.ai";
 
-    const mockSendMail = vi.fn().mockResolvedValue({
-      messageId: "<smtp-dispatched-101@thinkova.ai>",
-      response: "250 OK",
+    const { graphMailer } = await import("../backend/notifications/graph-mailer");
+    vi.spyOn(graphMailer, "sendEmail").mockResolvedValue({
+      success: true,
+      messageId: "<graph-dispatched-101@thinkova.ai>",
+      sender: "info@thinkova.ai",
+      sentAt: new Date(),
+      recipientCount: 1,
+      transport: "MICROSOFT_GRAPH",
     });
-
-    vi.spyOn(nodemailer, "createTransport").mockReturnValue({
-      sendMail: mockSendMail,
-    } as unknown as ReturnType<typeof nodemailer.createTransport>);
 
     const dispatcher = new NotificationDispatcher();
     const emailRecord = await dispatcher.sendEmail({
@@ -122,9 +108,44 @@ describe("SMTP Mailer & Dispatcher Automation", () => {
     });
 
     expect(emailRecord.status).toBe("SENT");
-    expect(emailRecord.metadata?.transport).toBe("SMTP");
-    expect(emailRecord.metadata?.messageId).toBe("<smtp-dispatched-101@thinkova.ai>");
+    expect(emailRecord.metadata?.transport).toBe("MICROSOFT_GRAPH");
+    expect(emailRecord.metadata?.messageId).toBe("<graph-dispatched-101@thinkova.ai>");
     expect(dispatcher.getEmailOutbox().length).toBe(1);
   });
-});
 
+  it("6. Generates dynamic Principal Outreach email template from school registry data", async () => {
+    const { emailTemplates, formatPrincipalSalutation } = await import("../backend/templates/email-templates");
+
+    // Salutation formatting tests
+    expect(formatPrincipalSalutation("Priya Sharma", "Principal")).toBe("Dear Principal Sharma,");
+    expect(formatPrincipalSalutation("Dr. Anita Desai", "Principal")).toBe("Dear Principal Dr. Anita Desai,");
+    expect(formatPrincipalSalutation("Sunil Mehta", "Vice Principal")).toBe("Dear Vice Principal Mehta,");
+    expect(formatPrincipalSalutation("Principal Priya Sharma")).toBe("Dear Principal Priya Sharma,");
+    expect(formatPrincipalSalutation("", "Principal")).toBe("Dear Principal,");
+
+    // Email rendering with dynamic registry data
+    const email = emailTemplates.principalOutreach({
+      principalName: "Priya Sharma",
+      schoolName: "Delhi Public School, Pune",
+      city: "Pune",
+      role: "Principal",
+      siteUrl: "https://www.thinkova.ai",
+    });
+
+    expect(email.subject).toContain("Delhi Public School, Pune");
+    expect(email.html).toContain("Dear Principal Sharma,");
+    expect(email.html).toContain("Delhi Public School, Pune");
+    expect(email.html).toContain("https://www.thinkova.ai/images/email/principal-hero-student.png");
+    expect(email.html).toContain("https://www.thinkova.ai/images/email/principal-case-study.jpg");
+    expect(email.html).toContain("https://www.thinkova.ai/images/email/principal-generative-ai-girl.png");
+    expect(email.html).toContain("Traditional thinking &rarr; Innovation thinking");
+    expect(email.html).toContain("PILOT BATCHES THIS TERM");
+    expect(email.html).toContain("Sumit Sharma");
+    expect(email.html).toContain("+91 96066 26152");
+
+    // Plain text version has same dynamic values
+    expect(email.text).toContain("Dear Principal Sharma,");
+    expect(email.text).toContain("Delhi Public School, Pune");
+    expect(email.text).toContain("Junior Innovators (Grades 5–8)");
+  });
+});

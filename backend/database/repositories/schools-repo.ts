@@ -9,6 +9,8 @@ import { dbRouter, type DatabaseRouter } from "../router/db-router";
 export interface ISchoolsRepository {
   findByUid(schoolUid: string): Promise<SchoolEntity | null>;
   searchByNameOrAlias(query: string): Promise<SchoolEntity[]>;
+  listAll(limit?: number): Promise<SchoolEntity[]>;
+  listActive(limit?: number): Promise<SchoolEntity[]>;
   getBatch(batchId: string): Promise<CohortBatchEntity | null>;
   getTutor(tutorId: string): Promise<TutorEntity | null>;
   upsertSchool(school: SchoolEntity): Promise<void>;
@@ -43,6 +45,14 @@ export class PreSchemaSchoolsRepository implements ISchoolsRepository {
     return all.filter(
       (s) => s.officialName.toLowerCase().includes(q) || s.city.toLowerCase().includes(q)
     );
+  }
+
+  async listAll(limit = 50): Promise<SchoolEntity[]> {
+    return await this.router.find<SchoolEntity>("schools", undefined, { limit, sort: { createdAt: "desc" } }, "schools");
+  }
+
+  async listActive(limit = 50): Promise<SchoolEntity[]> {
+    return await this.router.find<SchoolEntity>("schools", { status: "ACTIVE" }, { limit, sort: { createdAt: "desc" } }, "schools");
   }
 
   async getBatch(batchId: string): Promise<CohortBatchEntity | null> {

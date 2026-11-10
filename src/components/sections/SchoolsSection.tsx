@@ -12,28 +12,52 @@ export function SchoolsSection() {
     schoolName: "",
     name: "",
     role: "Principal",
+    email: "",
     city: "",
     phone: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submissionResult, setSubmissionResult] = useState<{
+    emailDispatched?: boolean;
+    emailNotice?: string;
+  }>({});
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!formData.name.trim() || !formData.schoolName.trim() || !formData.city.trim() || !formData.phone.trim()) {
+      return;
+    }
     setSubmitting(true);
 
     try {
-      // Attempt sending to api
-      await fetch("/api/school-pack", {
+      const trimmedName = formData.name.trim();
+      const trimmedSchool = formData.schoolName.trim();
+      const trimmedCity = formData.city.trim();
+      const trimmedPhone = formData.phone.trim();
+      const trimmedEmail = formData.email.trim();
+
+      const res = await fetch("/api/school-pack", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: formData.name || "School representative",
-          schoolCity: `${formData.schoolName || "Partner School"}, ${formData.city || "India"}`,
+          name: trimmedName,
+          schoolName: trimmedSchool,
+          city: trimmedCity,
+          schoolCity: `${trimmedSchool}, ${trimmedCity}`,
           role: formData.role,
-          phone: formData.phone || "9999999999",
+          phone: trimmedPhone,
+          email: trimmedEmail || undefined,
         }),
-      }).catch(() => null);
+      });
+
+      if (res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setSubmissionResult({
+          emailDispatched: Boolean(data.emailDispatched),
+          emailNotice: data.emailNotice,
+        });
+      }
     } catch {
       // ignore
     } finally {
@@ -126,13 +150,23 @@ export function SchoolsSection() {
 
               {/* Description */}
               <p className="mt-4 text-[15px] sm:text-base leading-relaxed text-[#4b5563]">
-                Thank you, {formData.name.trim().split(" ")[0] || "Priya"}. Our partnerships team will call you on{" "}
+                Thank you, {formData.name.trim().split(" ")[0] || "Principal"}. Our partnerships team will call you on{" "}
                 <span className="font-mono text-ink">
-                  {formData.phone.length >= 4
-                    ? `${formData.phone.slice(0, 2)}XXXXXX${formData.phone.slice(-2)}`
-                    : "98XXXXXX10"}
+                  {formData.phone.replace(/\D/g, "").length >= 4
+                    ? `${formData.phone.replace(/\D/g, "").slice(0, 2)}XXXXXX${formData.phone.replace(/\D/g, "").slice(-2)}`
+                    : formData.phone.trim()}
                 </span>{" "}
                 within one working day to plan a visit or a free demo class.
+                {formData.email.trim() && submissionResult.emailDispatched && (
+                  <span className="mt-2.5 block text-xs sm:text-[13px] text-[#109e58] font-medium">
+                    ✓ A copy of the school partnership outline and curriculum details has been dispatched to {formData.email.trim()}.
+                  </span>
+                )}
+                {formData.email.trim() && submissionResult.emailDispatched === false && (
+                  <span className="mt-2.5 block text-xs sm:text-[13px] text-[#dc2626] font-medium">
+                    ⚠️ {submissionResult.emailNotice ? `Notice: ${submissionResult.emailNotice}` : "Please restart your dev server so updated Azure credentials take effect."}
+                  </span>
+                )}
               </p>
 
               {/* While you wait box */}
@@ -152,7 +186,10 @@ export function SchoolsSection() {
 
               <button
                 type="button"
-                onClick={() => setSubmitted(false)}
+                onClick={() => {
+                  setFormData({ schoolName: "", name: "", role: "Principal", email: "", city: "", phone: "" });
+                  setSubmitted(false);
+                }}
                 className="mt-6 text-xs font-semibold text-muted hover:text-ink underline underline-offset-2"
               >
                 ← Edit details or submit another request
@@ -200,7 +237,7 @@ export function SchoolsSection() {
                     id="personName"
                     type="text"
                     required
-                    placeholder="Priya Sharma"
+                    placeholder="e.g. Dr. Priya Sharma"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
@@ -241,7 +278,7 @@ export function SchoolsSection() {
                     id="cityName"
                     type="text"
                     required
-                    placeholder="Pune"
+                    placeholder="e.g. Pune"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                     className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
@@ -262,6 +299,21 @@ export function SchoolsSection() {
                     className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm font-mono text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
                   />
                 </div>
+              </div>
+
+              {/* Email Address */}
+              <div className="mt-4">
+                <label htmlFor="schoolEmail" className="block text-xs font-medium text-ink/75">
+                  Official Email (to receive school pack & curriculum)
+                </label>
+                <input
+                  id="schoolEmail"
+                  type="email"
+                  placeholder="e.g. principal@school.edu.in"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
+                />
               </div>
 
               {/* Submit button */}
