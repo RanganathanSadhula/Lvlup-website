@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 640 640">
   <rect width="640" height="640" rx="144" fill="#0B0C0F"/>
   <rect width="636" height="636" x="2" y="2" rx="142" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="4"/>
@@ -5,3 +6,10 @@
   <polygon points="146,275 236,275 311,418 311,496" fill="#FFFFFF"/>
   <polygon points="494,275 404,275 329,418 329,496" fill="#FFFFFF"/>
 </svg>
+=======
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="8" fill="#ff6b2c"/>
+  <path d="M9 14l7-6 7 6" fill="none" stroke="#0e0f12" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M9 22l7-6 7 6" fill="none" stroke="#0e0f12" stroke-opacity=".55" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+>>>>>>> 0c48af08a90a288c46f1d0057cb12d934026860b
