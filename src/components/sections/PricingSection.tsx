@@ -1,184 +1,163 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { Container } from "@/components/ui/Container";
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { Section } from "@/components/ui/Section";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { pricing } from "@/data/content";
-import { siteConfig } from "@/data/site";
 import { cn } from "@/lib/utils";
 
 export function PricingSection() {
-  const [plan, setPlan] = useState<"full" | "parts">("full");
+  const [feePlan, setFeePlan] = useState<"full" | "installments">("full");
+
+  const scrollToEnrol = () => {
+    const el = document.getElementById("enrol");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
-    <Section id="fees" tone="light" aria-labelledby="fees-title" className="pb-8 sm:pb-10 lg:pb-12">
-      <div
-        aria-hidden
-        className="bg-chevrons pointer-events-none absolute inset-0 opacity-60 [mask-image:linear-gradient(to_bottom,transparent,black_40%,transparent)]"
-      />
-      <Container className="relative">
-        <SectionHeader
-          id="fees-title"
-          title={<>One course. Everything included.</>}
-          description="Two ways to pay for the same course. Paying in full costs less. No hidden extras, no countdown timers."
-        />
+    <section id="fees" aria-labelledby="fees-title" className="w-full bg-[#F4F3EE] py-24 text-[#0B0C0F]">
+      <Container>
+        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
+          <h2
+            id="fees-title"
+            className="font-display text-[36px] font-normal leading-[1.1] tracking-[-0.025em] text-[#0B0C0F] sm:text-[44px]"
+          >
+            One fee per course. Kits and
+            <br />
+            tools included.
+          </h2>
+          <p className="max-w-[420px] text-sm leading-[22px] text-[#5A5F6B]">
+            Partner-school fees, paid to ThinkOva. Pay in full, or in two parts for ₹500 more.
+          </p>
+        </div>
 
-        <div className="mt-12 grid gap-6 lg:mt-14 lg:grid-cols-[1.1fr_1fr] lg:items-start">
-          {/* Main Pricing Card */}
-          <ScrollReveal delay={80}>
-            <article className="overflow-hidden rounded-3xl border-t-2 border-t-brand bg-gradient-to-b from-[#181920] to-[#121318] p-6 text-white shadow-2xl sm:p-8 lg:p-9">
-            <p className="font-mono text-xs text-muted-dark">ThinkOva · all 8 levels</p>
+        <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-12">
+          {/* Left Fee Card (Cols 1-6) */}
+          <div className="col-span-1 rounded-3xl bg-[#0B0C0F] p-8 text-white shadow-2xl sm:p-10 lg:col-span-6">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-white/50">
+              EXAMPLE · ROBOTICS STARTER: BUILD A ROVER
+            </span>
 
-            <div className="mt-3 flex items-center gap-2.5">
-              <span className="text-sm text-muted-dark">
-                Standard fee <span className="line-through">₹15,000</span>
+            <div className="mt-4 flex items-baseline gap-3">
+              <span className="font-display text-[48px] sm:text-[56px] font-normal text-white">
+                {feePlan === "full" ? "₹5,499" : "₹5,999"}
               </span>
-              <span className="inline-block rounded-full bg-[#109e58] px-2.5 py-0.5 text-[11px] font-bold text-white">
-                Up to 70% off
-              </span>
+              <span className="text-xs sm:text-sm text-white/60">for all 6 weeks, kit included</span>
             </div>
 
-            <div className="mt-4 flex flex-wrap items-baseline gap-x-3">
-              <span className="font-display text-[64px] font-normal leading-none tracking-[-0.03em] sm:text-[76px]">
-                {plan === "full" ? "₹4,499" : "₹4,999"}
-              </span>
-              <span className="text-sm text-muted-dark">
-                {plan === "full" ? "with your school code, paid in full" : "with your school code, paid in two parts"}
-              </span>
-            </div>
-
-            {/* Dynamic Interactive Selectable Payment Options */}
-            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {/* Option 1: Pay in full */}
-              <button
-                type="button"
-                onClick={() => setPlan("full")}
+            {/* Payment Switcher - Fixed Layout & Proportions matching Image 5 */}
+            <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {/* Pay in full */}
+              <div
+                onClick={() => setFeePlan("full")}
                 className={cn(
-                  "flex flex-col justify-between rounded-2xl p-4 text-left transition-all duration-200 border",
-                  plan === "full"
-                    ? "border-brand bg-[#1f2028] shadow-md ring-1 ring-brand/30"
-                    : "border-white/10 bg-[#16171e] hover:border-white/20"
+                  "flex flex-col justify-between min-h-[120px] cursor-pointer rounded-2xl border p-5 transition-all duration-200",
+                  feePlan === "full"
+                    ? "border-[#FF6B2C] bg-[#FF6B2C]/10 ring-1 ring-[#FF6B2C] shadow-lg"
+                    : "border-white/10 bg-white/[0.04] hover:border-white/20 hover:bg-white/[0.06]"
                 )}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={cn(
-                        "flex size-4 shrink-0 items-center justify-center rounded-full border transition-all",
-                        plan === "full" ? "border-brand" : "border-white/40"
-                      )}
-                    >
-                      {plan === "full" && <span className="size-2 rounded-full bg-brand" />}
-                    </span>
-                    <span className="text-sm font-semibold text-white">Pay in full</span>
-                  </div>
-                  <span className="rounded-md bg-[#109e58] px-2 py-0.5 text-[10px] font-bold text-white">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[13px] font-bold text-white">Pay in full</span>
+                  <span className="shrink-0 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400">
                     Save ₹500
                   </span>
                 </div>
-                <div className="mt-3">
-                  <span className="block text-[24px] font-bold leading-none text-white">₹4,499</span>
-                  <span className="mt-1 block text-xs text-muted-dark">One payment when you enrol</span>
+                <div className="mt-3 text-[26px] font-bold tracking-tight text-white leading-none">
+                  ₹5,499
                 </div>
-              </button>
+                <p className="mt-2 text-xs text-white/60 leading-normal">
+                  One payment when you enrol
+                </p>
+              </div>
 
-              {/* Option 2: Pay in two parts */}
-              <button
-                type="button"
-                onClick={() => setPlan("parts")}
+              {/* Two parts */}
+              <div
+                onClick={() => setFeePlan("installments")}
                 className={cn(
-                  "flex flex-col justify-between rounded-2xl p-4 text-left transition-all duration-200 border",
-                  plan === "parts"
-                    ? "border-brand bg-[#1f2028] shadow-md ring-1 ring-brand/30"
-                    : "border-white/10 bg-[#16171e] hover:border-white/20"
+                  "flex flex-col justify-between min-h-[120px] cursor-pointer rounded-2xl border p-5 transition-all duration-200",
+                  feePlan === "installments"
+                    ? "border-[#FF6B2C] bg-[#FF6B2C]/10 ring-1 ring-[#FF6B2C] shadow-lg"
+                    : "border-white/10 bg-white/[0.04] hover:border-white/20 hover:bg-white/[0.06]"
                 )}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={cn(
-                        "flex size-4 shrink-0 items-center justify-center rounded-full border transition-all",
-                        plan === "parts" ? "border-brand" : "border-white/40"
-                      )}
-                    >
-                      {plan === "parts" && <span className="size-2 rounded-full bg-brand" />}
-                    </span>
-                    <span className="text-sm font-semibold text-white">Pay in two parts</span>
-                  </div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[13px] font-bold text-white">Two parts</span>
                 </div>
-                <div className="mt-3">
-                  <span className="block text-[24px] font-bold leading-none text-white">₹4,999</span>
-                  <span className="mt-1 block text-xs text-muted-dark">₹2,500 now, ₹2,499 by level 5</span>
+                <div className="mt-3 text-[26px] font-bold tracking-tight text-white leading-none">
+                  ₹5,999
                 </div>
-              </button>
+                <p className="mt-2 text-xs text-white/60 leading-normal">
+                  ₹3,000 now, ₹2,999 by week 4
+                </p>
+              </div>
             </div>
 
-            {/* Inclusions List */}
-            <ul className="mt-7 space-y-3.5">
-              {pricing.inclusions.map((t) => (
-                <li key={t} className="flex items-start gap-3 text-[15px] leading-snug text-white">
-                  <span
-                    aria-hidden
-                    className="mt-0.5 inline-flex size-[18px] shrink-0 items-center justify-center rounded-[5px] bg-brand text-ink"
-                  >
-                    <Check className="size-2.5" strokeWidth={4} />
-                  </span>
-                  <span>{t}</span>
+            {/* Inclusions */}
+            <ul className="mt-8 space-y-3.5 border-t border-white/10 pt-6">
+              {[
+                "6 tutor-led classes in your school's lab",
+                "Rover kit, tools and all materials",
+                "A progress update every two weeks",
+                "Demo day and a digital portfolio",
+              ].map((inc, i) => (
+                <li key={i} className="flex items-center gap-3 text-sm text-white/80">
+                  <Check className="size-4 text-[#FF6B2C] stroke-[2.5]" />
+                  {inc}
                 </li>
               ))}
             </ul>
 
-            {/* Dynamic CTA Button */}
-            <a
-              href={siteConfig.enrolUrl}
-              className="mt-8 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-gradient px-6 py-3.5 text-center text-[15px] font-bold text-ink shadow-glow transition-all duration-200 transform-gpu hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,107,44,0.4)] active:scale-[0.96] active:translate-y-0 cursor-pointer"
+            <button
+              type="button"
+              onClick={scrollToEnrol}
+              className="mt-8 w-full rounded-xl bg-gradient-to-r from-[#FF6B2C] to-[#E05316] py-3.5 text-center text-sm font-semibold text-white shadow-lg transition hover:scale-[1.01] active:scale-[0.99]"
             >
-              <span>{plan === "full" ? "Enrol and pay ₹4,499" : "Enrol and pay ₹2,500 now"}</span>
-              <ArrowRight className="size-4" />
-            </a>
+              Enrol in this course →
+            </button>
+          </div>
 
-            <p className="mt-4 text-xs leading-relaxed text-muted-dark">
-              Partner school prices. Pay by UPI, card or net banking. Fees are paid to ThinkOva, not to your school.
-            </p>
-            </article>
-          </ScrollReveal>
-
-          {/* Right Column: Our Promise & What You Won't Pay For */}
-          <ScrollReveal delay={160}>
-            <div className="space-y-5">
-              <article className="rounded-3xl bg-[#ffe2d4] p-6 sm:p-8 text-ink">
-                <p className="font-mono text-xs text-ink/70">Our promise</p>
-                <h3 className="mt-4 font-display text-[24px] font-bold leading-[1.25] tracking-[-0.02em] sm:text-[28px]">
-                  {pricing.promiseTitle}
-                </h3>
-                <ul className="mt-6 space-y-3.5">
-                  {pricing.promisePoints.map((t) => (
-                    <li key={t} className="flex items-start gap-3 text-[15px] leading-snug">
-                      <span
-                        aria-hidden
-                        className="mt-0.5 inline-flex size-[18px] shrink-0 items-center justify-center rounded-[5px] bg-brand text-ink"
-                      >
-                        <Check className="size-2.5" strokeWidth={4} />
-                      </span>
-                      <span>{t}</span>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-
-              <aside className="rounded-2xl border border-black/[0.08] bg-white/50 p-6 sm:p-7 backdrop-blur-sm">
-                <h3 className="text-[15px] font-semibold text-ink">What you won’t pay for</h3>
-                <p className="mt-3 text-[15px] leading-relaxed text-muted">
-                  A laptop at home, extra kits, app subscriptions or a certificate fee. Classes use your school’s computer lab.
-                </p>
-              </aside>
+          {/* Right Side: Track Price Table & Refund Promise (Cols 7-12) */}
+          <div className="col-span-1 flex flex-col justify-between gap-6 lg:col-span-6">
+            {/* Fee Table */}
+            <div className="rounded-3xl border border-[#E3E1D9] bg-white p-8 shadow-sm">
+              <div className="space-y-4">
+                {[
+                  { track: "Robotics", price: "₹5,499 – ₹6,999" },
+                  { track: "Electronics & IoT", price: "₹4,999 – ₹6,499" },
+                  { track: "AI & Agents", price: "₹4,499 – ₹5,499" },
+                  { track: "Game Design", price: "₹3,999 – ₹4,999" },
+                  { track: "Product & 3D Design", price: "₹3,999 – ₹5,999" },
+                ].map((row, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center justify-between border-b border-[#EAE8E1] pb-4 last:border-none last:pb-0"
+                  >
+                    <span className="text-[15px] font-semibold text-[#0B0C0F]">
+                      {row.track}
+                    </span>
+                    <span className="font-mono text-[15px] font-semibold text-[#0B0C0F]">
+                      {row.price}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </ScrollReveal>
+
+            {/* Our Promise Card */}
+            <div className="rounded-3xl border border-[#FF6B2C]/30 bg-[#FEEFEA] p-8">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#FF6B2C]">
+                OUR PROMISE
+              </span>
+              <p className="mt-3 text-[16px] leading-[26px] font-medium text-[#0B0C0F]">
+                Come to at least 3 in 4 classes. If your child can’t show a working project at
+                demo day, we refund half the fee within 7 working days.
+              </p>
+            </div>
+          </div>
         </div>
       </Container>
-    </Section>
+    </section>
   );
 }

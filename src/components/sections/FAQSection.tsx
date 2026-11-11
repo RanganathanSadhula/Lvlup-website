@@ -1,243 +1,138 @@
-<<<<<<< HEAD
 "use client";
 
-import { useId, useState } from "react";
-import { Minus, Plus } from "lucide-react";
+import { useState } from "react";
+import { Plus, Minus } from "lucide-react";
 import { Container } from "@/components/ui/Container";
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { Section } from "@/components/ui/Section";
 import { parentFaq, schoolFaq } from "@/data/faq";
 import { siteConfig } from "@/data/site";
 import { cn } from "@/lib/utils";
-import type { FaqItem } from "@/types";
-
-type Tab = "parents" | "schools";
-
-function Accordion({ items, idPrefix }: { items: FaqItem[]; idPrefix: string }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-  return (
-    <ul className="space-y-3">
-      {items.map((item, i) => {
-        const open = openIndex === i;
-        const panelId = `${idPrefix}-panel-${i}`;
-        const buttonId = `${idPrefix}-button-${i}`;
-        return (
-          <li key={item.question} className="rounded-xl border border-black/[0.08] bg-white">
-            <h3>
-              <button
-                id={buttonId}
-                type="button"
-                aria-expanded={open}
-                aria-controls={panelId}
-                onClick={() => setOpenIndex(open ? null : i)}
-                suppressHydrationWarning
-                className="flex min-h-[60px] w-full items-center justify-between gap-4 rounded-xl px-5 py-4 text-left text-[15px] font-semibold sm:px-6"
-              >
-                {item.question}
-                {open ? <Minus aria-hidden className="size-5 shrink-0" /> : <Plus aria-hidden className="size-5 shrink-0" />}
-              </button>
-            </h3>
-            <div
-              id={panelId}
-              role="region"
-              aria-labelledby={buttonId}
-              className={cn("grid transition-[grid-template-rows] duration-200", open ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}
-            >
-              <div className="overflow-hidden">
-                <p className="px-5 pb-5 text-base leading-relaxed text-muted sm:px-6">{item.answer}</p>
-              </div>
-            </div>
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
 
 export function FAQSection() {
-  const [tab, setTab] = useState<Tab>("parents");
-  const uid = useId();
-  const tabs: { id: Tab; label: string }[] = [
-    { id: "parents", label: "For parents" },
-    { id: "schools", label: "For schools" },
-  ];
+  const [faqTab, setFaqTab] = useState<"parents" | "schools">("parents");
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+
+  const activeItems = faqTab === "parents" ? parentFaq : schoolFaq;
 
   return (
-    <Section id="faq" tone="light" aria-labelledby="faq-title" className="pt-8 sm:pt-10 lg:pt-12">
-      <Container className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.9fr)] lg:gap-16">
-        <ScrollReveal delay={80}>
-          <div>
-            <h2 id="faq-title" className="font-display text-[34px] font-normal leading-[1.08] tracking-[-0.03em] sm:text-[42px] lg:text-[48px]">
-              Questions parents ask
-            </h2>
-            <div role="tablist" aria-label="FAQ audience" className="mt-6 inline-flex rounded-xl bg-cream-2 p-1">
-              {tabs.map((t) => (
+    <section id="faq" aria-labelledby="faq-title" className="w-full bg-[#F4F3EE] py-24 text-[#0B0C0F]">
+      <Container>
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+          {/* Left FAQ Info (Cols 1-4) */}
+          <div className="col-span-1 flex flex-col justify-between lg:col-span-4">
+            <div>
+              <h2
+                id="faq-title"
+                className="font-display text-[36px] font-normal leading-[1.1] tracking-[-0.025em] text-[#0B0C0F] sm:text-[44px]"
+              >
+                Questions {faqTab === "parents" ? "parents" : "schools"}
+                <br />
+                ask
+              </h2>
+
+              <div className="mt-8 flex items-center rounded-full border border-[#E3E1D9] bg-[#EAE8E1] p-1 w-fit">
                 <button
-                  key={t.id}
-                  role="tab"
-                  id={`${uid}-tab-${t.id}`}
-                  aria-selected={tab === t.id}
-                  aria-controls={`${uid}-tabpanel`}
-                  tabIndex={tab === t.id ? 0 : -1}
-                  onClick={() => setTab(t.id)}
-                  suppressHydrationWarning
-                  onKeyDown={(e) => {
-                    if (e.key === "ArrowRight" || e.key === "ArrowLeft") setTab(tab === "parents" ? "schools" : "parents");
+                  type="button"
+                  onClick={() => {
+                    setFaqTab("parents");
+                    setOpenFaqIndex(0);
                   }}
                   className={cn(
-                    "min-h-10 rounded-lg px-4 text-sm font-semibold transition",
-                    tab === t.id ? "bg-white text-ink shadow-sm" : "text-muted hover:text-ink",
+                    "rounded-full px-5 py-2 text-xs font-semibold transition",
+                    faqTab === "parents"
+                      ? "bg-white text-[#0B0C0F] shadow-sm"
+                      : "text-[#5A5F6B] hover:text-[#0B0C0F]"
                   )}
                 >
-                  {t.label}
+                  For parents
                 </button>
-              ))}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFaqTab("schools");
+                    setOpenFaqIndex(0);
+                  }}
+                  className={cn(
+                    "rounded-full px-5 py-2 text-xs font-semibold transition",
+                    faqTab === "schools"
+                      ? "bg-white text-[#0B0C0F] shadow-sm"
+                      : "text-[#5A5F6B] hover:text-[#0B0C0F]"
+                  )}
+                >
+                  For schools
+                </button>
+              </div>
             </div>
-            <p className="mt-6 max-w-[340px] text-base leading-relaxed text-muted">
+
+            <div className="mt-12 text-xs leading-[20px] text-[#5A5F6B]">
               Something else? WhatsApp us at{" "}
               <a
                 href={siteConfig.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline underline-offset-2 hover:text-ink"
+                className="font-semibold text-[#0B0C0F] underline"
               >
                 {siteConfig.whatsappLabel}
               </a>
-              . A person replies within a few hours. We only message you about your child’s batch, and you can reply STOP at any time.
-            </p>
-          </div>
-        </ScrollReveal>
-        <ScrollReveal delay={160}>
-          <div role="tabpanel" id={`${uid}-tabpanel`} aria-labelledby={`${uid}-tab-${tab}`}>
-            {tab === "parents" ? (
-              <Accordion key="parents" items={parentFaq} idPrefix={`${uid}-p`} />
-            ) : (
-              <Accordion key="schools" items={schoolFaq} idPrefix={`${uid}-s`} />
-            )}
-          </div>
-        </ScrollReveal>
-      </Container>
-    </Section>
-  );
-}
-=======
-"use client";
-
-import { useId, useState } from "react";
-import { Minus, Plus } from "lucide-react";
-import { Container } from "@/components/ui/Container";
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { Section } from "@/components/ui/Section";
-import { parentFaq, schoolFaq } from "@/data/faq";
-import { siteConfig } from "@/data/site";
-import { cn } from "@/lib/utils";
-import type { FaqItem } from "@/types";
-
-type Tab = "parents" | "schools";
-
-function Accordion({ items, idPrefix }: { items: FaqItem[]; idPrefix: string }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-  return (
-    <ul className="space-y-3">
-      {items.map((item, i) => {
-        const open = openIndex === i;
-        const panelId = `${idPrefix}-panel-${i}`;
-        const buttonId = `${idPrefix}-button-${i}`;
-        return (
-          <li key={item.question} className="rounded-xl border border-black/[0.08] bg-white">
-            <h3>
-              <button
-                id={buttonId}
-                type="button"
-                aria-expanded={open}
-                aria-controls={panelId}
-                onClick={() => setOpenIndex(open ? null : i)}
-                className="flex min-h-[60px] w-full items-center justify-between gap-4 rounded-xl px-5 py-4 text-left text-[15px] font-semibold sm:px-6"
-              >
-                {item.question}
-                {open ? <Minus aria-hidden className="size-5 shrink-0" /> : <Plus aria-hidden className="size-5 shrink-0" />}
-              </button>
-            </h3>
-            <div
-              id={panelId}
-              role="region"
-              aria-labelledby={buttonId}
-              className={cn("grid transition-[grid-template-rows] duration-200", open ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}
-            >
-              <div className="overflow-hidden">
-                <p className="px-5 pb-5 text-base leading-relaxed text-muted sm:px-6">{item.answer}</p>
-              </div>
+              . A person replies within a few hours. We only message you about your child&apos;s batch,
+              and you can reply STOP at any time.
             </div>
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
+          </div>
 
-export function FAQSection() {
-  const [tab, setTab] = useState<Tab>("parents");
-  const uid = useId();
-  const tabs: { id: Tab; label: string }[] = [
-    { id: "parents", label: "For parents" },
-    { id: "schools", label: "For schools" },
-  ];
+          {/* Right Accordion (Cols 5-12) */}
+          <div className="col-span-1 space-y-3 lg:col-span-8">
+            {activeItems.map((item, idx) => {
+              const isOpen = openFaqIndex === idx;
 
-  return (
-    <Section id="faq" tone="light" aria-labelledby="faq-title" className="pt-8 sm:pt-10 lg:pt-12">
-      <Container className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.9fr)] lg:gap-16">
-        <ScrollReveal delay={80}>
-          <div>
-            <h2 id="faq-title" className="font-display text-[34px] font-normal leading-[1.08] tracking-[-0.03em] sm:text-[42px] lg:text-[48px]">
-              Questions parents ask
-            </h2>
-            <div role="tablist" aria-label="FAQ audience" className="mt-6 inline-flex rounded-xl bg-cream-2 p-1">
-              {tabs.map((t) => (
-                <button
-                  key={t.id}
-                  role="tab"
-                  id={`${uid}-tab-${t.id}`}
-                  aria-selected={tab === t.id}
-                  aria-controls={`${uid}-tabpanel`}
-                  tabIndex={tab === t.id ? 0 : -1}
-                  onClick={() => setTab(t.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === "ArrowRight" || e.key === "ArrowLeft") setTab(tab === "parents" ? "schools" : "parents");
-                  }}
+              return (
+                <div
+                  key={item.question}
                   className={cn(
-                    "min-h-10 rounded-lg px-4 text-sm font-semibold transition",
-                    tab === t.id ? "bg-white text-ink shadow-sm" : "text-muted hover:text-ink",
+                    "overflow-hidden rounded-2xl border bg-white transition-all duration-200",
+                    isOpen ? "border-[#D1CFC7] shadow-sm" : "border-[#E3E1D9] hover:border-[#D1CFC7]"
                   )}
                 >
-                  {t.label}
-                </button>
-              ))}
-            </div>
-            <p className="mt-6 max-w-[340px] text-base leading-relaxed text-muted">
-              Something else? WhatsApp us at{" "}
-              <a
-                href={siteConfig.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-2 hover:text-ink"
-              >
-                {siteConfig.whatsappLabel}
-              </a>
-              . A person replies within a few hours. We only message you about your child’s batch, and you can reply STOP at any time.
-            </p>
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                    aria-expanded={isOpen}
+                    className="flex w-full items-center justify-between p-6 text-left"
+                  >
+                    <span className="text-[16px] font-semibold text-[#0B0C0F]">
+                      {item.question}
+                    </span>
+                    <span
+                      className={cn(
+                        "ml-4 flex size-7 shrink-0 items-center justify-center rounded-full bg-[#F4F3EE] text-[#5A5F6B] transition-colors duration-200",
+                        isOpen && "bg-[#EAE8E1] text-[#0B0C0F]"
+                      )}
+                    >
+                      {isOpen ? <Minus className="size-3.5" /> : <Plus className="size-3.5" />}
+                    </span>
+                  </button>
+
+                  <div
+                    className={cn(
+                      "grid transition-[grid-template-rows,opacity] duration-350 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                      isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                    )}
+                  >
+                    <div className="overflow-hidden">
+                      <div
+                        className={cn(
+                          "px-6 pb-6 text-sm leading-[24px] text-[#5A5F6B] transition-transform duration-350 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                          isOpen ? "translate-y-0" : "-translate-y-2"
+                        )}
+                      >
+                        {item.answer}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        </ScrollReveal>
-        <ScrollReveal delay={160}>
-          <div role="tabpanel" id={`${uid}-tabpanel`} aria-labelledby={`${uid}-tab-${tab}`}>
-            {tab === "parents" ? (
-              <Accordion key="parents" items={parentFaq} idPrefix={`${uid}-p`} />
-            ) : (
-              <Accordion key="schools" items={schoolFaq} idPrefix={`${uid}-s`} />
-            )}
-          </div>
-        </ScrollReveal>
+        </div>
       </Container>
-    </Section>
+    </section>
   );
 }
->>>>>>> 0c48af08a90a288c46f1d0057cb12d934026860b

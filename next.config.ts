@@ -18,6 +18,20 @@ const nextConfig: NextConfig = {
     imageSizes: [200, 240, 480],
     qualities: [75, 85, 90, 95, 100],
   },
+  async redirects() {
+    return [
+      {
+        source: "/auth/login",
+        destination: "/login",
+        permanent: false,
+      },
+      {
+        source: "/auth/signup",
+        destination: "/signup",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

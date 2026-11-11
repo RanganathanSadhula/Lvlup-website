@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import type { NavLink } from "@/types";
+import { useAuth } from "@/lib/auth-context";
 
 export function MobileNavigation({ links, enrolUrl }: { links: NavLink[]; enrolUrl: string }) {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!open) return;
@@ -74,7 +77,24 @@ export function MobileNavigation({ links, enrolUrl }: { links: NavLink[]; enrolU
               ))}
             </ul>
           </nav>
-          <div className="mt-6 flex items-center justify-end">
+          <div className="mt-6 flex flex-col gap-3">
+            {user ? (
+              <Link
+                href="/who-is-learning"
+                onClick={() => setOpen(false)}
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[10px] border border-[#FF6B2C]/40 bg-[#FF6B2C]/15 text-[15px] font-semibold text-[#FF8B4E] transition hover:bg-[#FF6B2C]/25"
+              >
+                <span>Who&apos;s learning ({user.fullName ? user.fullName.split(" ")[0] : "Profile"})</span>
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setOpen(false)}
+                className="inline-flex min-h-11 w-full items-center justify-center rounded-[10px] border border-white/20 bg-white/5 text-[15px] font-medium text-white transition hover:bg-white/10"
+              >
+                Parent log in
+              </Link>
+            )}
             <a
               href={enrolUrl}
               onClick={(e) => handleNavClick(e, enrolUrl)}

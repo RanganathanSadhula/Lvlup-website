@@ -1,21 +1,22 @@
-<<<<<<< HEAD
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
-import { navLinks, siteConfig } from "@/data/site";
+import { siteConfig } from "@/data/site";
 import { MobileNavigation } from "./MobileNavigation";
+import { useAuth } from "@/lib/auth-context";
 
 export function Header() {
+  const { user } = useAuth();
   const scrollToTarget = (targetId: string) => {
-    // Find all matching elements and pick the currently visible one
     const elements = Array.from(document.querySelectorAll<HTMLElement>(`#${targetId}`));
     const element =
       elements.find((el) => el.offsetParent !== null || el.getBoundingClientRect().height > 0) ||
       elements[0];
 
     if (element) {
-      const headerOffset = 64;
+      const headerOffset = 70;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
@@ -52,11 +53,9 @@ export function Header() {
       }
     };
 
-    // Run after DOM has painted
     const timer = setTimeout(handleHash, 150);
     window.addEventListener("hashchange", handleHash);
 
-    // Global listener for in-page anchor links
     const handleClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest("a");
       if (!target) return;
@@ -77,149 +76,71 @@ export function Header() {
     };
   }, []);
 
+  const desktopNavItems = [
+    { label: "Courses", href: "#tracks" },
+    { label: "Tracks", href: "#tracks" },
+    { label: "How it works", href: "#how-it-works" },
+    { label: "Fees", href: "#fees" },
+    { label: "Safety", href: "#safety" },
+    { label: "For schools", href: "#schools" },
+  ];
+
   return (
-    <header className="sticky top-0 z-40 h-16 border-b border-white/[0.06] bg-ink/90 backdrop-blur-md">
-      <div className="mx-auto flex h-full max-w-page items-center justify-between px-5 sm:px-8 min-[1344px]:px-0">
+    <header className="sticky top-0 z-40 h-20 w-full border-b border-white/[0.08] bg-[#0B0C0F]/90 backdrop-blur-xl">
+      <div className="mx-auto flex h-full max-w-[1360px] items-center justify-between px-6 sm:px-8">
         <Logo />
-        <nav aria-label="Primary" className="hidden md:block">
-          <ul className="flex items-center gap-5 lg:gap-8 text-xs lg:text-sm text-white/80">
-            {navLinks.map((l) => (
-              <li key={l.href}>
+
+        <nav aria-label="Desktop Primary" className="hidden lg:block">
+          <ul className="flex items-center gap-8 text-[15px] font-medium text-white/80">
+            {desktopNavItems.map((item) => (
+              <li key={item.label}>
                 <a
-                  href={l.href}
-                  onClick={(e) => handleNavClick(e, l.href)}
-                  className="inline-block transition-all duration-200 hover:text-white active:scale-95 cursor-pointer"
+                  href={item.href}
+                  onClick={(e) => handleNavClick(e, item.href)}
+                  className="transition hover:text-white"
                 >
-                  {l.label}
+                  {item.label}
                 </a>
               </li>
             ))}
           </ul>
         </nav>
-        <div className="flex items-center gap-3">
-          <a
-            href={siteConfig.enrolUrl}
-            onClick={(e) => handleNavClick(e, siteConfig.enrolUrl)}
-            className="flex h-10 w-[108px] items-center justify-center rounded-[6px] bg-gradient-to-b from-[#FF8B4E] via-[#FF6B2C] to-[#F2561A] text-[16px] font-semibold text-[#0B0C0F] shadow-[0px_10px_28px_-8px_rgba(255,107,44,0.35),inset_0px_1px_0px_rgba(255,255,255,0.28)] transition-all duration-200 hover:brightness-105 active:scale-95 cursor-pointer"
+
+        <div className="flex items-center gap-3 sm:gap-6">
+          {user ? (
+            <Link
+              href="/who-is-learning"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-[14px] font-medium text-white transition hover:border-[#FF6B2C] hover:bg-white/15"
+            >
+              <span className="flex size-6 items-center justify-center rounded-full bg-[#FF6B2C] text-xs font-bold text-white">
+                {(user.fullName || user.email || "P")[0]?.toUpperCase() || "P"}
+              </span>
+              <span className="hidden sm:inline">Who&apos;s learning</span>
+            </Link>
+          ) : (
+            <Link
+              href="/login"
+              className="inline-block text-[14px] font-medium text-white/80 transition hover:text-white"
+            >
+              Parent log in
+            </Link>
+          )}
+
+          <Link
+            href="/explore"
+            className="rounded-full bg-gradient-to-r from-[#FF6B2C] to-[#E05316] px-4 sm:px-6 py-2.5 text-[14px] font-medium text-white shadow-[0_4px_16px_rgba(255,107,44,0.35)] transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
-            Enrol now
-          </a>
-          <MobileNavigation links={navLinks} enrolUrl={siteConfig.enrolUrl} />
+            Explore courses
+          </Link>
+
+          <div className="lg:hidden">
+            <MobileNavigation
+              links={desktopNavItems}
+              enrolUrl="#enrol"
+            />
+          </div>
         </div>
       </div>
     </header>
   );
 }
-=======
-"use client";
-
-import { useEffect } from "react";
-import { Logo } from "@/components/ui/Logo";
-import { navLinks, siteConfig } from "@/data/site";
-import { MobileNavigation } from "./MobileNavigation";
-
-export function Header() {
-  const scrollToTarget = (targetId: string) => {
-    // Find all matching elements and pick the currently visible one
-    const elements = Array.from(document.querySelectorAll<HTMLElement>(`#${targetId}`));
-    const element =
-      elements.find((el) => el.offsetParent !== null || el.getBoundingClientRect().height > 0) ||
-      elements[0];
-
-    if (element) {
-      const headerOffset = 64;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(
-          new CustomEvent("lvlup-nav-jump", { detail: { targetId } })
-        );
-      }
-
-      window.scrollTo({
-        top: Math.max(0, offsetPosition),
-        behavior: "smooth",
-      });
-      window.history.pushState(null, "", `#${targetId}`);
-      return true;
-    }
-    return false;
-  };
-
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (href.startsWith("#") || href.startsWith("/#")) {
-      const targetId = href.replace(/^\/?#/, "");
-      if (scrollToTarget(targetId)) {
-        e.preventDefault();
-      }
-    }
-  };
-
-  useEffect(() => {
-    const handleHash = () => {
-      const hash = window.location.hash.replace(/^\/?#/, "");
-      if (hash) {
-        scrollToTarget(hash);
-      }
-    };
-
-    // Run after DOM has painted
-    const timer = setTimeout(handleHash, 150);
-    window.addEventListener("hashchange", handleHash);
-
-    // Global listener for in-page anchor links
-    const handleClick = (e: MouseEvent) => {
-      const target = (e.target as HTMLElement).closest("a");
-      if (!target) return;
-      const href = target.getAttribute("href");
-      if (href && (href.startsWith("#") || href.startsWith("/#"))) {
-        const id = href.replace(/^\/?#/, "");
-        if (id && scrollToTarget(id)) {
-          e.preventDefault();
-        }
-      }
-    };
-    document.addEventListener("click", handleClick, { capture: true });
-
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("hashchange", handleHash);
-      document.removeEventListener("click", handleClick, { capture: true });
-    };
-  }, []);
-
-  return (
-    <header className="sticky top-0 z-40 h-16 border-b border-white/[0.06] bg-ink/90 backdrop-blur-md">
-      <div className="mx-auto flex h-full max-w-page items-center justify-between px-5 sm:px-8 min-[1344px]:px-0">
-        <Logo />
-        <nav aria-label="Primary" className="hidden md:block">
-          <ul className="flex items-center gap-5 lg:gap-8 text-xs lg:text-sm text-white/80">
-            {navLinks.map((l) => (
-              <li key={l.href}>
-                <a
-                  href={l.href}
-                  onClick={(e) => handleNavClick(e, l.href)}
-                  className="inline-block transition-all duration-200 hover:text-white active:scale-95 cursor-pointer"
-                >
-                  {l.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div className="flex items-center gap-3">
-          <a
-            href={siteConfig.enrolUrl}
-            onClick={(e) => handleNavClick(e, siteConfig.enrolUrl)}
-            className="flex h-10 w-[108px] items-center justify-center rounded-[6px] bg-gradient-to-b from-[#FF8B4E] via-[#FF6B2C] to-[#F2561A] text-[16px] font-semibold text-[#0B0C0F] shadow-[0px_10px_28px_-8px_rgba(255,107,44,0.35),inset_0px_1px_0px_rgba(255,255,255,0.28)] transition-all duration-200 hover:brightness-105 active:scale-95 cursor-pointer"
-          >
-            Enrol now
-          </a>
-          <MobileNavigation links={navLinks} enrolUrl={siteConfig.enrolUrl} />
-        </div>
-      </div>
-    </header>
-  );
-}
->>>>>>> 0c48af08a90a288c46f1d0057cb12d934026860b

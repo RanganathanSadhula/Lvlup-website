@@ -217,3 +217,4 @@ export class NotificationDispatcher {
 }
 
 export const defaultDispatcher = new NotificationDispatcher();
+export const notificationDispatcher = defaultDispatcher;

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { siteConfig } from "@/data/site";
 import { BottomCTABar } from "@/components/sections/BottomCTABar";
+import { ClientProviders } from "@/components/providers/ClientProviders";
 import "./globals.css";
 
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
@@ -27,8 +28,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         >
           Skip to content
         </a>
-        {children}
-        <BottomCTABar />
+        <ClientProviders>
+          {children}
+          <BottomCTABar />
+        </ClientProviders>
       </body>
     </html>
   );

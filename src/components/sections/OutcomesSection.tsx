@@ -1,235 +1,110 @@
-<<<<<<< HEAD
-import Image from "next/image";
-import { Container } from "@/components/ui/Container";
-import { IconTile } from "@/components/ui/IconTile";
-import { LevelBars } from "@/components/ui/LevelBars";
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { Section } from "@/components/ui/Section";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { outcomeIcons } from "@/data/content";
+"use client";
 
-const card = "rounded-2xl border border-white/10 bg-[#14151a] p-6 sm:p-7";
-const titleCls = "mt-5 font-display text-2xl font-normal tracking-[-0.02em] sm:text-[28px]";
-const bodyCls = "mt-3 text-base leading-relaxed text-muted-dark";
+import { Check } from "lucide-react";
+import { Container } from "@/components/ui/Container";
 
 export function OutcomesSection() {
   return (
-    <Section
-      id="outcomes"
-      tone="darker"
-      grain
-      grainOpacity={0.52}
-      aria-labelledby="outcomes-title"
-    >
+    <section id="outcomes" aria-labelledby="outcomes-title" className="w-full bg-[#F4F3EE] py-24 text-[#0B0C0F]">
       <Container>
-        <SectionHeader
-          id="outcomes-title"
-          tone="dark"
-          title={<>What your child walks away with</>}
-          description="Not a certificate for sitting through classes. Things they made, can show you, and can explain."
-        />
-        <div className="mt-12 grid gap-5 lg:mt-14 lg:grid-cols-[1.45fr_1fr]">
-          {/* Card 1: Working AI helper with Revise Buddy chat visual */}
-          <ScrollReveal delay={80} className="lg:row-span-2 h-full">
-            <article className={`${card} group flex h-full flex-col justify-between`}>
-              <div>
-                <IconTile icon={outcomeIcons.helper} />
-                <h3 className={titleCls}>A working AI helper</h3>
-                <p className={bodyCls}>
-                  Built from an approved template, tested on two tasks, and presented live at demo day.
-                </p>
-              </div>
-              <div className="mt-6 overflow-hidden rounded-2xl bg-white shadow-xl">
-                <Image
-                  src="/images/outcomes-revise-buddy.png"
-                  alt="Revise Buddy chat example: photosynthesis quiz"
-                  width={1024}
-                  height={631}
-                  unoptimized
-                  quality={100}
-                  className="h-auto w-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-              </div>
-            </article>
-          </ScrollReveal>
-
-          {/* Card 2: Digital portfolio */}
-          <ScrollReveal delay={140} className="h-full">
-            <article className={`${card} h-full`}>
-              <IconTile icon={outcomeIcons.portfolio} />
-              <h3 className={titleCls}>A digital portfolio</h3>
-              <p className={bodyCls}>
-                Eight pieces of work in one place: tested prompts, a creation, a blueprint, the agent and the demo.
-              </p>
-              <LevelBars active={8} tall className="mt-6 h-10" />
-            </article>
-          </ScrollReveal>
-
-          {/* Card 3: CBSE AI topics */}
-          <ScrollReveal delay={200} className="h-full">
-            <article className={`${card} h-full`}>
-              <IconTile icon={outcomeIcons.cbse} />
-              <h3 className={titleCls}>A head start on the new AI topics</h3>
-              <p className={bodyCls}>
-                From 2026–27, CBSE brings AI and computational thinking into Classes 3 to 8. ThinkOva lets your child practise those ideas by building.
-              </p>
-            </article>
-          </ScrollReveal>
+        <div>
+          <h2
+            id="outcomes-title"
+            className="font-display text-[36px] font-normal leading-[1.1] tracking-[-0.025em] text-[#0B0C0F] sm:text-[44px]"
+          >
+            What your child walks away with
+          </h2>
+          <p className="mt-3 text-[17px] text-[#5A5F6B]">
+            Things they made, can show you, and can explain in their own words.
+          </p>
         </div>
 
-        <div className="mt-5 grid gap-5 lg:grid-cols-[1.1fr_1fr]">
-          {/* Card 4: Habits that last */}
-          <ScrollReveal delay={100} className="h-full">
-            <article className={`${card} h-full`}>
-              <IconTile icon={outcomeIcons.habits} />
-              <h3 className={titleCls}>Habits that last</h3>
-              <p className={bodyCls}>
-                Check answers before trusting them, keep private details private, and credit where ideas came from.
-              </p>
-            </article>
-          </ScrollReveal>
+        <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-12">
+          {/* Left Card: Revise Buddy Interactive Chat Mockup (Cols 1-5) */}
+          <div className="col-span-1 rounded-3xl bg-[#0B0C0F] p-8 text-white shadow-xl lg:col-span-5">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#FF6B2C]">
+              EXAMPLE BUILD · AI TRACK · GRADE 6
+            </span>
+            <h3 className="mt-2 font-display text-[28px] font-normal text-white">
+              Revise Buddy
+            </h3>
 
-          {/* Card 5: Confidence to explain it with hover-to-colour girl image */}
-          <ScrollReveal delay={160} className="h-full">
-            <article className={`${card} group relative h-full overflow-hidden`}>
-              <div className="relative z-10 max-w-[260px]">
-                <IconTile icon={outcomeIcons.confidence} />
-                <h3 className={titleCls}>The confidence to explain it</h3>
-                <p className={bodyCls}>
-                  A two-minute talk on what they built, why, and what they would improve next.
-                </p>
+            {/* Chat Simulation */}
+            <div className="mt-6 rounded-2xl bg-[#16181D] p-5">
+              <div className="space-y-4">
+                <div className="flex justify-end">
+                  <div className="rounded-2xl rounded-tr-none bg-[#FF6B2C] px-4 py-2.5 text-xs font-medium text-white shadow-sm">
+                    Quiz me on chapter 7, photosynthesis.
+                  </div>
+                </div>
+
+                <div className="flex justify-start">
+                  <div className="rounded-2xl rounded-tl-none bg-white px-4 py-2.5 text-xs text-[#0B0C0F] shadow-sm">
+                    Question 1 of 5: which gas do plants take in to make food?
+                  </div>
+                </div>
+
+                <div className="flex justify-end">
+                  <div className="rounded-2xl rounded-tr-none bg-[#FF6B2C] px-4 py-2 text-xs font-medium text-white shadow-sm">
+                    Oxygen?
+                  </div>
+                </div>
+
+                <div className="flex justify-start">
+                  <div className="rounded-2xl rounded-tl-none bg-white px-4 py-2.5 text-xs text-[#0B0C0F] shadow-sm">
+                    Not quite. Plants take in carbon dioxide and give out oxygen. Ready for
+                    question 2?
+                  </div>
+                </div>
               </div>
-              <Image
-                src="/images/outcomes-confidence-color.png"
-                alt="A smiling girl with both arms raised"
-                width={260}
-                height={300}
-                unoptimized
-                quality={100}
-                className="pointer-events-none absolute bottom-0 right-0 hidden h-[200px] w-auto origin-bottom-right object-contain grayscale transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0 sm:block lg:h-[235px]"
-              />
-            </article>
-          </ScrollReveal>
+            </div>
+
+            <p className="mt-6 text-xs leading-[18px] text-white/50">
+              Built from an approved starter and tested against two tasks it had to pass
+              before demo day.
+            </p>
+          </div>
+
+          {/* Right List: 5 Takeaways (Cols 6-12) */}
+          <div className="col-span-1 flex flex-col justify-center space-y-6 lg:col-span-7">
+            {[
+              {
+                title: "A working project",
+                desc: "Tested against two tasks it must pass, and shown live to you at demo day.",
+              },
+              {
+                title: "A portfolio they can show",
+                desc: "Every sketch, test result and demo video in one link.",
+              },
+              {
+                title: "A head start on school topics",
+                desc: "Computational thinking, sensors, design and AI, taught by doing.",
+              },
+              {
+                title: "Habits that last",
+                desc: "Check before trusting, keep private details private, test before sharing.",
+              },
+              {
+                title: "The confidence to explain it",
+                desc: "A two-minute talk on what they built, why, and what they'd improve.",
+              },
+            ].map((item, idx) => (
+              <div
+                key={idx}
+                className="flex items-start gap-5 border-b border-[#E3E1D9] pb-6 last:border-none"
+              >
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#FF6B2C]/15 text-[#FF6B2C]">
+                  <Check className="size-5 stroke-[2.5]" />
+                </div>
+                <div>
+                  <h4 className="text-[19px] font-semibold text-[#0B0C0F]">{item.title}</h4>
+                  <p className="mt-1 text-sm leading-[22px] text-[#5A5F6B]">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </Container>
-    </Section>
+    </section>
   );
 }
-=======
-import Image from "next/image";
-import { Container } from "@/components/ui/Container";
-import { IconTile } from "@/components/ui/IconTile";
-import { LevelBars } from "@/components/ui/LevelBars";
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { Section } from "@/components/ui/Section";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { outcomeIcons } from "@/data/content";
-
-const card = "rounded-2xl border border-white/10 bg-[#14151a] p-6 sm:p-7";
-const titleCls = "mt-5 font-display text-2xl font-normal tracking-[-0.02em] sm:text-[28px]";
-const bodyCls = "mt-3 text-base leading-relaxed text-muted-dark";
-
-export function OutcomesSection() {
-  return (
-    <Section
-      id="outcomes"
-      tone="darker"
-      grain
-      grainOpacity={0.52}
-      aria-labelledby="outcomes-title"
-    >
-      <Container>
-        <SectionHeader
-          id="outcomes-title"
-          tone="dark"
-          title={<>What your child walks away with</>}
-          description="Not a certificate for sitting through classes. Things they made, can show you, and can explain."
-        />
-        <div className="mt-12 grid gap-5 lg:mt-14 lg:grid-cols-[1.45fr_1fr]">
-          {/* Card 1: Working AI helper with Revise Buddy chat visual */}
-          <ScrollReveal delay={80} className="lg:row-span-2 h-full">
-            <article className={`${card} group flex h-full flex-col justify-between`}>
-              <div>
-                <IconTile icon={outcomeIcons.helper} />
-                <h3 className={titleCls}>A working AI helper</h3>
-                <p className={bodyCls}>
-                  Built from an approved template, tested on two tasks, and presented live at demo day.
-                </p>
-              </div>
-              <div className="mt-6 overflow-hidden rounded-2xl bg-white shadow-xl">
-                <Image
-                  src="/images/outcomes-revise-buddy.png"
-                  alt="Revise Buddy chat example: photosynthesis quiz"
-                  width={1024}
-                  height={631}
-                  unoptimized
-                  quality={100}
-                  className="h-auto w-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-              </div>
-            </article>
-          </ScrollReveal>
-
-          {/* Card 2: Digital portfolio */}
-          <ScrollReveal delay={140} className="h-full">
-            <article className={`${card} h-full`}>
-              <IconTile icon={outcomeIcons.portfolio} />
-              <h3 className={titleCls}>A digital portfolio</h3>
-              <p className={bodyCls}>
-                Eight pieces of work in one place: tested prompts, a creation, a blueprint, the agent and the demo.
-              </p>
-              <LevelBars active={8} tall className="mt-6 h-10" />
-            </article>
-          </ScrollReveal>
-
-          {/* Card 3: CBSE AI topics */}
-          <ScrollReveal delay={200} className="h-full">
-            <article className={`${card} h-full`}>
-              <IconTile icon={outcomeIcons.cbse} />
-              <h3 className={titleCls}>A head start on the new AI topics</h3>
-              <p className={bodyCls}>
-                From 2026–27, CBSE brings AI and computational thinking into Classes 3 to 8. LvlUp lets your child practise those ideas by building.
-              </p>
-            </article>
-          </ScrollReveal>
-        </div>
-
-        <div className="mt-5 grid gap-5 lg:grid-cols-[1.1fr_1fr]">
-          {/* Card 4: Habits that last */}
-          <ScrollReveal delay={100} className="h-full">
-            <article className={`${card} h-full`}>
-              <IconTile icon={outcomeIcons.habits} />
-              <h3 className={titleCls}>Habits that last</h3>
-              <p className={bodyCls}>
-                Check answers before trusting them, keep private details private, and credit where ideas came from.
-              </p>
-            </article>
-          </ScrollReveal>
-
-          {/* Card 5: Confidence to explain it with hover-to-colour girl image */}
-          <ScrollReveal delay={160} className="h-full">
-            <article className={`${card} group relative h-full overflow-hidden`}>
-              <div className="relative z-10 max-w-[260px]">
-                <IconTile icon={outcomeIcons.confidence} />
-                <h3 className={titleCls}>The confidence to explain it</h3>
-                <p className={bodyCls}>
-                  A two-minute talk on what they built, why, and what they would improve next.
-                </p>
-              </div>
-              <Image
-                src="/images/outcomes-confidence-color.png"
-                alt="A smiling girl with both arms raised"
-                width={260}
-                height={300}
-                unoptimized
-                quality={100}
-                className="pointer-events-none absolute bottom-0 right-0 hidden h-[200px] w-auto origin-bottom-right object-contain grayscale transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0 sm:block lg:h-[235px]"
-              />
-            </article>
-          </ScrollReveal>
-        </div>
-      </Container>
-    </Section>
-  );
-}
->>>>>>> 0c48af08a90a288c46f1d0057cb12d934026860b

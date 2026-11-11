@@ -9,6 +9,8 @@ import type {
   PaymentEntity,
   RefundEntity,
   AssessmentEntity,
+  CourseProgressEntity,
+  LearningStateAnalysisEntity,
 } from "../types";
 
 export class PreSchemaValidationError extends Error {
@@ -141,6 +143,7 @@ export class PreSchemaValidator {
       phone,
       email,
       username,
+      fullName: data.fullName ? String(data.fullName).trim() : undefined,
       role: (data.role || "PARENT") as UserEntity["role"],
       isPhoneVerified: Boolean(data.isPhoneVerified),
       isEmailVerified: Boolean(data.isEmailVerified),
@@ -162,8 +165,12 @@ export class PreSchemaValidator {
       parentUserId,
       fullName,
       schoolUid,
+      schoolName: data.schoolName ? String(data.schoolName).trim() : undefined,
       currentGrade,
       section: data.section ? String(data.section).trim() : undefined,
+      preferredTrack: data.preferredTrack ? String(data.preferredTrack).trim() : undefined,
+      priorExperience: data.priorExperience ? String(data.priorExperience).trim() : undefined,
+      avatarUrl: data.avatarUrl ? String(data.avatarUrl).trim() : undefined,
       createdAt: this.toDate(data.createdAt || new Date(), "Student", "createdAt"),
     };
   }
@@ -275,6 +282,70 @@ export class PreSchemaValidator {
       safetyPledgeVerified: Boolean(data.safetyPledgeVerified),
       reportSentAt: data.reportSentAt ? this.toDate(data.reportSentAt, "Assessment", "reportSentAt") : undefined,
       createdAt: this.toDate(data.createdAt || new Date(), "Assessment", "createdAt"),
+    };
+  }
+
+  // 11. Course Progress Normalization
+  public static normalizeCourseProgress(data: Partial<CourseProgressEntity>): CourseProgressEntity {
+    if (!data.id) throw new PreSchemaValidationError("CourseProgress", "Missing required id", "id");
+    const studentId = this.toNonEmptyString(data.studentId, "CourseProgress", "studentId");
+    const courseId = this.toNonEmptyString(data.courseId, "CourseProgress", "courseId");
+
+    const totalWeeks = Number(data.totalWeeks || 6);
+    const currentWeek = Math.min(totalWeeks, Math.max(1, Number(data.currentWeek || 1)));
+    const totalEstimatedMinutes = Number(data.totalEstimatedMinutes || totalWeeks * 90);
+    const completedMinutes = Number(data.completedMinutes || 0);
+    const lengthLeftMinutes = Math.max(0, totalEstimatedMinutes - completedMinutes);
+    const completionPercentage = Math.min(100, Math.round((completedMinutes / Math.max(1, totalEstimatedMinutes)) * 100));
+
+    return {
+      id: String(data.id),
+      studentId,
+      courseId,
+      courseTitle: data.courseTitle || "Hands-on STEM Course",
+      trackId: data.trackId || "ai",
+      enrollmentId: data.enrollmentId || `enr_${Date.now()}`,
+      parentUserId: data.parentUserId || "usr_parent",
+      status: (data.status || "ACTIVE") as CourseProgressEntity["status"],
+      currentWeek,
+      totalWeeks,
+      frequencyPerWeek: Number(data.frequencyPerWeek || 1),
+      frequencyLabel: data.frequencyLabel || "1 live lab/week + 90 min session",
+      completedMinutes,
+      totalEstimatedMinutes,
+      lengthLeftMinutes,
+      completionPercentage: data.completionPercentage ?? completionPercentage,
+      persona: (data.persona || "BUILDER") as CourseProgressEntity["persona"],
+      milestones: Array.isArray(data.milestones) ? data.milestones : [],
+      streakDays: Number(data.streakDays || 1),
+      lastActiveAt: this.toDate(data.lastActiveAt || new Date(), "CourseProgress", "lastActiveAt"),
+      nextSessionAt: data.nextSessionAt ? this.toDate(data.nextSessionAt, "CourseProgress", "nextSessionAt") : undefined,
+      createdAt: this.toDate(data.createdAt || new Date(), "CourseProgress", "createdAt"),
+      updatedAt: this.toDate(data.updatedAt || new Date(), "CourseProgress", "updatedAt"),
+    };
+  }
+
+  // 12. Learning State Multi-State Analysis Normalization
+  public static normalizeLearningAnalysis(data: Partial<LearningStateAnalysisEntity>): LearningStateAnalysisEntity {
+    if (!data.id) throw new PreSchemaValidationError("LearningAnalysis", "Missing required id", "id");
+    const studentId = this.toNonEmptyString(data.studentId, "LearningAnalysis", "studentId");
+    const courseId = this.toNonEmptyString(data.courseId, "LearningAnalysis", "courseId");
+
+    return {
+      id: String(data.id),
+      studentId,
+      courseId,
+      persona: (data.persona || "BUILDER") as LearningStateAnalysisEntity["persona"],
+      frequencyScore: Number(data.frequencyScore || 92),
+      completionVelocity: Number(data.completionVelocity || 1.1),
+      lengthLeftWeeks: Number(data.lengthLeftWeeks || 5),
+      projectedDemoDay: this.toDate(data.projectedDemoDay || new Date(Date.now() + 35 * 86400000), "LearningAnalysis", "projectedDemoDay"),
+      followRoute: (data.followRoute || "STANDARD") as LearningStateAnalysisEntity["followRoute"],
+      strengths: Array.isArray(data.strengths) ? data.strengths : ["Hands-on problem solving", "Circuit debugging"],
+      areasOfGrowth: Array.isArray(data.areasOfGrowth) ? data.areasOfGrowth : ["Advanced conditional loops"],
+      recommendedNextTrack: data.recommendedNextTrack,
+      parentReportPill: data.parentReportPill || "Ahead of syllabus · Ready for Demo Day test 2",
+      analyzedAt: this.toDate(data.analyzedAt || new Date(), "LearningAnalysis", "analyzedAt"),
     };
   }
 }

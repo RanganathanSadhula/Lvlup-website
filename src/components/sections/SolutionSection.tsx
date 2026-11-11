@@ -1,131 +1,86 @@
-<<<<<<< HEAD
-import Image from "next/image";
+"use client";
+
 import { Container } from "@/components/ui/Container";
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { Section } from "@/components/ui/Section";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { solutionCards } from "@/data/content";
 
 export function SolutionSection() {
   return (
-    <Section
-      id="course"
-      tone="dark"
-      topo
-      grain
-      grainOpacity={0.52}
-      aria-labelledby="solution-title"
-    >
+    <section id="how-it-works" aria-labelledby="how-it-works-title" className="w-full bg-[#0B0C0F] py-24 text-white">
       <Container>
-        <SectionHeader
-          id="solution-title"
-          tone="dark"
-          title={<>ThinkOva turns AI users into thoughtful builders.</>}
-          description="Every class mixes a short idea, a tutor demo and a lot of hands-on making. Children learn how AI works by using it for something real, with a tutor beside them."
-        />
-        <ul className="mt-12 grid gap-6 md:grid-cols-3 lg:mt-14">
-          {solutionCards.map((c, i) => (
-            <li key={c.title}>
-              <ScrollReveal delay={i * 120} className="h-full">
-                <div className="group h-full overflow-hidden rounded-2xl border border-white/10 bg-ink-2 transition-all duration-300 hover:border-white/20">
-                  <div className="overflow-hidden">
-                    <Image
-                      src={c.image}
-                      alt={c.alt}
-                      width={c.w}
-                      height={c.h}
-                      unoptimized
-                      quality={100}
-                      sizes="(min-width:768px) 380px, 100vw"
-                      className="h-[218px] w-full object-cover grayscale transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
-                    />
-                  </div>
-                  <div className="p-7">
-                    <div className="size-11 sm:size-12 shrink-0 overflow-hidden rounded-xl">
-                      <Image
-                        src={c.iconImage}
-                        alt={`${c.title} icon`}
-                        width={48}
-                        height={48}
-                        className="h-full w-full object-contain"
-                        unoptimized
-                      />
-                    </div>
-                    <h3 className="mt-5 font-display text-2xl font-normal tracking-[-0.02em]">{c.title}</h3>
-                    <p className="mt-3 text-base leading-relaxed text-muted-dark">{c.body}</p>
-                  </div>
-                </div>
-              </ScrollReveal>
-            </li>
-          ))}
-        </ul>
-      </Container>
-    </Section>
-  );
-}
-=======
-import Image from "next/image";
-import { Container } from "@/components/ui/Container";
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { Section } from "@/components/ui/Section";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { solutionCards } from "@/data/content";
+        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
+          <h2
+            id="how-it-works-title"
+            className="font-display text-[36px] font-normal leading-[1.1] tracking-[-0.025em] text-white sm:text-[44px]"
+          >
+            Every class ends with
+            <br />
+            something that works.
+          </h2>
+          <p className="max-w-[420px] text-sm leading-[22px] text-white/60">
+            A short idea, a live demo, guided practice, then their own build. Same rhythm in
+            every track.
+          </p>
+        </div>
 
-export function SolutionSection() {
-  return (
-    <Section
-      id="course"
-      tone="dark"
-      topo
-      grain
-      grainOpacity={0.52}
-      aria-labelledby="solution-title"
-    >
-      <Container>
-        <SectionHeader
-          id="solution-title"
-          tone="dark"
-          title={<>LvlUp turns AI users into thoughtful builders.</>}
-          description="Every class mixes a short idea, a tutor demo and a lot of hands-on making. Children learn how AI works by using it for something real, with a tutor beside them."
-        />
-        <ul className="mt-12 grid gap-6 md:grid-cols-3 lg:mt-14">
-          {solutionCards.map((c, i) => (
-            <li key={c.title}>
-              <ScrollReveal delay={i * 120} className="h-full">
-                <div className="group h-full overflow-hidden rounded-2xl border border-white/10 bg-ink-2 transition-all duration-300 hover:border-white/20">
-                  <div className="overflow-hidden">
-                    <Image
-                      src={c.image}
-                      alt={c.alt}
-                      width={c.w}
-                      height={c.h}
-                      unoptimized
-                      quality={100}
-                      sizes="(min-width:768px) 380px, 100vw"
-                      className="h-[218px] w-full object-cover grayscale transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
-                    />
-                  </div>
-                  <div className="p-7">
-                    <div className="size-11 sm:size-12 shrink-0 overflow-hidden rounded-xl">
-                      <Image
-                        src={c.iconImage}
-                        alt={`${c.title} icon`}
-                        width={48}
-                        height={48}
-                        className="h-full w-full object-contain"
-                        unoptimized
-                      />
-                    </div>
-                    <h3 className="mt-5 font-display text-2xl font-normal tracking-[-0.02em]">{c.title}</h3>
-                    <p className="mt-3 text-base leading-relaxed text-muted-dark">{c.body}</p>
-                  </div>
-                </div>
-              </ScrollReveal>
-            </li>
-          ))}
-        </ul>
+        {/* 90-Minute Class Rhythm Card */}
+        <div className="mt-12 rounded-3xl border border-white/10 bg-[#16181D] p-8 shadow-2xl sm:p-10">
+          <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+            <h3 className="text-[20px] font-semibold text-white">Inside one 90-minute class</h3>
+            <span className="text-xs text-white/50">Same rhythm in every track</span>
+          </div>
+
+          {/* Segment timeline bar */}
+          <div className="mt-8 flex h-2.5 w-full gap-2">
+            <div className="w-[10%] rounded-full bg-[#424652]" />
+            <div className="w-[15%] rounded-full bg-[#424652]" />
+            <div className="w-[20%] rounded-full bg-[#424652]" />
+            <div className="w-[45%] rounded-full bg-[#FF6B2C] shadow-[0_0_14px_rgba(255,107,44,0.7)]" />
+            <div className="w-[10%] rounded-full bg-[#424652]" />
+          </div>
+
+          {/* Blocks */}
+          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4 lg:border-none lg:bg-transparent lg:p-0">
+              <span className="text-xs font-semibold text-white/50">10 min</span>
+              <h4 className="mt-2 text-base font-semibold text-white">Idea</h4>
+              <p className="mt-2 text-xs leading-[18px] text-white/60">
+                A short, clear explanation of how the thing works
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4 lg:border-none lg:bg-transparent lg:p-0">
+              <span className="text-xs font-semibold text-white/50">15 min</span>
+              <h4 className="mt-2 text-base font-semibold text-white">Tutor demo</h4>
+              <p className="mt-2 text-xs leading-[18px] text-white/60">
+                The tutor builds it live and makes the common mistakes on purpose
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4 lg:border-none lg:bg-transparent lg:p-0">
+              <span className="text-xs font-semibold text-white/50">20 min</span>
+              <h4 className="mt-2 text-base font-semibold text-white">Guided practice</h4>
+              <p className="mt-2 text-xs leading-[18px] text-white/60">
+                Small steps, checked by the tutor before moving on
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-[#FF6B2C]/20 bg-[#FF6B2C]/10 p-4 lg:border-none lg:bg-transparent lg:p-0">
+              <span className="text-xs font-bold text-[#FF6B2C]">35 min</span>
+              <h4 className="mt-2 text-base font-semibold text-[#FF6B2C]">Build</h4>
+              <p className="mt-2 text-xs leading-[18px] text-white/80">
+                Their own version, for a problem from their school day
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4 lg:border-none lg:bg-transparent lg:p-0">
+              <span className="text-xs font-semibold text-white/50">10 min</span>
+              <h4 className="mt-2 text-base font-semibold text-white">Show and share</h4>
+              <p className="mt-2 text-xs leading-[18px] text-white/60">
+                Two minutes to show it working and get one useful note
+              </p>
+            </div>
+          </div>
+        </div>
       </Container>
-    </Section>
+    </section>
   );
 }
->>>>>>> 0c48af08a90a288c46f1d0057cb12d934026860b

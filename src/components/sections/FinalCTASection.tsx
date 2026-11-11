@@ -1,53 +1,56 @@
-<<<<<<< HEAD
-import { ButtonLink } from "@/components/ui/Button";
+"use client";
+
 import { Container } from "@/components/ui/Container";
-import { siteConfig } from "@/data/site";
 
 export function FinalCTASection() {
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <section id="final-cta" aria-labelledby="cta-title" className="relative overflow-hidden bg-brand-gradient py-16 text-ink sm:py-20">
-      <div aria-hidden className="bg-chevrons pointer-events-none absolute inset-0 opacity-70" />
-      <Container className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <h2 id="cta-title" className="font-display text-[40px] font-normal leading-none tracking-[-0.035em] sm:text-[52px]">
-            Ready for level 1?
-          </h2>
-          <p className="mt-4 max-w-[560px] text-base sm:text-lg">
-            Enrol with your school code, or ask us to bring ThinkOva to your school.
-          </p>
-        </div>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href={siteConfig.enrolUrl} variant="dark">Enrol now</ButtonLink>
-          <ButtonLink href="/#school-pack" variant="outline-dark">Request the school pack</ButtonLink>
+    <section className="relative w-full overflow-hidden bg-gradient-to-r from-[#FF6B2C] to-[#E05316] py-16 text-white shadow-2xl">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-15"
+        style={{
+          backgroundImage: "url('/images/chevrons.svg')",
+          backgroundRepeat: "repeat",
+          backgroundSize: "60px",
+        }}
+      />
+
+      <Container className="relative z-10">
+        <div className="flex flex-col justify-between gap-8 md:flex-row md:items-center">
+          <div>
+            <h2 className="font-display text-[38px] font-normal tracking-[-0.03em] text-white sm:text-[48px]">
+              Ready to build something?
+            </h2>
+            <p className="mt-2 text-base text-white/90">
+              Find a course for your child’s grade, or ask us to bring ThinkOva to your school.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4">
+            <button
+              type="button"
+              onClick={() => scrollTo("tracks")}
+              className="rounded-xl bg-[#0B0C0F] px-8 py-4 text-sm font-semibold text-white shadow-xl transition hover:bg-black active:scale-[0.98]"
+            >
+              Explore courses →
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollTo("schools")}
+              className="rounded-xl border border-white/30 bg-white/10 px-8 py-4 text-sm font-semibold text-white backdrop-blur-md transition hover:bg-white/20 active:scale-[0.98]"
+            >
+              Get a callback (schools) →
+            </button>
+          </div>
         </div>
       </Container>
     </section>
   );
 }
-=======
-import { ButtonLink } from "@/components/ui/Button";
-import { Container } from "@/components/ui/Container";
-import { siteConfig } from "@/data/site";
-
-export function FinalCTASection() {
-  return (
-    <section id="final-cta" aria-labelledby="cta-title" className="relative overflow-hidden bg-brand-gradient py-16 text-ink sm:py-20">
-      <div aria-hidden className="bg-chevrons pointer-events-none absolute inset-0 opacity-70" />
-      <Container className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <h2 id="cta-title" className="font-display text-[40px] font-normal leading-none tracking-[-0.035em] sm:text-[52px]">
-            Ready for level 1?
-          </h2>
-          <p className="mt-4 max-w-[560px] text-base sm:text-lg">
-            Enrol with your school code, or ask us to bring LvlUp to your school.
-          </p>
-        </div>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href={siteConfig.enrolUrl} variant="dark">Enrol now</ButtonLink>
-          <ButtonLink href="/#school-pack" variant="outline-dark">Request the school pack</ButtonLink>
-        </div>
-      </Container>
-    </section>
-  );
-}
->>>>>>> 0c48af08a90a288c46f1d0057cb12d934026860b

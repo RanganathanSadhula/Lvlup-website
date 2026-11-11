@@ -71,6 +71,7 @@ export interface UserEntity {
   phone: string;
   email: string;
   username: string;
+  fullName?: string;
   role: "PARENT" | "TUTOR" | "SCHOOL_ADMIN" | "SUPER_ADMIN";
   isPhoneVerified: boolean;
   isEmailVerified: boolean;
@@ -83,8 +84,12 @@ export interface StudentEntity {
   parentUserId: string;
   fullName: string;
   schoolUid: string;
-  currentGrade: number; // 5, 6, 7, 8
+  schoolName?: string;
+  currentGrade: number; // 5, 6, 7, 8, 9, 10, 11
   section?: string;
+  preferredTrack?: string;
+  priorExperience?: string;
+  avatarUrl?: string;
   createdAt: Date;
 }
 
@@ -159,4 +164,71 @@ export interface AssessmentEntity {
   reportSentAt?: Date;
   createdAt: Date;
 }
+
+// ==========================================
+// 3. Learning State & Multi-State Analytics
+// ==========================================
+
+export type StudentPersona =
+  | "BUILDER"        // Hands-on kit experimentation, circuits & hardware
+  | "EXPLORER"       // Breadth over depth, samples multiple tracks
+  | "LOGICIAN"       // Algorithmic focus, prompt engineering & state trees
+  | "CREATOR"        // Game design, sprites, UI aesthetics & storytelling
+  | "PERFECTIONIST"; // Iterative refinement until 100% demo tests pass
+
+export interface CourseMilestone {
+  id: string;
+  weekNumber: number;
+  title: string;
+  summary: string;
+  completed: boolean;
+  score?: number;
+  completedAt?: Date;
+  artifactUrl?: string;
+  tutorNote?: string;
+}
+
+export interface CourseProgressEntity {
+  id: string;
+  studentId: string;
+  courseId: string;
+  courseTitle: string;
+  trackId: string;
+  enrollmentId: string;
+  parentUserId: string;
+  status: "ACTIVE" | "COMPLETED" | "PAUSED";
+  currentWeek: number;
+  totalWeeks: number;
+  frequencyPerWeek: number; // in labs/sessions
+  frequencyLabel: string;   // e.g. "1 live lab/week + weekly challenge"
+  completedMinutes: number;
+  totalEstimatedMinutes: number;
+  lengthLeftMinutes: number;
+  completionPercentage: number; // 0 - 100
+  persona: StudentPersona;
+  milestones: CourseMilestone[];
+  streakDays: number;
+  lastActiveAt: Date;
+  nextSessionAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface LearningStateAnalysisEntity {
+  id: string;
+  studentId: string;
+  courseId: string;
+  persona: StudentPersona;
+  frequencyScore: number;       // 0 - 100 regularity index
+  completionVelocity: number;   // % progress vs timeline ratio (e.g. 1.15 is ahead)
+  lengthLeftWeeks: number;
+  projectedDemoDay: Date;
+  followRoute: "ACCELERATED" | "STANDARD" | "REINFORCEMENT";
+  strengths: string[];
+  areasOfGrowth: string[];
+  recommendedNextTrack?: string;
+  parentReportPill: string;     // e.g. "Excellent progress · Ready for Demo Day test 2"
+  analyzedAt: Date;
+}
+
 

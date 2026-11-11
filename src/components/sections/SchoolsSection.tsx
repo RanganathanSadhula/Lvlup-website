@@ -1,659 +1,270 @@
-<<<<<<< HEAD
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Check, ChevronDown, CheckCircle2, Loader2 } from "lucide-react";
+import { Check, Download, Loader2 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { Section } from "@/components/ui/Section";
-import { schoolBenefits } from "@/data/content";
 
 export function SchoolsSection() {
-  const [formData, setFormData] = useState({
-    schoolName: "",
-    name: "",
-    role: "Principal",
-    email: "",
-    city: "",
-    phone: "",
-  });
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [submissionResult, setSubmissionResult] = useState<{
-    emailDispatched?: boolean;
-    emailNotice?: string;
-  }>({});
+  const [schoolName, setSchoolName] = useState("");
+  const [contactPerson, setContactPerson] = useState("");
+  const [schoolRole, setSchoolRole] = useState("Principal");
+  const [schoolCity, setSchoolCity] = useState("Pune");
+  const [schoolPhone, setSchoolPhone] = useState("");
+  const [schoolEmail, setSchoolEmail] = useState("");
+  const [schoolSubmitting, setSchoolSubmitting] = useState(false);
+  const [schoolSuccess, setSchoolSuccess] = useState(false);
+  const [schoolError, setSchoolError] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSchoolSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.schoolName.trim() || !formData.city.trim() || !formData.phone.trim()) {
+    setSchoolError("");
+
+    if (!schoolName.trim() || !contactPerson.trim() || !schoolPhone.trim()) {
+      setSchoolError("Please provide your school name, contact name, and phone number.");
       return;
     }
-    setSubmitting(true);
 
+    setSchoolSubmitting(true);
     try {
-      const trimmedName = formData.name.trim();
-      const trimmedSchool = formData.schoolName.trim();
-      const trimmedCity = formData.city.trim();
-      const trimmedPhone = formData.phone.trim();
-      const trimmedEmail = formData.email.trim();
-
       const res = await fetch("/api/school-pack", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: trimmedName,
-          schoolName: trimmedSchool,
-          city: trimmedCity,
-          schoolCity: `${trimmedSchool}, ${trimmedCity}`,
-          role: formData.role,
-          phone: trimmedPhone,
-          email: trimmedEmail || undefined,
+          name: contactPerson.trim(),
+          schoolName: schoolName.trim(),
+          city: schoolCity.trim() || "Pune",
+          schoolCity: `${schoolName.trim()}, ${schoolCity.trim() || "Pune"}`,
+          role: schoolRole,
+          phone: schoolPhone.trim(),
+          email: schoolEmail.trim() || undefined,
         }),
       });
 
-      if (res.ok) {
+      if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        setSubmissionResult({
-          emailDispatched: Boolean(data.emailDispatched),
-          emailNotice: data.emailNotice,
-        });
+        throw new Error(data.error || "Failed to submit callback request.");
       }
-    } catch {
-      // ignore
+
+      setSchoolSuccess(true);
+    } catch (err) {
+      setSchoolError((err as Error).message || "Failed to submit. Please try again.");
     } finally {
-      setSubmitting(false);
-      setSubmitted(true);
+      setSchoolSubmitting(false);
     }
-  }
+  };
 
   return (
-    <Section
+    <section
       id="schools"
-      tone="darker"
-      topo
-      grain
-      grainOpacity={0.52}
       aria-labelledby="schools-title"
-      className="py-20 lg:py-28"
+      className="relative w-full overflow-hidden bg-[#0B0C0F] py-24 text-white"
     >
-      <Container className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.15fr)_480px] lg:gap-16">
-        {/* ── LEFT COLUMN ── */}
-        <div>
-          <h2
-            id="schools-title"
-            className="font-display text-[38px] font-normal leading-[1.06] tracking-[-0.03em] text-white sm:text-[46px] lg:text-[52px]"
-          >
-            Bring ThinkOva to your school.
-          </h2>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-15"
+        style={{
+          backgroundImage: "url('/images/topo-dark.svg')",
+          backgroundRepeat: "repeat",
+          backgroundSize: "800px",
+        }}
+      />
 
-          <p className="mt-5 max-w-[540px] text-[16px] sm:text-[17px] leading-relaxed text-white/70">
-            We bring trained tutors, every lesson, enrolment, fees and parent updates. Your school hosts one class a
-            week in its computer lab.
-          </p>
-
-          {/* Checklist items */}
-          <ul className="mt-8 space-y-4">
-            {schoolBenefits.map((b) => (
-              <li key={b} className="flex items-start gap-3.5 text-[15px] sm:text-base text-white/90">
-                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-[5px] bg-[#ff5520] text-white shadow-sm">
-                  <Check className="size-3.5 stroke-[3]" />
-                </span>
-                <span>{b}</span>
-              </li>
-            ))}
-          </ul>
-
-          {/* CTA Buttons */}
-          <div className="mt-9 flex flex-wrap items-center gap-4">
-            <a
-              href="#school-callback-card"
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById("school-callback-card")?.scrollIntoView({ behavior: "smooth" });
-                const input = document.getElementById("schoolName") as HTMLInputElement | null;
-                input?.focus();
-              }}
-              className="flex items-center justify-center gap-2 rounded-xl bg-brand-gradient px-6 py-3.5 text-center text-[15px] font-bold text-ink shadow-glow transition-all duration-200 transform-gpu hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,107,44,0.4)] active:scale-95 cursor-pointer"
-            >
-              <span>Get a callback</span>
-              <ArrowRight className="size-4" />
-            </a>
-
-            <a
-              href="/downloads/ThinkOva-Eight-Week-Curriculum.pdf"
-              download="ThinkOva Eight-Week Curriculum.pdf"
-              className="flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-black/40 px-6 py-3.5 text-center text-[15px] font-medium text-white backdrop-blur-sm transition-all duration-200 transform-gpu hover:border-white/30 hover:bg-white/10 active:scale-95 cursor-pointer"
-            >
-              <span>Download the school pack (PDF)</span>
-              <ArrowRight className="size-4" />
-            </a>
-          </div>
-        </div>
-
-        {/* ── RIGHT COLUMN: Callback Card ── */}
-        <ScrollReveal delay={150}>
-          <div
-            id="school-callback-card"
-            className="relative rounded-[28px] border border-black/[0.06] bg-white p-7 sm:p-9 text-ink shadow-2xl"
-          >
-          {submitted ? (
-            <div className="py-2">
-              {/* Green checkmark circle */}
-              <div className="flex size-12 items-center justify-center rounded-full bg-[#109e58] text-white shadow-sm">
-                <Check className="size-6 stroke-[3]" />
-              </div>
-
-              {/* Title */}
-              <h3 className="mt-5 font-display text-[32px] sm:text-[36px] font-normal leading-[1.1] tracking-[-0.03em] text-ink">
-                Request received
-              </h3>
-
-              {/* Description */}
-              <p className="mt-4 text-[15px] sm:text-base leading-relaxed text-[#4b5563]">
-                Thank you, {formData.name.trim().split(" ")[0] || "Principal"}. Our partnerships team will call you on{" "}
-                <span className="font-mono text-ink">
-                  {formData.phone.replace(/\D/g, "").length >= 4
-                    ? `${formData.phone.replace(/\D/g, "").slice(0, 2)}XXXXXX${formData.phone.replace(/\D/g, "").slice(-2)}`
-                    : formData.phone.trim()}
-                </span>{" "}
-                within one working day to plan a visit or a free demo class.
-                {formData.email.trim() && submissionResult.emailDispatched && (
-                  <span className="mt-2.5 block text-xs sm:text-[13px] text-[#109e58] font-medium">
-                    ✓ A copy of the school partnership outline and curriculum details has been dispatched to {formData.email.trim()}.
-                  </span>
-                )}
-                {formData.email.trim() && submissionResult.emailDispatched === false && (
-                  <span className="mt-2.5 block text-xs sm:text-[13px] text-[#dc2626] font-medium">
-                    ⚠️ {submissionResult.emailNotice ? `Notice: ${submissionResult.emailNotice}` : "Please restart your dev server so updated Azure credentials take effect."}
-                  </span>
-                )}
+      <Container className="relative z-10">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+          {/* Left School Props (Cols 1-6) */}
+          <div className="col-span-1 flex flex-col justify-between lg:col-span-6">
+            <div>
+              <h2
+                id="schools-title"
+                className="font-display text-[36px] font-normal leading-[1.1] tracking-[-0.025em] text-white sm:text-[44px]"
+              >
+                Bring ThinkOva to your school.
+              </h2>
+              <p className="mt-4 text-[17px] leading-[26px] text-white/70">
+                We bring trained tutors, every lesson, build kits, enrolment, fees and parent
+                updates. Your school picks the tracks and hosts one class a week in its lab.
               </p>
 
-              {/* While you wait box */}
-              <div className="mt-6 rounded-2xl bg-[#f5f4ef] p-5 sm:p-6">
-                <h4 className="text-sm font-semibold text-ink">While you wait</h4>
-                <p className="mt-1.5 text-xs sm:text-[13px] leading-relaxed text-ink/75">
+              <ul className="mt-8 space-y-4">
+                {[
+                  "No extra work for your teachers",
+                  "Covers CBSE AI and computational thinking topics, plus robotics and electronics, for Classes 5 to 11",
+                  "A partner fee for each enrolled student, set out in a one-page agreement",
+                  "A demo day for your school community at the end of every course",
+                ].map((benefit, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-white/80">
+                    <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#FF6B2C] text-white">
+                      <Check className="size-3 stroke-[3]" />
+                    </span>
+                    <span>{benefit}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <a
+                href="#schools"
+                className="rounded-xl bg-gradient-to-r from-[#FF6B2C] to-[#E05316] px-6 py-3 text-xs font-semibold text-white shadow-lg transition hover:scale-[1.02]"
+              >
+                Get a callback →
+              </a>
+              <a
+                href="/downloads/ThinkOva-School-Partnership-Pack.pdf"
+                download
+                className="rounded-xl border border-white/20 bg-white/[0.05] px-6 py-3 text-xs font-semibold text-white transition hover:border-white/40"
+              >
+                Download the school pack (PDF) →
+              </a>
+            </div>
+          </div>
+
+          {/* Right School Callback Form (Cols 7-12) */}
+          <div className="col-span-1 lg:col-span-6">
+            <div className="rounded-3xl border border-white/10 bg-white p-6 text-[#0B0C0F] shadow-2xl sm:p-9">
+              {schoolSuccess ? (
+                <div className="py-8 text-center">
+                  <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                    <Check className="size-8 stroke-[2.5]" />
+                  </div>
+                  <h3 className="mt-4 text-2xl font-semibold text-[#0B0C0F]">Request received</h3>
+                  <p className="mt-2 text-sm text-[#5A5F6B]">
+                    Thank you, {contactPerson}. Our partnerships team will call you within one
+                    working day to plan a visit or a free demo class.
+                  </p>
                   <a
-                    href="/downloads/ThinkOva-Eight-Week-Curriculum.pdf"
-                    download="ThinkOva Eight-Week Curriculum.pdf"
-                    className="underline underline-offset-2 hover:text-ink font-medium"
+                    href="/downloads/ThinkOva-School-Partnership-Pack.pdf"
+                    download
+                    className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#0B0C0F] px-6 py-2.5 text-xs font-semibold text-white"
                   >
+                    <Download className="size-4" />
                     Download the school pack (PDF)
                   </a>
-                  : the deck, brochure and full curriculum.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setFormData({ schoolName: "", name: "", role: "Principal", email: "", city: "", phone: "" });
-                  setSubmitted(false);
-                }}
-                className="mt-6 text-xs font-semibold text-muted hover:text-ink underline underline-offset-2"
-              >
-                ← Edit details or submit another request
-              </button>
-            </div>
-          ) : (
-            <>
-              {/* Top pill badge */}
-              <div className="inline-flex items-center gap-2 rounded-full bg-[#fcedea] px-3.5 py-1 text-xs font-normal text-[#8a3822]">
-                <span className="size-2 rounded-full bg-[#109e58]" />
-                <span>Partnerships team · calls back in 1 working day</span>
-              </div>
-
-              <h3 className="mt-4 font-display text-[28px] sm:text-[32px] font-normal tracking-[-0.02em] text-ink">
-                Get a callback
-              </h3>
-
-              <p className="mt-2 text-xs sm:text-[13px] leading-relaxed text-muted">
-                For schools. Leave your details and our partnerships team will call you within one working day.
-              </p>
-            <form onSubmit={handleSubmit} className="mt-5">
-              {/* School Name */}
-              <div>
-                <label htmlFor="schoolName" className="block text-xs font-medium text-ink/75">
-                  School name
-                </label>
-                <input
-                  id="schoolName"
-                  type="text"
-                  required
-                  placeholder="e.g. Delhi Public School"
-                  value={formData.schoolName}
-                  onChange={(e) => setFormData({ ...formData, schoolName: e.target.value })}
-                  className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
-                />
-              </div>
-
-              {/* Your name and Your role */}
-              <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
-                <div>
-                  <label htmlFor="personName" className="block text-xs font-medium text-ink/75">
-                    Your name
-                  </label>
-                  <input
-                    id="personName"
-                    type="text"
-                    required
-                    placeholder="e.g. Dr. Priya Sharma"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
-                  />
                 </div>
-
-                <div>
-                  <label htmlFor="personRole" className="block text-xs font-medium text-ink/75">
-                    Your role
-                  </label>
-                  <div className="relative mt-1.5">
-                    <select
-                      id="personRole"
-                      value={formData.role}
-                      onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                      className="w-full appearance-none rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 pr-10 text-sm text-ink focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
-                    >
-                      <option value="Principal">Principal</option>
-                      <option value="Vice Principal">Vice Principal</option>
-                      <option value="Director / Trustee">Director / Trustee</option>
-                      <option value="Head of Department">Head of Department</option>
-                      <option value="Computer Teacher">Computer Teacher</option>
-                      <option value="Coordinator">Coordinator</option>
-                      <option value="Other">Other</option>
-                    </select>
-                    <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-ink/40" />
+              ) : (
+                <form onSubmit={handleSchoolSubmit} className="space-y-4">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-[#FEEFEA] px-3.5 py-1 text-xs font-semibold text-[#FF6B2C]">
+                    <span className="size-2 rounded-full bg-emerald-500" />
+                    Partnerships team · calls back in 1 working day
                   </div>
-                </div>
-              </div>
 
-              {/* City and Phone */}
-              <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
-                <div>
-                  <label htmlFor="cityName" className="block text-xs font-medium text-ink/75">
-                    City
-                  </label>
-                  <input
-                    id="cityName"
-                    type="text"
-                    required
-                    placeholder="e.g. Pune"
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
-                  />
-                </div>
+                  <h3 className="text-2xl font-semibold text-[#0B0C0F]">Get a callback</h3>
+                  <p className="text-xs text-[#5A5F6B]">
+                    For schools. Leave your details and our partnerships team will call you within
+                    one working day.
+                  </p>
 
-                <div>
-                  <label htmlFor="phoneNumber" className="block text-xs font-medium text-ink/75">
-                    Phone
-                  </label>
-                  <input
-                    id="phoneNumber"
-                    type="tel"
-                    required
-                    placeholder="10-digit number"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm font-mono text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
-                  />
-                </div>
-              </div>
+                  {schoolError && (
+                    <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">
+                      {schoolError}
+                    </div>
+                  )}
 
-              {/* Email Address */}
-              <div className="mt-4">
-                <label htmlFor="schoolEmail" className="block text-xs font-medium text-ink/75">
-                  Official Email (to receive school pack & curriculum)
-                </label>
-                <input
-                  id="schoolEmail"
-                  type="email"
-                  placeholder="e.g. principal@school.edu.in"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
-                />
-              </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-[#5A5F6B]">
+                      School name
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={schoolName}
+                      onChange={(e) => setSchoolName(e.target.value)}
+                      placeholder="e.g. Banyan Grove School"
+                      className="mt-1 w-full rounded-xl border border-[#E3E1D9] bg-[#FBF9F5] px-4 py-2.5 text-sm text-[#0B0C0F] outline-none transition focus:border-[#FF6B2C] focus:bg-white"
+                    />
+                  </div>
 
-              {/* Submit button */}
-              <button
-                type="submit"
-                disabled={submitting}
-                className="mt-6 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-ink text-[15px] font-semibold text-white transition-all duration-200 transform-gpu hover:-translate-y-0.5 hover:bg-ink-3 active:scale-[0.96] active:translate-y-0 disabled:opacity-75 cursor-pointer"
-              >
-                {submitting ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin" />
-                    <span>Sending details…</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Get a callback</span>
-                    <ArrowRight className="size-4" />
-                  </>
-                )}
-              </button>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="block text-xs font-semibold text-[#5A5F6B]">
+                        Contact person
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={contactPerson}
+                        onChange={(e) => setContactPerson(e.target.value)}
+                        placeholder="Your name"
+                        className="mt-1 w-full rounded-xl border border-[#E3E1D9] bg-[#FBF9F5] px-4 py-2.5 text-sm text-[#0B0C0F] outline-none transition focus:border-[#FF6B2C] focus:bg-white"
+                      />
+                    </div>
 
-              {/* Footer note */}
-              <p className="mt-4 text-center text-xs leading-relaxed text-muted">
-                Are you a parent?{" "}
-                <a href="#enrol" className="underline underline-offset-2 hover:text-ink">
-                  Enrol your child
-                </a>{" "}
-                in the form above. We never share your details.
-              </p>
-            </form>
-          </>
-          )}
-        </div>
-        </ScrollReveal>
-      </Container>
-    </Section>
-  );
-}
-=======
-"use client";
+                    <div>
+                      <label className="block text-xs font-semibold text-[#5A5F6B]">Role</label>
+                      <select
+                        value={schoolRole}
+                        onChange={(e) => setSchoolRole(e.target.value)}
+                        className="mt-1 w-full rounded-xl border border-[#E3E1D9] bg-[#FBF9F5] px-4 py-2.5 text-sm text-[#0B0C0F] outline-none transition focus:border-[#FF6B2C] focus:bg-white"
+                      >
+                        <option value="Principal">Principal</option>
+                        <option value="Trustee / Management">Trustee / Management</option>
+                        <option value="Head of Science / CS">Head of Science / CS</option>
+                        <option value="Teacher">Teacher</option>
+                        <option value="Parent representing school">Parent representing school</option>
+                      </select>
+                    </div>
+                  </div>
 
-import { useState } from "react";
-import { ArrowRight, Check, ChevronDown, CheckCircle2, Loader2 } from "lucide-react";
-import { Container } from "@/components/ui/Container";
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { Section } from "@/components/ui/Section";
-import { schoolBenefits } from "@/data/content";
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="block text-xs font-semibold text-[#5A5F6B]">City</label>
+                      <input
+                        type="text"
+                        value={schoolCity}
+                        onChange={(e) => setSchoolCity(e.target.value)}
+                        placeholder="Pune"
+                        className="mt-1 w-full rounded-xl border border-[#E3E1D9] bg-[#FBF9F5] px-4 py-2.5 text-sm text-[#0B0C0F] outline-none transition focus:border-[#FF6B2C] focus:bg-white"
+                      />
+                    </div>
 
-export function SchoolsSection() {
-  const [formData, setFormData] = useState({
-    schoolName: "",
-    name: "",
-    role: "Principal",
-    city: "",
-    phone: "",
-  });
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+                    <div>
+                      <label className="block text-xs font-semibold text-[#5A5F6B]">
+                        Phone (WhatsApp preferred)
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        value={schoolPhone}
+                        onChange={(e) => setSchoolPhone(e.target.value)}
+                        placeholder="+91 98765 43210"
+                        className="mt-1 w-full rounded-xl border border-[#E3E1D9] bg-[#FBF9F5] px-4 py-2.5 text-sm text-[#0B0C0F] outline-none transition focus:border-[#FF6B2C] focus:bg-white"
+                      />
+                    </div>
+                  </div>
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSubmitting(true);
+                  <div>
+                    <label className="block text-xs font-semibold text-[#5A5F6B]">
+                      Official email
+                    </label>
+                    <input
+                      type="email"
+                      value={schoolEmail}
+                      onChange={(e) => setSchoolEmail(e.target.value)}
+                      placeholder="principal@school.edu.in"
+                      className="mt-1 w-full rounded-xl border border-[#E3E1D9] bg-[#FBF9F5] px-4 py-2.5 text-sm text-[#0B0C0F] outline-none transition focus:border-[#FF6B2C] focus:bg-white"
+                    />
+                  </div>
 
-    try {
-      // Attempt sending to api
-      await fetch("/api/school-pack", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name || "School representative",
-          schoolCity: `${formData.schoolName || "[School name]"}, ${formData.city || "India"}`,
-          role: formData.role,
-          phone: formData.phone || "9999999999",
-        }),
-      }).catch(() => null);
-    } catch {
-      // ignore
-    } finally {
-      setSubmitting(false);
-      setSubmitted(true);
-    }
-  }
-
-  return (
-    <Section
-      id="schools"
-      tone="darker"
-      topo
-      grain
-      grainOpacity={0.52}
-      aria-labelledby="schools-title"
-      className="py-20 lg:py-28"
-    >
-      <Container className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.15fr)_480px] lg:gap-16">
-        {/* ── LEFT COLUMN ── */}
-        <div>
-          <h2
-            id="schools-title"
-            className="font-display text-[38px] font-normal leading-[1.06] tracking-[-0.03em] text-white sm:text-[46px] lg:text-[52px]"
-          >
-            Bring LvlUp to your school.
-          </h2>
-
-          <p className="mt-5 max-w-[540px] text-[16px] sm:text-[17px] leading-relaxed text-white/70">
-            We bring trained tutors, every lesson, enrolment, fees and parent updates. Your school hosts one class a
-            week in its computer lab.
-          </p>
-
-          {/* Checklist items */}
-          <ul className="mt-8 space-y-4">
-            {schoolBenefits.map((b) => (
-              <li key={b} className="flex items-start gap-3.5 text-[15px] sm:text-base text-white/90">
-                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-[5px] bg-[#ff5520] text-white shadow-sm">
-                  <Check className="size-3.5 stroke-[3]" />
-                </span>
-                <span>{b}</span>
-              </li>
-            ))}
-          </ul>
-
-          {/* CTA Buttons */}
-          <div className="mt-9 flex flex-wrap items-center gap-4">
-            <a
-              href="#school-callback-card"
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById("school-callback-card")?.scrollIntoView({ behavior: "smooth" });
-                const input = document.getElementById("schoolName") as HTMLInputElement | null;
-                input?.focus();
-              }}
-              className="flex items-center justify-center gap-2 rounded-xl bg-brand-gradient px-6 py-3.5 text-center text-[15px] font-bold text-ink shadow-glow transition-all duration-200 transform-gpu hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,107,44,0.4)] active:scale-95 cursor-pointer"
-            >
-              <span>Get a callback</span>
-              <ArrowRight className="size-4" />
-            </a>
-
-            <a
-              href="/downloads/LvlUp-Eight-Week-Curriculum.pdf"
-              download="LvlUp Eight-Week Curriculum.pdf"
-              className="flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-black/40 px-6 py-3.5 text-center text-[15px] font-medium text-white backdrop-blur-sm transition-all duration-200 transform-gpu hover:border-white/30 hover:bg-white/10 active:scale-95 cursor-pointer"
-            >
-              <span>Download the school pack (PDF)</span>
-              <ArrowRight className="size-4" />
-            </a>
+                  <button
+                    type="submit"
+                    disabled={schoolSubmitting}
+                    className="mt-4 w-full rounded-xl bg-gradient-to-r from-[#FF6B2C] to-[#E05316] py-3.5 text-center text-sm font-semibold text-white shadow-lg transition hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
+                  >
+                    {schoolSubmitting ? (
+                      <span className="inline-flex items-center gap-2">
+                        <Loader2 className="size-4 animate-spin" />
+                        Submitting...
+                      </span>
+                    ) : (
+                      "Request a callback & school pack →"
+                    )}
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
         </div>
-
-        {/* ── RIGHT COLUMN: Callback Card ── */}
-        <ScrollReveal delay={150}>
-          <div
-            id="school-callback-card"
-            className="relative rounded-[28px] border border-black/[0.06] bg-white p-7 sm:p-9 text-ink shadow-2xl"
-          >
-          {submitted ? (
-            <div className="py-2">
-              {/* Green checkmark circle */}
-              <div className="flex size-12 items-center justify-center rounded-full bg-[#109e58] text-white shadow-sm">
-                <Check className="size-6 stroke-[3]" />
-              </div>
-
-              {/* Title */}
-              <h3 className="mt-5 font-display text-[32px] sm:text-[36px] font-normal leading-[1.1] tracking-[-0.03em] text-ink">
-                Request received
-              </h3>
-
-              {/* Description */}
-              <p className="mt-4 text-[15px] sm:text-base leading-relaxed text-[#4b5563]">
-                Thank you, {formData.name.trim().split(" ")[0] || "Priya"}. Our partnerships team will call you on{" "}
-                <span className="font-mono text-ink">
-                  {formData.phone.length >= 4
-                    ? `${formData.phone.slice(0, 2)}XXXXXX${formData.phone.slice(-2)}`
-                    : "98XXXXXX10"}
-                </span>{" "}
-                within one working day to plan a visit or a free demo class.
-              </p>
-
-              {/* While you wait box */}
-              <div className="mt-6 rounded-2xl bg-[#f5f4ef] p-5 sm:p-6">
-                <h4 className="text-sm font-semibold text-ink">While you wait</h4>
-                <p className="mt-1.5 text-xs sm:text-[13px] leading-relaxed text-ink/75">
-                  <a
-                    href="/downloads/LvlUp-Eight-Week-Curriculum.pdf"
-                    download="LvlUp Eight-Week Curriculum.pdf"
-                    className="underline underline-offset-2 hover:text-ink font-medium"
-                  >
-                    Download the school pack (PDF)
-                  </a>
-                  : the deck, brochure and full curriculum.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setSubmitted(false)}
-                className="mt-6 text-xs font-semibold text-muted hover:text-ink underline underline-offset-2"
-              >
-                ← Edit details or submit another request
-              </button>
-            </div>
-          ) : (
-            <>
-              {/* Top pill badge */}
-              <div className="inline-flex items-center gap-2 rounded-full bg-[#fcedea] px-3.5 py-1 text-xs font-normal text-[#8a3822]">
-                <span className="size-2 rounded-full bg-[#109e58]" />
-                <span>Partnerships team · calls back in 1 working day</span>
-              </div>
-
-              <h3 className="mt-4 font-display text-[28px] sm:text-[32px] font-normal tracking-[-0.02em] text-ink">
-                Get a callback
-              </h3>
-
-              <p className="mt-2 text-xs sm:text-[13px] leading-relaxed text-muted">
-                For schools. Leave your details and our partnerships team will call you within one working day.
-              </p>
-            <form onSubmit={handleSubmit} className="mt-5">
-              {/* School Name */}
-              <div>
-                <label htmlFor="schoolName" className="block text-xs font-medium text-ink/75">
-                  School name
-                </label>
-                <input
-                  id="schoolName"
-                  type="text"
-                  required
-                  placeholder="e.g. [School name]"
-                  value={formData.schoolName}
-                  onChange={(e) => setFormData({ ...formData, schoolName: e.target.value })}
-                  className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
-                />
-              </div>
-
-              {/* Your name and Your role */}
-              <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
-                <div>
-                  <label htmlFor="personName" className="block text-xs font-medium text-ink/75">
-                    Your name
-                  </label>
-                  <input
-                    id="personName"
-                    type="text"
-                    required
-                    placeholder="Priya Sharma"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="personRole" className="block text-xs font-medium text-ink/75">
-                    Your role
-                  </label>
-                  <div className="relative mt-1.5">
-                    <select
-                      id="personRole"
-                      value={formData.role}
-                      onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                      className="w-full appearance-none rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 pr-10 text-sm text-ink focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
-                    >
-                      <option value="Principal">Principal</option>
-                      <option value="Vice Principal">Vice Principal</option>
-                      <option value="Director / Trustee">Director / Trustee</option>
-                      <option value="Head of Department">Head of Department</option>
-                      <option value="Computer Teacher">Computer Teacher</option>
-                      <option value="Coordinator">Coordinator</option>
-                      <option value="Other">Other</option>
-                    </select>
-                    <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-ink/40" />
-                  </div>
-                </div>
-              </div>
-
-              {/* City and Phone */}
-              <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
-                <div>
-                  <label htmlFor="cityName" className="block text-xs font-medium text-ink/75">
-                    City
-                  </label>
-                  <input
-                    id="cityName"
-                    type="text"
-                    required
-                    placeholder="Pune"
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="phoneNumber" className="block text-xs font-medium text-ink/75">
-                    Phone
-                  </label>
-                  <input
-                    id="phoneNumber"
-                    type="tel"
-                    required
-                    placeholder="10-digit number"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="mt-1.5 w-full rounded-xl border border-black/5 bg-[#f4f5f7] px-4 py-3 text-sm font-mono text-ink placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand"
-                  />
-                </div>
-              </div>
-
-              {/* Submit button */}
-              <button
-                type="submit"
-                disabled={submitting}
-                className="mt-6 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-ink text-[15px] font-semibold text-white transition-all duration-200 transform-gpu hover:-translate-y-0.5 hover:bg-ink-3 active:scale-[0.96] active:translate-y-0 disabled:opacity-75 cursor-pointer"
-              >
-                {submitting ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin" />
-                    <span>Sending details…</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Get a callback</span>
-                    <ArrowRight className="size-4" />
-                  </>
-                )}
-              </button>
-
-              {/* Footer note */}
-              <p className="mt-4 text-center text-xs leading-relaxed text-muted">
-                Are you a parent?{" "}
-                <a href="#enrol" className="underline underline-offset-2 hover:text-ink">
-                  Enrol your child
-                </a>{" "}
-                in the form above. We never share your details.
-              </p>
-            </form>
-          </>
-          )}
-        </div>
-        </ScrollReveal>
       </Container>
-    </Section>
+    </section>
   );
 }
->>>>>>> 0c48af08a90a288c46f1d0057cb12d934026860b
