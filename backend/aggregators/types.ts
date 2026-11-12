@@ -5,7 +5,10 @@ import type {
   PaymentFailureData,
   RefundNotificationData,
 } from "../templates/email-templates";
-import type { WhatsAppWeeklyAssessmentPayload } from "../templates/whatsapp-templates";
+import type {
+  WhatsAppWeeklyAssessmentPayload,
+  WhatsAppClassReminderPayload,
+} from "../templates/whatsapp-templates";
 import type { PreAggregatorResult } from "../cron/types";
 
 export interface AbandonedCartRecord extends AbandonedCartData {
@@ -50,6 +53,14 @@ export interface WeeklyAssessmentRecord extends WhatsAppWeeklyAssessmentPayload 
   tutorName?: string;
 }
 
+export interface ClassReminderRecord extends WhatsAppClassReminderPayload {
+  studentId: string;
+  sessionId: string;
+  batchId?: string;
+  schoolName?: string;
+  parentEmail?: string;
+}
+
 export interface PreAggregatorCollection {
   abandonedCarts: (thresholdMinutes?: number) => Promise<PreAggregatorResult<AbandonedCartRecord>>;
   installmentDues: (daysAhead?: number) => Promise<PreAggregatorResult<InstallmentDueRecord>>;
@@ -57,5 +68,6 @@ export interface PreAggregatorCollection {
   paymentFailures: () => Promise<PreAggregatorResult<PaymentFailureRecord>>;
   pendingRefunds: () => Promise<PreAggregatorResult<RefundRecord>>;
   weeklyAssessments: (batchId?: string, levelNumber?: number) => Promise<PreAggregatorResult<WeeklyAssessmentRecord>>;
+  classReminders: (targetDateStr?: string) => Promise<PreAggregatorResult<ClassReminderRecord>>;
 }
 

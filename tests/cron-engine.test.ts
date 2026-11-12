@@ -37,13 +37,14 @@ describe("Cron Engine & Pre-Aggregators", () => {
     await seedDynamicTestData();
   });
 
-  it("registers all 6 core jobs into engine", () => {
+  it("registers all core lifecycle jobs into engine", () => {
     const engine = new CronEngine(new MetricsCollector(), new CronLogger("Test"));
     registerAllJobs(engine);
     expect(engine.getAllJobs().length).toBe(allJobs.length);
     expect(engine.getJob("job.abandoned_cart_recovery")).toBeDefined();
     expect(engine.getJob("job.installment_due_reminder")).toBeDefined();
     expect(engine.getJob("job.weekly_evaluation_dispatch")).toBeDefined();
+    expect(engine.getJob("job.class_reminder_daily")).toBeDefined();
   });
 
   it("executes weekly evaluation job and dispatches milestone report", async () => {
@@ -65,7 +66,7 @@ describe("Cron Engine & Pre-Aggregators", () => {
     registerAllJobs(engine);
 
     const results = await engine.runAllJobs();
-    expect(results.length).toBe(6);
+    expect(results.length).toBe(allJobs.length);
     expect(results.every((r) => r.status === "SUCCESS")).toBe(true);
   });
 

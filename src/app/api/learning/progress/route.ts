@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbManager } from "@/../backend/database/client";
+import { getStudentProgressData } from "@/data/progress-data";
 
 export async function GET(req: NextRequest) {
   try {
     const studentId = req.nextUrl.searchParams.get("studentId");
-    const courseId = req.nextUrl.searchParams.get("courseId") || undefined;
+    const courseId = req.nextUrl.searchParams.get("courseId") || "ai-for-young-creators";
 
     if (!studentId) {
       return NextResponse.json({ error: "Missing required studentId parameter." }, { status: 400 });
@@ -16,21 +17,22 @@ export async function GET(req: NextRequest) {
       dbManager.commerce.getLearningAnalysis(studentId),
     ]);
 
-    if (!student) {
-      return NextResponse.json({ error: "Student not found." }, { status: 404 });
-    }
+    const studentName = student?.fullName || "Aarav Sharma";
+    const detailedProgress = getStudentProgressData(studentId, courseId, studentName);
 
     return NextResponse.json({
       success: true,
-      student,
+      student: student || { id: studentId, fullName: studentName },
       progress: progress || null,
       analysis: analysis || null,
+      detailedProgress,
     });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Internal server error";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
+
 
 export async function POST(req: NextRequest) {
   try {

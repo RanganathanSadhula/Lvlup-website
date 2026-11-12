@@ -103,9 +103,7 @@ export default function TellUsChildPage() {
 
         {/* Top ThinkOva Logo */}
         <div className="relative z-10">
-          <Link href="/" className="inline-block">
-            <Logo />
-          </Link>
+          <Logo className="inline-block" />
         </div>
 
         {/* Bottom Headline & Subtitle */}
