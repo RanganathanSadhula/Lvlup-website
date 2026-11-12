@@ -34,11 +34,11 @@ export function initScheduler(autoStart: boolean = false): CronEngine {
       },
     });
 
-    // Register all 5 core jobs
+    // Register all lifecycle jobs (including OpenWA class reminders)
     registerAllJobs(globalCronEngine);
 
     isInitialized = true;
-    defaultLogger.info("Thinkova Cron Scheduler initialized with 5 registered jobs.");
+    defaultLogger.info("Thinkova Cron Scheduler initialized with registered jobs.");
   }
 
   if (autoStart) {

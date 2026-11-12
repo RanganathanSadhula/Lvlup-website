@@ -99,9 +99,7 @@ export default function WhoIsLearningPage() {
 
       {/* Top Header */}
       <header className="relative z-10 mx-auto flex w-full max-w-[1240px] items-center justify-between">
-        <Link href="/" className="inline-block">
-          <Logo />
-        </Link>
+        <Logo className="inline-block" />
         <button
           type="button"
           onClick={logout}

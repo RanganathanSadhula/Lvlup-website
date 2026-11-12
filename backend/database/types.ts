@@ -97,6 +97,7 @@ export interface EnrollmentEntity {
   id: string;
   studentId: string;
   cohortBatchId: string;
+  courseId?: string;
   schoolUid: string;
   paymentPlan: "FULL" | "INSTALLMENTS";
   status: "PENDING_PAYMENT" | "ENROLLED" | "DROPPED" | "REFUNDED";

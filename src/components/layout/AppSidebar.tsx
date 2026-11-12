@@ -60,7 +60,7 @@ export function AppSidebar({ activeItem }: AppSidebarProps) {
     {
       id: "my-learning",
       label: "My learning",
-      href: "/home",
+      href: "/learning",
       icon: BookOpen,
       badge: 2,
     },
@@ -73,7 +73,7 @@ export function AppSidebar({ activeItem }: AppSidebarProps) {
     {
       id: "profile",
       label: "Profile",
-      href: "/who-is-learning",
+      href: "/profile",
       icon: User,
     },
   ];
@@ -82,9 +82,9 @@ export function AppSidebar({ activeItem }: AppSidebarProps) {
     <aside className="hidden lg:flex w-[240px] shrink-0 flex-col justify-between border-r border-white/[0.08] bg-[#0B0C0F] p-5 text-white min-h-screen select-none sticky top-0 h-screen">
       {/* Top ThinkOva Brand */}
       <div className="space-y-8">
-        <Link href="/" className="inline-block px-2 pt-2">
-          <Logo />
-        </Link>
+        <div className="px-2 pt-2">
+          <Logo className="inline-block" />
+        </div>
 
         {/* Navigation Items matching Figma exactly */}
         <nav className="space-y-1.5" aria-label="Portal Navigation">
@@ -127,12 +127,19 @@ export function AppSidebar({ activeItem }: AppSidebarProps) {
       {/* Bottom Group: Next live class widget + Active Student Profile */}
       <div className="space-y-3 pt-6 border-t border-white/[0.08]">
         {/* Next Live Class Card */}
-        <div className="rounded-2xl border border-white/[0.08] bg-[#14161D] p-3.5 shadow-inner">
-          <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#FF8B4E]">
-            <Radio className="size-3 animate-pulse text-[#FF6026]" />
-            <span>Next Live Class</span>
+        <div
+          onClick={() => router.push(`/learning/${activeStudent?.id || "aarav"}?tab=live`)}
+          className="group cursor-pointer rounded-2xl border border-white/[0.08] bg-[#14161D] p-3.5 shadow-inner transition hover:border-[#FF6026]/40 hover:bg-[#1A1C24]"
+          title="Click to view Live classes schedule"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#FF8B4E]">
+              <Radio className="size-3 animate-pulse text-[#FF6026]" />
+              <span>Next Live Class</span>
+            </div>
+            <ChevronRight className="size-3 text-white/30 group-hover:text-white/70 transition" />
           </div>
-          <div className="mt-1.5 text-sm font-bold text-white">
+          <div className="mt-1.5 text-sm font-bold text-white group-hover:text-[#FF8B4E] transition">
             Thu, 6:00 PM
           </div>
           <div className="mt-0.5 text-xs text-white/50">

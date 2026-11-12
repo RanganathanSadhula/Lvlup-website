@@ -6,18 +6,17 @@ import { Logo } from "@/components/ui/Logo";
 
 export function BottomCTABar() {
   const pathname = usePathname();
-  if (
-    pathname === "/enrolled" ||
-    pathname === "/login" ||
-    pathname === "/signup" ||
-    pathname === "/tell-us-child" ||
-    pathname === "/who-is-learning" ||
-    pathname === "/home" ||
-    pathname === "/explore" ||
-    pathname.startsWith("/courses") ||
-    pathname === "/checkout" ||
-    pathname === "/confirmation"
-  ) {
+
+  // Strict whitelist: BottomCTABar is only meant for public marketing pages
+  // It must NEVER appear on internal learning, dashboard, courses, checkout, or auth pages.
+  if (!pathname) return null;
+
+  const isPublicMarketingPage =
+    pathname === "/" ||
+    pathname === "/curriculum" ||
+    pathname === "/partner-terms";
+
+  if (!isPublicMarketingPage) {
     return null;
   }
 

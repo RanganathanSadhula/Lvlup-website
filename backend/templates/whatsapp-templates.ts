@@ -31,6 +31,19 @@ export interface WhatsAppDeEnrolmentPayload {
   refundStatus: string;
 }
 
+export interface WhatsAppClassReminderPayload {
+  parentPhone: string;
+  parentName: string;
+  studentName: string;
+  className: string;
+  levelNumber?: number;
+  classDate: string; // e.g. "Today (Thu 12 Nov)"
+  classTime: string; // e.g. "6:00 PM – 7:30 PM IST (90 min)"
+  tutorName: string; // e.g. "Ms Ananya"
+  prepItem?: string; // e.g. "Bring your Level 6 agent"
+  joinUrl?: string; // e.g. "https://meet.google.com/thinkova-ai-level7" or "School Lab"
+}
+
 export const whatsappTemplates = {
   enrolmentConfirmed: (d: WhatsAppEnrolmentPayload) => {
     const parent = d.parentName?.trim() || "Parent";
@@ -123,5 +136,51 @@ export const whatsappTemplates = {
     ],
     fallbackText: `Hi ${d.parentName}, ${d.studentName}'s ThinkOva enrolment has been updated. Refund status: ${d.refundStatus}. If you have questions, reply to this chat.`,
   }),
+
+  classReminder: (d: WhatsAppClassReminderPayload) => {
+    const parent = d.parentName?.trim() || "Parent";
+    const student = d.studentName?.trim() || "Your child";
+    const levelStr = d.levelNumber ? `Level ${d.levelNumber}: ` : "";
+    const prepStr = d.prepItem ? `\n🎒 *What to bring/prepare:* ${d.prepItem}` : "";
+    const joinStr = d.joinUrl ? `\n🔗 *Join link:* ${d.joinUrl} (opens 10 min early)` : "";
+
+    const text = [
+      `🔔 *CLASS REMINDER TODAY · ThinkOva AI Program*`,
+      `━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+      `Dear *${parent}*,`,
+      ``,
+      `Friendly reminder that *${student}* has their live AI class scheduled for *${d.classDate}*!`,
+      ``,
+      `📋 *Class Details:*`,
+      `• *Session:* ${levelStr}${d.className}`,
+      `• *Timing:* ${d.classTime}`,
+      `• *Mentor:* ${d.tutorName}`,
+      `${prepStr}${joinStr}`,
+      ``,
+      `💡 *Tip:* Please test the camera and microphone 5 minutes before class starts.`,
+      ``,
+      `💬 If you have any questions or attendance updates, reply to this WhatsApp chat anytime!`,
+      ``,
+      `*ThinkOva Education*`,
+    ].join("\n");
+
+    return {
+      to: d.parentPhone,
+      templateName: "thinkova_class_reminder_daily_v1",
+      language: "en",
+      components: [
+        {
+          type: "body",
+          parameters: [
+            { type: "text", text: parent },
+            { type: "text", text: student },
+            { type: "text", text: `${levelStr}${d.className}` },
+            { type: "text", text: d.classTime },
+          ],
+        },
+      ],
+      fallbackText: text,
+    };
+  },
 };
 

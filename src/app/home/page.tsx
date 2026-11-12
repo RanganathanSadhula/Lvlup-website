@@ -88,7 +88,7 @@ export default function HomePage() {
             <div className="relative z-10 mt-6 sm:mt-10 flex flex-col sm:flex-row sm:items-center gap-4">
               <button
                 type="button"
-                onClick={() => router.push(`/learning/${activeStudent?.id || "aarav"}`)}
+                onClick={() => router.push(`/learning/${activeStudent?.id || "aarav"}?lesson=3`)}
                 className="flex items-center justify-center gap-2 rounded-full bg-[#FF6026] px-6 py-3 text-xs sm:text-sm font-semibold text-white shadow-[0_4px_16px_rgba(255,96,38,0.35)] transition hover:bg-[#E8531C] active:scale-95 cursor-pointer"
               >
                 Resume lesson
@@ -112,26 +112,32 @@ export default function HomePage() {
             </h3>
 
             <div className="mt-4 space-y-4">
-              {/* Item 1 */}
-              <div className="flex items-start gap-3">
+              {/* Item 1: Build task */}
+              <div
+                onClick={() => router.push(`/learning/${activeStudent?.id || "aarav"}?view=build-task&taskId=level-6-memory`)}
+                className="group flex cursor-pointer items-start gap-3 rounded-xl p-1 transition hover:bg-[#FAF9F5]"
+              >
                 <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-[#FFF2EB] text-[#FF6026]">
                   <ClipboardList className="size-4" />
                 </div>
                 <div>
-                  <h4 className="text-xs sm:text-sm font-semibold text-[#0B0C0F]">
+                  <h4 className="text-xs sm:text-sm font-semibold text-[#0B0C0F] group-hover:text-[#FF6026] transition">
                     Build task: give your agent a memory
                   </h4>
                   <p className="text-[11px] text-[#8F94A0]">Due Fri, 9:00 PM</p>
                 </div>
               </div>
 
-              {/* Item 2 */}
-              <div className="flex items-start gap-3">
+              {/* Item 2: Live class */}
+              <div
+                onClick={() => router.push(`/learning/${activeStudent?.id || "aarav"}?tab=live`)}
+                className="group flex cursor-pointer items-start gap-3 rounded-xl p-1 transition hover:bg-[#FAF9F5]"
+              >
                 <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-[#FFF2EB] text-[#FF6026]">
                   <Video className="size-4" />
                 </div>
                 <div>
-                  <h4 className="text-xs sm:text-sm font-semibold text-[#0B0C0F]">
+                  <h4 className="text-xs sm:text-sm font-semibold text-[#0B0C0F] group-hover:text-[#FF6026] transition">
                     Live class: Personalise and improve
                   </h4>
                   <p className="text-[11px] text-[#8F94A0]">
@@ -140,13 +146,16 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Item 3 */}
-              <div className="flex items-start gap-3">
+              {/* Item 3: Lesson 2 */}
+              <div
+                onClick={() => router.push(`/learning/${activeStudent?.id || "aarav"}?lesson=2`)}
+                className="group flex cursor-pointer items-start gap-3 rounded-xl p-1 transition hover:bg-[#FAF9F5]"
+              >
                 <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-[#F0FDF4] text-emerald-600">
                   <CheckCircle2 className="size-4" />
                 </div>
                 <div>
-                  <h4 className="text-xs sm:text-sm font-semibold text-[#0B0C0F]">
+                  <h4 className="text-xs sm:text-sm font-semibold text-[#0B0C0F] group-hover:text-emerald-700 transition">
                     Lesson 2: Agent instructions
                   </h4>
                   <p className="text-[11px] text-[#8F94A0]">Done on Tuesday</p>
